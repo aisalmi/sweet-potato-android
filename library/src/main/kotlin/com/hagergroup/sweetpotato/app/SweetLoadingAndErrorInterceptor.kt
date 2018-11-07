@@ -145,7 +145,7 @@ abstract class SweetLoadingAndErrorInterceptor
         {
           errorAndRetryManager = errorAndRetryManagerProvider.getErrorAndRetryManager(errorAndRetryView)
           errorAndRetryManager.hide()
-          errorAndRetryView.visibility = View.GONE
+          errorAndRetryView.isVisible = false
         }
         else
         {
