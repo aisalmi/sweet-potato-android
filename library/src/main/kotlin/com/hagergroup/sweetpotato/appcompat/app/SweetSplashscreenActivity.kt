@@ -10,12 +10,13 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
 import timber.log.Timber
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetSplashscreenActivity<AggregateClass : Any>
+abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate>
   : SweetAppCompatActivity<AggregateClass>(),
     SweetBroadcastListener
 {
@@ -72,7 +73,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : Any>
   }
 
   @Throws(ViewModelUnavailableException::class)
-  final override fun onRetrieveViewModel()
+  final override suspend fun onRetrieveViewModel()
   {
     // We check whether another activity instance is already running the business objects retrieval
     if (SweetSplashscreenActivity.onRetrieveViewModelCustomStarted == false)
@@ -107,7 +108,6 @@ abstract class SweetSplashscreenActivity<AggregateClass : Any>
   override fun onBindViewModel()
   {
   }
-
 
   override fun onStop()
   {
@@ -149,7 +149,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : Any>
     }
   }
 
-  protected abstract fun getNextActivity(): Class<out FragmentActivity>
+  protected abstract fun getNextActivity(): KClass<out FragmentActivity>
 
   @Throws(ViewModelUnavailableException::class)
   protected abstract fun onRetrieveViewModelCustom()
@@ -180,7 +180,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : Any>
   }
 
   protected open fun computeNextIntent(): Intent =
-      Intent(applicationContext, getNextActivity())
+      Intent(applicationContext, getNextActivity().java)
 
   private fun markAsInitialized()
   {

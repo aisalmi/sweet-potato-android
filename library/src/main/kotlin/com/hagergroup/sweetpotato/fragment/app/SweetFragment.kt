@@ -3,6 +3,7 @@ package com.hagergroup.sweetpotato.fragment.app
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
@@ -19,6 +20,7 @@ abstract class SweetFragment<AggregateClass : Any>
 
   private var sweetizer: Sweetizer<AggregateClass, SweetFragment<AggregateClass>>? = null
 
+  @CallSuper
   override fun onAttach(context: Context?)
   {
     super.onAttach(context)
@@ -28,6 +30,7 @@ abstract class SweetFragment<AggregateClass : Any>
     }
   }
 
+  @CallSuper
   override fun onCreate(savedInstanceState: Bundle?)
   {
     sweetizer?.onCreate(Runnable {
@@ -35,18 +38,21 @@ abstract class SweetFragment<AggregateClass : Any>
     }, savedInstanceState)
   }
 
+  @CallSuper
   override fun onStart()
   {
     super.onStart()
     sweetizer?.onStart()
   }
 
+  @CallSuper
   override fun onResume()
   {
     super.onResume()
     sweetizer?.onResume()
   }
 
+  @CallSuper
   override fun onPause()
   {
     try
@@ -59,6 +65,7 @@ abstract class SweetFragment<AggregateClass : Any>
     }
   }
 
+  @CallSuper
   override fun onStop()
   {
     try
@@ -71,6 +78,7 @@ abstract class SweetFragment<AggregateClass : Any>
     }
   }
 
+  @CallSuper
   override fun onDestroy()
   {
     try
@@ -83,6 +91,7 @@ abstract class SweetFragment<AggregateClass : Any>
     }
   }
 
+  @CallSuper
   override fun onSaveInstanceState(outState: Bundle)
   {
     super.onSaveInstanceState(outState)
@@ -102,11 +111,13 @@ abstract class SweetFragment<AggregateClass : Any>
   override fun getHandler(): Handler =
       sweetizer?.getHandler() ?: Handler()
 
+  @CallSuper
   override fun onException(throwable: Throwable, fromGuiThread: Boolean)
   {
     sweetizer?.onException(throwable, fromGuiThread)
   }
 
+  @CallSuper
   override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
   {
     sweetizer?.registerBroadcastListeners(broadcastListeners)

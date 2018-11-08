@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
-import com.hagergroup.sweetpotato.annotation.SendLoadingIntentAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetSendLoadingIntentAnnotation
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
@@ -46,14 +46,13 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   }
 
+  val handler by lazy { Handler() }
+
   var aggregate: AggregateClass? = null
 
   var firstLifeCycle = true
 
   var viewModelRetrieved = false
-    private set
-
-  var handler = Handler()
     private set
 
   var isInteracting = false
@@ -70,8 +69,6 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
   private var beingRedirected = false
 
   private var broadcastReceivers: Array<BroadcastReceiver?>? = null
-
-  private var stopHandling = false
 
   private var refreshViewModelAndBindNextTime: RefreshViewModelAndBind? = null
 
@@ -188,7 +185,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   fun onStartLoading()
   {
-    if (component::class.findAnnotation<SendLoadingIntentAnnotation>() != null)
+    if (component::class.findAnnotation<SweetSendLoadingIntentAnnotation>() != null)
     {
       // We indicate the activity which is loading, in order to filter the loading events
       LoadingBroadcastListener.broadcastLoading(activity, System.identityHashCode(activity), System.identityHashCode(component), true)
@@ -197,7 +194,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   fun onStopLoading()
   {
-    if (component::class.findAnnotation<SendLoadingIntentAnnotation>() != null)
+    if (component::class.findAnnotation<SweetSendLoadingIntentAnnotation>() != null)
     {
       // We indicate the activity which is loading, in order to filter the loading events
       LoadingBroadcastListener.broadcastLoading(activity, System.identityHashCode(activity), System.identityHashCode(component), false)
@@ -271,13 +268,8 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     beingRedirected = true
   }
 
-  fun stopHandling()
-  {
-    stopHandling = true
-  }
-
   fun shouldKeepOn(): Boolean =
-      stopHandling == false && beingRedirected == false
+      beingRedirected == false
 
   @Synchronized
   fun shouldDelayRefreshBusinessObjectsAndDisplay(onOver: Runnable?): Boolean

@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
-public @interface LoadingAndErrorAnnotation
+public @interface SweetLoadingAndErrorAnnotation
 {
 
   boolean enabled() default true;

@@ -1,0 +1,27 @@
+<androidx.drawerlayout.widget.DrawerLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/drawerLayout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:fitsSystemWindows="true"
+>
+  <FrameLayout
+    android:id="@+id/fragmentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  />
+
+  <com.google.android.material.navigation.NavigationView
+    android:layout_width="250dip"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+  >
+    <fragment
+      android:id="@+id/menuFragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:name="com.hagergroup.sample.fragment.MenuFragment"
+    />
+  </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

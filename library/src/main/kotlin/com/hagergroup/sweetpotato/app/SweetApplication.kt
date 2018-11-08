@@ -1,8 +1,11 @@
 package com.hagergroup.sweetpotato.app
 
 import android.app.Application
-import com.hagergroup.sweetpotato.exception.ExceptionHandler
+import android.content.res.Resources
+import androidx.annotation.CallSuper
+import com.hagergroup.sweetpotato.R
 import com.hagergroup.sweetpotato.exception.ExceptionHandlers
+import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.exception.SweetIssueAnalyzer
 import com.hagergroup.sweetpotato.exception.SweetUncaughtExceptionHandler
 import timber.log.Timber
@@ -25,22 +28,51 @@ abstract class SweetApplication
              val reportButtonLabel: String,
              val retrievingLogProgressMessage: String)
 
+  class Constants(resources: Resources)
+  {
+
+    val isSmartphone: Boolean
+
+    val isPhablet: Boolean
+
+    val isTablet: Boolean
+
+    val canRotate: Boolean
+
+    init
+    {
+      this.isSmartphone = resources.getBoolean(R.bool.isSmartphone)
+      this.isPhablet = resources.getBoolean(R.bool.isPhablet)
+      this.isTablet = resources.getBoolean(R.bool.isTablet)
+      this.canRotate = resources.getBoolean(R.bool.canRotate)
+    }
+  }
+
   companion object
   {
 
     var isOnCreatedDone = false
       private set
 
+    lateinit var applicationConstants: Constants
+
   }
+
+  protected val connectivityListener by lazy { retrieveConnectivityListener() }
 
   private var onCreateInvoked = false
 
   protected abstract fun getI18N(): SweetApplication.I18N
 
+  protected abstract fun setupTimber()
+
+  protected abstract fun retrieveConnectivityListener(): SweetConnectivityListener
 
   @Synchronized
   override fun onCreate()
   {
+    setupTimber()
+
     if (onCreateInvoked == true)
     {
       Timber.e("The 'Application.onCreate()' method has already been invoked!")
@@ -96,17 +128,17 @@ abstract class SweetApplication
     return false
   }
 
-  protected open fun getActivityRedirector(): SweetActivityController.SweetRedirector?
+  protected open fun getActivityRedirector(): SweetActivityController.Redirector?
   {
     return null
   }
 
-  protected open fun getInterceptor(): SweetActivityController.SweetInterceptor?
+  protected open fun getInterceptor(): SweetActivityController.Interceptor?
   {
     return null
   }
 
-  protected open fun getExceptionHandler(): ExceptionHandler =
+  protected open fun getExceptionHandler(): SweetExceptionHandler =
       ExceptionHandlers.DefaultExceptionHandler(getI18N(), SweetIssueAnalyzer.DefaultIssueAnalyzer(this))
 
   protected open fun onSetupExceptionHandlers()
@@ -117,8 +149,10 @@ abstract class SweetApplication
   {
   }
 
+  @CallSuper
   protected open fun onCreateCustom()
   {
+    applicationConstants = Constants(resources)
   }
 
   private fun setupDefaultExceptionHandlers()

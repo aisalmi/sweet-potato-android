@@ -3,6 +3,7 @@ package com.hagergroup.sweetpotato.exception
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
@@ -19,7 +20,7 @@ class ExceptionHandlers private constructor()
 
   //TODO : rework the I18N and the "showdialog" part
   open class AbstractExceptionHandler(protected val i18n: SweetApplication.I18N, protected val issueAnalyzer: SweetIssueAnalyzer)
-    : ExceptionHandler
+    : SweetExceptionHandler
   {
 
     enum class ConnectivityUIExperience
@@ -28,39 +29,39 @@ class ExceptionHandlers private constructor()
       DialogRetry, Dialog, Toast
     }
 
-    override fun onViewModelUnavailableException(activity: FragmentActivity?, component: Any?, exception: ViewModelUnavailableException?): Boolean
+    override fun onViewModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
     {
-      return if (handleCommonCauses(activity, component, exception, ConnectivityUIExperience.DialogRetry) == true)
+      return if (handleCommonCauses(activity, fragment, exception, ConnectivityUIExperience.DialogRetry) == true)
       {
         true
       }
-      else if (handleOtherCauses(activity, component, exception) == true)
+      else if (handleOtherCauses(activity, fragment, exception) == true)
       {
         true
       }
       else
       {
-        return onViewModelUnavailableExceptionFallback(activity, component, exception)
+        return onViewModelUnavailableExceptionFallback(activity, fragment, exception)
       }
     }
 
-    override fun onActivityException(activity: FragmentActivity?, component: Any?, throwable: Throwable?): Boolean
+    override fun onActivityException(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
     {
-      return if (handleCommonCauses(activity, component, throwable, ConnectivityUIExperience.Toast) == true)
+      return if (handleCommonCauses(activity, fragment, throwable, ConnectivityUIExperience.Toast) == true)
       {
         true
       }
-      else if (handleOtherCauses(activity, component, throwable) == true)
+      else if (handleOtherCauses(activity, fragment, throwable) == true)
       {
         true
       }
       else
       {
-        onActivityExceptionFallback(activity, component, throwable)
+        onActivityExceptionFallback(activity, fragment, throwable)
       }
     }
 
-    override fun onContextException(isRecoverable: Boolean, context: Context?, throwable: Throwable?): Boolean
+    override fun onContextException(isRecoverable: Boolean, context: Context?, throwable: Throwable): Boolean
     {
       return if (handleCommonCauses(null, null, throwable, null) == true)
       {
@@ -72,7 +73,7 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    override fun onException(isRecoverable: Boolean, throwable: Throwable?): Boolean
+    override fun onException(isRecoverable: Boolean, throwable: Throwable): Boolean
     {
       return if (handleCommonCauses(null, null, throwable, null) == true)
       {
@@ -84,12 +85,12 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    override fun reportIssueIfNecessary(isRecoverable: Boolean, throwable: Throwable?)
+    override fun reportIssueIfNecessary(isRecoverable: Boolean, throwable: Throwable)
     {
 
     }
 
-    protected open fun onViewModelUnavailableExceptionFallback(activity: FragmentActivity?, component: Any?, exception: ViewModelUnavailableException?): Boolean
+    protected open fun onViewModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
     {
       showDialog(activity, i18n.dialogBoxErrorTitle, i18n.businessObjectAvailabilityProblemHint, activity?.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
@@ -107,7 +108,7 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    protected open fun onActivityExceptionFallback(activity: FragmentActivity?, component: Any?, throwable: Throwable?): Boolean
+    protected open fun onActivityExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
     {
       showDialog(activity, i18n.dialogBoxErrorTitle, i18n.otherProblemHint, activity?.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
@@ -119,21 +120,21 @@ class ExceptionHandlers private constructor()
       return true
     }
 
-    protected open fun onContextExceptionFallback(isRecoverable: Boolean, context: Context?, throwable: Throwable?): Boolean
+    protected open fun onContextExceptionFallback(isRecoverable: Boolean, context: Context?, throwable: Throwable): Boolean
     {
       submitToIssueAnalyzer(throwable)
       return false
     }
 
-    protected open fun onExceptionFallback(isRecoverable: Boolean, throwable: Throwable?): Boolean
+    protected open fun onExceptionFallback(isRecoverable: Boolean, throwable: Throwable): Boolean
     {
       submitToIssueAnalyzer(throwable)
       return false
     }
 
-    protected open fun handleCommonCauses(activity: FragmentActivity?, component: Any?, throwable: Throwable?, connectivityUIExperience: ConnectivityUIExperience?): Boolean
+    protected open fun handleCommonCauses(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
     {
-      return if (throwable.isAConnectivityProblem() == true && handleConnectivityProblemInCause(activity, component, throwable, connectivityUIExperience) == true)
+      return if (throwable.isAConnectivityProblem() == true && handleConnectivityProblemInCause(activity, fragment, throwable, connectivityUIExperience) == true)
       {
         true
       }
@@ -143,7 +144,7 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    protected open fun submitToIssueAnalyzer(throwable: Throwable?)
+    protected open fun submitToIssueAnalyzer(throwable: Throwable)
     {
       if (issueAnalyzer.handleIssue(throwable) == true)
       {
@@ -191,10 +192,10 @@ class ExceptionHandlers private constructor()
       })
     }
 
-    protected open fun handleOtherCauses(activity: FragmentActivity?, component: Any?, throwable: Throwable?): Boolean =
+    protected open fun handleOtherCauses(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean =
         false
 
-    protected open fun handleConnectivityProblemInCause(activity: FragmentActivity?, component: Any?, throwable: Throwable?, connectivityUIExperience: ConnectivityUIExperience?): Boolean
+    protected open fun handleConnectivityProblemInCause(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
     {
       if (activity == null)
       {
@@ -202,11 +203,11 @@ class ExceptionHandlers private constructor()
         return true
       }
 
-      val lifeCycle = when
+      val lifeCycle: SweetLifeCycle? = when
       {
-        component is SweetLifeCycle -> component
-        activity is SweetLifeCycle  -> activity
-        else                        -> null
+        fragment is SweetLifeCycle -> fragment
+        activity is SweetLifeCycle -> activity
+        else                       -> null
       }
 
       activity.runOnUiThread {
@@ -246,7 +247,7 @@ class ExceptionHandlers private constructor()
       return true
     }
 
-    protected open fun handleMemoryProblemInCause(throwable: Throwable?): Boolean
+    protected open fun handleMemoryProblemInCause(throwable: Throwable): Boolean
     {
       submitToIssueAnalyzer(throwable)
       return false
@@ -270,7 +271,7 @@ class ExceptionHandlers private constructor()
 
   }
 
-  class DefaultExceptionHandler(i18n: SweetApplication.I18N, issueAnalyzer: SweetIssueAnalyzer)
+  open class DefaultExceptionHandler(i18n: SweetApplication.I18N, issueAnalyzer: SweetIssueAnalyzer)
     : AbstractExceptionHandler(i18n, issueAnalyzer)
 
 }

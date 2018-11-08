@@ -1,6 +1,7 @@
 package com.hagergroup.sweetpotato.app
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
@@ -14,8 +15,8 @@ import kotlin.reflect.full.findAnnotation
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAggregate<out SweetApplication>, FragmentAggregateClass : SweetFragmentAggregate<out SweetApplication>>
-  : SweetActivityController.SweetInterceptor
+abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAggregate, FragmentAggregateClass : SweetFragmentAggregate>
+  : SweetActivityController.Interceptor
 {
 
   class ViewModelContainer
@@ -48,30 +49,32 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
 
   }
 
-  protected abstract fun instantiateActivityAggregate(activity: FragmentActivity, sweetable: Sweetable<ActivityAggregateClass>, annotation: SweetActivityAnnotation): ActivityAggregateClass
+  protected abstract fun instantiateActivityAggregate(activity: FragmentActivity, activityAnnotation: SweetActivityAnnotation?): ActivityAggregateClass
 
-  protected abstract fun instantiateFragmentAggregate(sweetable: Sweetable<FragmentAggregateClass>, fragmentAnnotation: SweetFragmentAnnotation): FragmentAggregateClass
+  protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: SweetFragmentAnnotation?): FragmentAggregateClass
 
-  override fun onLifeCycleEvent(activity: FragmentActivity?, component: Any?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     if (event == Lifecycle.Event.ON_CREATE)
     {
-      if (component is Sweetable<*>)
+      if (fragment is Sweetable<*>)
       {
         // It's a Fragment
-        (component as? Sweetable<FragmentAggregateClass>)?.let {
-          val fragmentAnnotation = it::class.findAnnotation<SweetFragmentAnnotation>() ?: throw IllegalArgumentException("The fragment annotation is missing")
-          it.setAggregate(instantiateFragmentAggregate(it, fragmentAnnotation))
-          it.getAggregate()?.onCreate(activity)
+        (fragment as Sweetable<FragmentAggregateClass>).let {
+          (it::class.findAnnotation<SweetFragmentAnnotation>())?.let { annotation ->
+            it.setAggregate(instantiateFragmentAggregate(fragment, annotation))
+            it.getAggregate()?.onCreate(activity)
+          }
         }
       }
       else
       {
         // It's an Activity
         (activity as? Sweetable<ActivityAggregateClass>)?.let {
-          val activityAnnotation = it::class.findAnnotation<SweetActivityAnnotation>() ?: throw IllegalArgumentException("The activity annotation is missing")
-          it.setAggregate(instantiateActivityAggregate(activity, it, activityAnnotation))
-          it.getAggregate()?.onCreate()
+          (it::class.findAnnotation<SweetActivityAnnotation>())?.let { annotation ->
+            it.setAggregate(instantiateActivityAggregate(activity, annotation))
+            it.getAggregate()?.onCreate()
+          }
         }
       }
     }

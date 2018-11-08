@@ -12,12 +12,12 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-abstract class SweetAppCompatActivity<AggregateClass : Any>
+abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   : AppCompatActivity(),
     Sweetable<AggregateClass>
 {
 
-  private val sweetizer = Sweetizer(this, this, this, null)
+  private val sweetizer by lazy { Sweetizer(this, this, this, null) }
 
   override fun onCreate(savedInstanceState: Bundle?)
   {

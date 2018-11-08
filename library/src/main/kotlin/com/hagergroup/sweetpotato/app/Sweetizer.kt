@@ -2,9 +2,11 @@ package com.hagergroup.sweetpotato.app
 
 import android.os.Bundle
 import android.os.Handler
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 /**
@@ -14,18 +16,22 @@ import timber.log.Timber
 class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: FragmentActivity,
                                                             val sweetable: Sweetable<AggregateClass>,
                                                             val component: ComponentClass,
-                                                            val interceptorComponent: ComponentClass?)
+                                                            val fragment: Fragment?)
   : Sweetable<AggregateClass>
 {
 
-  private val stateContainer = StateContainer<AggregateClass, ComponentClass>(activity, component)
-
   init
   {
-    Timber.d("Creating the droid4mizer for Activity belonging to class '${activity.javaClass.name}' and with Fragment belonging to class '${interceptorComponent?.javaClass?.name}'")
+    Timber.d("Creating the Sweetizer for Activity belonging to class '${activity.javaClass.name}' and with Fragment belonging to class '${fragment?.javaClass?.name}'")
   }
 
-  override fun onRetrieveViewModel()
+  private val stateContainer by lazy { StateContainer<AggregateClass, ComponentClass>(activity, component) }
+
+  private val coroutineJob by lazy { Job() }
+
+  private val coroutineScope by lazy { CoroutineScope(Dispatchers.Main + coroutineJob) }
+
+  override suspend fun onRetrieveViewModel()
   {
     sweetable.onRetrieveViewModel()
   }
@@ -48,7 +54,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
 
   override fun onException(throwable: Throwable, fromGuiThread: Boolean)
   {
-    SweetActivityController.handleException(true, activity, interceptorComponent, throwable)
+    SweetActivityController.handleException(true, activity, fragment, throwable)
   }
 
   override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
@@ -77,14 +83,12 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
 
     stateContainer.onRefreshingViewModelAndBindingStart()
 
-    //TODO : run these line in coroutine ?
-    // We directly run in the UI thread
-    //    if (onRetrieveBusinessObjectsInternal(retrieveBusinessObjects) == false)
-    //    {
-    //      return
-    //    }
-    //
-    //    onFulfillAndSynchronizeDisplayObjectsInternal(onOver)
+    if (onRetrieveViewModelInternal() == false)
+    {
+      return
+    }
+
+    onBindViewModelInternal(onOver)
   }
 
   override fun isRefreshingViewModelAndBinding(): Boolean =
@@ -122,10 +126,10 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
     }
     else
     {
-      SweetActivityController.onLifeCycleEvent(activity, interceptorComponent, Lifecycle.Event.ON_CREATE)
+      SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_CREATE)
     }
 
-    stateContainer.firstLifeCycle = StateContainer.isFirstCycle(savedInstanceState)
+    stateContainer.firstLifeCycle = if (StateContainer.isFirstCycle(savedInstanceState) == true) false else true
 
     stateContainer.registerBroadcastListeners()
   }
@@ -150,7 +154,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       return
     }
 
-    SweetActivityController.onLifeCycleEvent(activity, interceptorComponent, Lifecycle.Event.ON_RESUME)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_RESUME)
 
     stateContainer.onResume()
 
@@ -168,7 +172,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
   {
     Timber.d("Sweetizer::onStart")
 
-    SweetActivityController.onLifeCycleEvent(activity, interceptorComponent, Lifecycle.Event.ON_START)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_START)
   }
 
   fun onPause()
@@ -181,7 +185,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       return
     }
 
-    SweetActivityController.onLifeCycleEvent(activity, interceptorComponent, Lifecycle.Event.ON_PAUSE)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_PAUSE)
     stateContainer.onPause()
   }
 
@@ -189,13 +193,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
   {
     Timber.d("Sweetizer::onStop")
 
-    SweetActivityController.onLifeCycleEvent(activity, interceptorComponent, Lifecycle.Event.ON_STOP)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_STOP)
   }
 
   fun onDestroy()
   {
     Timber.d("Sweetizer::onDestroy")
 
+    coroutineJob.cancel()
     stateContainer.onDestroy()
 
     if (shouldKeepOn() == false)
@@ -204,53 +209,63 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       return
     }
 
-    SweetActivityController.onLifeCycleEvent(activity, interceptorComponent, Lifecycle.Event.ON_DESTROY)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_DESTROY)
   }
 
   private fun onRetrieveViewModelInternal(): Boolean
   {
-    try
-    {
-      o0nBeforeRefreshViewModelAndBind()
-
-      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+    return runBlocking {
+      try
       {
-        // If the entity is no more alive, we give up the process
-        return false
+        onBeforeRefreshViewModelAndBind()
+
+        if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+        {
+          // If the entity is no more alive, we give up the process
+          false
+        }
+        else
+        {
+          coroutineScope.launch {
+            onRetrieveViewModel()
+          }
+
+          // We notify the entity that the business objects have actually been loaded
+          if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+          {
+            // If the entity is no more alive, we give up the process
+            false
+          }
+          else
+          {
+            stateContainer.viewModelRetrieved()
+            true
+          }
+        }
       }
-
-      onRetrieveViewModel()
-
-      // We notify the entity that the business objects have actually been loaded
-      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+      catch (throwable: Throwable)
       {
-        // If the entity is no more alive, we give up the process
-        return false
+        stateContainer.onRefreshingViewModelAndBindingStop(this@Sweetizer)
+
+        // We check whether the issue does not come from a non-alive entity
+        if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+        {
+          // In that case, we just ignore the exception: it is very likely that the entity or the hosting Activity have turned as non-alive
+          // during the "onRetrieveBusinessObjects()" method!
+          false
+        }
+        else
+        {
+          // Otherwise, we report the exception
+          onInternalViewModelAvailableException(throwable)
+
+          false
+        }
       }
-
-      stateContainer.viewModelRetrieved()
-      return true
-    }
-    catch (throwable: Throwable)
-    {
-      stateContainer.onRefreshingViewModelAndBindingStop(this)
-
-      // We check whether the issue does not come from a non-alive entity
-      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
-      {
-        // In that case, we just ignore the exception: it is very likely that the entity or the hosting Activity have turned as non-alive
-        // during the "onRetrieveBusinessObjects()" method!
-        return false
-      }
-
-      // Otherwise, we report the exception
-      onInternalViewModelAvailableException(throwable)
-
-      return false
     }
   }
 
-  private fun o0nBeforeRefreshViewModelAndBind()
+  private fun onBeforeRefreshViewModelAndBind()
   {
     stateContainer.onStartLoading()
   }

@@ -11,7 +11,7 @@ class SweetUncaughtExceptionHandler(private val context: Context, private val bu
   : Thread.UncaughtExceptionHandler
 {
 
-  override fun uncaughtException(thread: Thread?, throwable: Throwable?)
+  override fun uncaughtException(thread: Thread?, throwable: Throwable)
   {
     try
     {

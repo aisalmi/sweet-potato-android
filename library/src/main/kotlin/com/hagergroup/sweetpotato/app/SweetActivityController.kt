@@ -2,9 +2,10 @@ package com.hagergroup.sweetpotato.app
 
 import android.content.Context
 import android.content.Intent
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
-import com.hagergroup.sweetpotato.exception.ExceptionHandler
+import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
 import timber.log.Timber
 import kotlin.reflect.full.findAnnotation
@@ -16,17 +17,17 @@ import kotlin.reflect.full.findAnnotation
 object SweetActivityController
 {
 
-  interface SweetRedirector
+  interface Redirector
   {
 
-    fun getRedirection(activity: FragmentActivity): Intent
+    fun getRedirection(activity: FragmentActivity): Intent?
 
   }
 
-  interface SweetInterceptor
+  interface Interceptor
   {
 
-    fun onLifeCycleEvent(activity: FragmentActivity?, component: Any?, event: Lifecycle.Event)
+    fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
 
   }
 
@@ -36,40 +37,40 @@ object SweetActivityController
 
   const val CALLING_INTENT_EXTRA = "callingIntentExtra"
 
-  private var redirector: SweetActivityController.SweetRedirector? = null
+  private var redirector: SweetActivityController.Redirector? = null
 
-  private var interceptor: SweetActivityController.SweetInterceptor? = null
+  private var interceptor: SweetActivityController.Interceptor? = null
 
-  var exceptionHandler: ExceptionHandler? = null
+  var exceptionHandler: SweetExceptionHandler? = null
     private set
 
   fun extractCallingIntent(activity: FragmentActivity): Intent? =
       activity.intent.getParcelableExtra(SweetActivityController.CALLING_INTENT_EXTRA)
 
-  fun registerRedirector(redirector: SweetActivityController.SweetRedirector)
+  fun registerRedirector(redirector: SweetActivityController.Redirector)
   {
     this.redirector = redirector
   }
 
-  fun registerInterceptor(interceptor: SweetActivityController.SweetInterceptor)
+  fun registerInterceptor(interceptor: SweetActivityController.Interceptor)
   {
     this.interceptor = interceptor
   }
 
   @Synchronized
-  fun registerExceptionHandler(exceptionHandler: ExceptionHandler)
+  fun registerExceptionHandler(exceptionHandler: SweetExceptionHandler)
   {
     this.exceptionHandler = exceptionHandler
   }
 
   @Synchronized
-  fun onLifeCycleEvent(activity: FragmentActivity?, component: Any?, event: Lifecycle.Event)
+  fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
-    interceptor?.onLifeCycleEvent(activity, component, event)
+    interceptor?.onLifeCycleEvent(activity, fragment, event)
   }
 
   @Synchronized
-  fun handleException(isRecoverable: Boolean, context: Context?, component: Any?, throwable: Throwable?): Boolean
+  fun handleException(isRecoverable: Boolean, context: Context?, fragment: Fragment?, throwable: Throwable): Boolean
   {
     if (exceptionHandler == null)
     {
@@ -99,7 +100,7 @@ object SweetActivityController
         }
         else
         {
-          exceptionHandler?.onViewModelUnavailableException(activity, component, throwable) ?: false
+          exceptionHandler?.onViewModelUnavailableException(activity, fragment, throwable) ?: false
         }
       }
       else
@@ -109,7 +110,7 @@ object SweetActivityController
         // For this special case, we ignore the case when the activity is dying
         return if (activity != null)
         {
-          exceptionHandler?.onActivityException(activity, component, throwable) ?: false
+          exceptionHandler?.onActivityException(activity, fragment, throwable) ?: false
         }
         else if (context != null)
         {

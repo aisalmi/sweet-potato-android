@@ -9,6 +9,7 @@ import android.net.Network
 import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.Build
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -21,7 +22,7 @@ import java.util.*
  * @since 2018.11.06
  */
 abstract class SweetConnectivityListener(val context: Context)
-  : SweetActivityController.SweetInterceptor
+  : SweetActivityController.Interceptor
 {
 
   companion object
@@ -39,7 +40,7 @@ abstract class SweetConnectivityListener(val context: Context)
 
   private var activitiesCount: Int = 0
 
-  private val networkStatus = HashMap<String, Boolean>()
+  private val networkStatus by lazy { HashMap<String, Boolean>() }
 
   init
   {
@@ -57,25 +58,25 @@ abstract class SweetConnectivityListener(val context: Context)
     }
   }
 
-  override fun onLifeCycleEvent(activity: FragmentActivity?, component: Any?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     if (event == Lifecycle.Event.ON_CREATE)
     {
       // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
       {
-        registerBroadcastListenerLegacy(activity, component)
+        registerBroadcastListenerLegacy(activity, fragment)
       }
       else
       {
-        registerBroadcastListener(activity, component)
+        registerBroadcastListener(activity, fragment)
       }
     }
     else if (event == Lifecycle.Event.ON_DESTROY)
     {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
       {
-        unregisterBroadcastListener(activity, component)
+        unregisterBroadcastListener(activity, fragment)
       }
     }
   }
@@ -92,10 +93,10 @@ abstract class SweetConnectivityListener(val context: Context)
   protected fun getConnectivityManager(): ConnectivityManager =
       context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-  private fun registerBroadcastListenerLegacy(activity: FragmentActivity?, component: Any?)
+  private fun registerBroadcastListenerLegacy(activity: FragmentActivity?, fragment: Fragment?)
   {
     // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
-    if (component == null && activity?.parent == null)
+    if (fragment == null && activity?.parent == null)
     {
       val broadcastListener = object : SweetBroadcastListener
       {
@@ -155,10 +156,10 @@ abstract class SweetConnectivityListener(val context: Context)
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  private fun unregisterBroadcastListener(activity: FragmentActivity?, component: Any?)
+  private fun unregisterBroadcastListener(activity: FragmentActivity?, fragment: Fragment?)
   {
     // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
-    if (component == null && activity?.parent == null)
+    if (fragment == null && activity?.parent == null)
     {
       activitiesCount--
 

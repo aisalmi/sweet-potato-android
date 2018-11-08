@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
-import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.fragment.app.DummySweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
 import timber.log.Timber
@@ -18,7 +17,7 @@ import kotlin.reflect.full.createInstance
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetActivityAggregate<ApplicationClass : SweetApplication>(val activity: FragmentActivity, val activityAnnotation: SweetActivityAnnotation)
+abstract class SweetActivityAggregate(val activity: FragmentActivity, val activityAnnotation: SweetActivityAnnotation?)
   : FragmentManager.OnBackStackChangedListener
 {
 
@@ -28,16 +27,17 @@ abstract class SweetActivityAggregate<ApplicationClass : SweetApplication>(val a
     Add, Replace
   }
 
-  protected var fragment: SweetFragment<*>? = null
-
-  private var lastBackstackFragment: SweetFragment<*>? = null
-
-  private var lastBackstackCount: Int = 0
-
   init
   {
     activity.supportFragmentManager.addOnBackStackChangedListener(this)
   }
+
+  var openedFragment: SweetFragment<*>? = null
+    private set
+
+  private var lastBackstackFragment: SweetFragment<*>? = null
+
+  private var lastBackstackCount: Int = 0
 
   override fun onBackStackChanged()
   {
@@ -47,13 +47,13 @@ abstract class SweetActivityAggregate<ApplicationClass : SweetApplication>(val a
     // Fragment just restored from backstack
     if (newCount < lastBackstackCount)
     {
-      fragment = lastBackstackFragment
+      openedFragment = lastBackstackFragment
     }
 
     // Save the new backstack count
     lastBackstackCount = newCount
 
-    // Save the new (last) backstack fragment
+    // Save the new (last) backstack openedFragment
     if (newCount > 1)
     {
       val tag = fragmentManager.getBackStackEntryAt(newCount - 2).name
@@ -65,12 +65,9 @@ abstract class SweetActivityAggregate<ApplicationClass : SweetApplication>(val a
     }
   }
 
-  fun getApplication(): ApplicationClass? =
-      activity.application as? ApplicationClass
-
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>)
   {
-    addOrReplaceFragment(fragmentClass, activityAnnotation.fragmentPlaceholderId, activityAnnotation.addFragmentToBackStack, activityAnnotation.fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
+    addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
   }
 
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?)
@@ -78,35 +75,35 @@ abstract class SweetActivityAggregate<ApplicationClass : SweetApplication>(val a
     addOrReplaceFragment(fragmentClass, fragmentContainerIdentifer, addFragmentToBackStack, fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
   }
 
-  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, savedState: Fragment.SavedState, arguments: Bundle?)
+  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, savedState: Fragment.SavedState?, arguments: Bundle?)
   {
-    addOrReplaceFragment(fragmentClass, activityAnnotation.fragmentPlaceholderId, activityAnnotation.addFragmentToBackStack, activityAnnotation.fragmentBackStackName, savedState, arguments, FragmentTransactionType.Replace)
+    addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, savedState, arguments, FragmentTransactionType.Replace)
   }
 
   fun addOrReplaceFragment(fragmentClass: KClass<out SweetFragment<*>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?, savedState: Fragment.SavedState?, arguments: Bundle?, fragmentTransactionType: FragmentTransactionType)
   {
     try
     {
-      fragment = fragmentClass.createInstance()
-      fragment?.arguments = arguments
+      openedFragment = fragmentClass.createInstance()
+      openedFragment?.arguments = arguments
 
       // We (re)set its initial state if necessary
       if (savedState != null)
       {
-        fragment?.setInitialSavedState(savedState)
+        openedFragment?.setInitialSavedState(savedState)
       }
 
       val fragmentTransaction = activity.supportFragmentManager.beginTransaction()
 
       if (fragmentTransactionType == FragmentTransactionType.Replace)
       {
-        fragment?.let {
+        openedFragment?.let {
           fragmentTransaction.replace(fragmentContainerIdentifer, it, if (addFragmentToBackStack == true) fragmentBackStackName else null)
         }
       }
       else
       {
-        fragment?.let {
+        openedFragment?.let {
           fragmentTransaction.add(fragmentContainerIdentifer, it, if (addFragmentToBackStack == true) fragmentBackStackName else null)
         }
       }
@@ -121,30 +118,31 @@ abstract class SweetActivityAggregate<ApplicationClass : SweetApplication>(val a
     }
     catch (exception: Exception)
     {
-      Timber.e(exception, "Unable to instanciate the fragment '${fragmentClass.simpleName}'")
+      Timber.e(exception, "Unable to instanciate the openedFragment '${fragmentClass.simpleName}'")
     }
 
   }
 
-  fun getOpenedFragment(): SweetFragment<*>? =
-      fragment
-
   fun onCreate()
   {
-    activity.setContentView(activityAnnotation.contentViewId)
+    activityAnnotation?.let {
+      activity.setContentView(activityAnnotation.contentViewId)
 
-    fragment = activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*>
+      openedFragment = activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*>
 
-    fragment?.let {
-      openParameterFragment()
+      openedFragment?.let {
+        openParameterFragment()
+      }
     }
   }
 
   private fun openParameterFragment()
   {
-    if (activityAnnotation.fragmentClass != DummySweetFragment::class.java && activityAnnotation.fragmentPlaceholderId != -1)
-    {
-      replaceFragment(activityAnnotation.fragmentClass)
+    activityAnnotation?.let {
+      if (activityAnnotation.fragmentClass != DummySweetFragment::class.java && activityAnnotation.fragmentPlaceholderId != -1)
+      {
+        replaceFragment(activityAnnotation.fragmentClass)
+      }
     }
   }
 

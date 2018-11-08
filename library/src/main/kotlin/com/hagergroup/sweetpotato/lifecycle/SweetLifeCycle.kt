@@ -8,7 +8,7 @@ interface SweetLifeCycle
 {
 
   @Throws(ViewModelUnavailableException::class)
-  fun onRetrieveViewModel()
+  suspend fun onRetrieveViewModel()
 
   fun onBindViewModel()
 

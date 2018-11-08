@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
-import com.hagergroup.sweetpotato.annotation.LoadingAndErrorAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
@@ -22,10 +22,10 @@ import kotlin.reflect.full.findAnnotation
  * @since 2018.11.07
  */
 abstract class SweetLoadingAndErrorInterceptor
-  : SweetActivityController.SweetInterceptor
+  : SweetActivityController.Interceptor
 {
 
-  interface ViewModelUnavailableReporter<FragmentAggregateClass : SweetFragmentAggregate<*>>
+  interface ViewModelUnavailableReporter<FragmentAggregateClass : SweetFragmentAggregate>
   {
 
     fun reportViewModelUnavailableException(fragment: Sweetable<FragmentAggregateClass>, viewModelUnavailableException: ViewModelUnavailableException)
@@ -34,7 +34,7 @@ abstract class SweetLoadingAndErrorInterceptor
   interface ErrorAndRetryManagerProvider
   {
 
-    fun getErrorAndRetryManager(view: View?): ErrorAndRetryManager
+    fun getErrorAndRetryManager(view: View): ErrorAndRetryManager
 
     fun getLoadingAndRetryView(view: View): View?
 
@@ -44,7 +44,7 @@ abstract class SweetLoadingAndErrorInterceptor
 
     fun getTextView(view: View): TextView?
 
-    fun getErrorAndRetryView(view: View?): View?
+    fun getErrorAndRetryView(view: View): View?
 
     fun getErrorText(context: Context?): String
 
@@ -55,9 +55,9 @@ abstract class SweetLoadingAndErrorInterceptor
   interface LoadingErrorAndRetryAggregateProvider
   {
 
-    val loadingErrorAndRetryAggregate: LoadingErrorAndRetryAggregate
+    fun getLoadingErrorAndRetryAggregate(): LoadingErrorAndRetryAggregate
 
-    val viewModelUnavailableExceptionKeeper: ViewModelUnavailableExceptionKeeper
+    fun getViewModelUnavailableExceptionKeeper(): ViewModelUnavailableExceptionKeeper
 
   }
 
@@ -366,10 +366,10 @@ abstract class SweetLoadingAndErrorInterceptor
 
   protected abstract fun getErrorAndRetryAttributesProvider(): ErrorAndRetryManagerProvider
 
-  override fun onLifeCycleEvent(activity: FragmentActivity?, component: Any?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     activity?.let {
-      val actualComponent = component ?: activity
+      val actualComponent = fragment ?: activity
 
       if (actualComponent is Sweetable<*>)
       {
@@ -377,12 +377,12 @@ abstract class SweetLoadingAndErrorInterceptor
         val sweetable = actualComponent as Sweetable<LoadingErrorAndRetryAggregateProvider>
 
         // We handle the loading, error and retry feature, but not with the DisableLoadingAndErrorInterceptor-annotated Fragments
-        val loadingAndErrorAnnotation = sweetable::class.findAnnotation<LoadingAndErrorAnnotation>()
+        val loadingAndErrorAnnotation = sweetable::class.findAnnotation<SweetLoadingAndErrorAnnotation>()
 
         if (loadingAndErrorAnnotation?.enabled == true && (event == Lifecycle.Event.ON_CREATE || event == Lifecycle.Event.ON_START || event == Lifecycle.Event.ON_PAUSE))
         {
-          val aggregate = sweetable.getAggregate()?.loadingErrorAndRetryAggregate
-          val businessObjectsUnavailableExceptionKeeper = sweetable.getAggregate()?.viewModelUnavailableExceptionKeeper
+          val aggregate = sweetable.getAggregate()?.getLoadingErrorAndRetryAggregate()
+          val businessObjectsUnavailableExceptionKeeper = sweetable.getAggregate()?.getViewModelUnavailableExceptionKeeper()
 
           if (event == Lifecycle.Event.ON_CREATE)
           {
@@ -390,7 +390,7 @@ abstract class SweetLoadingAndErrorInterceptor
           }
           else if (event == Lifecycle.Event.ON_START)
           {
-            val view = (component as? Fragment)?.view ?: activity.findViewById(android.R.id.content)
+            val view = fragment?.view ?: activity.findViewById(android.R.id.content)
 
             aggregate?.onStart(errorAndRetryAttributesProvider, view)
           }
