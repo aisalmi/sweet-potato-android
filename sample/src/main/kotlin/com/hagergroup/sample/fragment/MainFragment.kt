@@ -14,15 +14,16 @@ class MainFragment
 {
 
   @Throws(ViewModelUnavailableException::class)
-  override suspend fun onRetrieveViewModel()
+  override fun onRetrieveViewModel()
   {
+    //TODO
     super.onRetrieveViewModel()
   }
 
   override fun onBindViewModel()
   {
-    super.onBindViewModel()
     //TODO
+    super.onBindViewModel()
   }
 
 }

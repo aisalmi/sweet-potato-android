@@ -26,7 +26,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
 
     private const val VIEW_MODEL_LOADED_ACTION = "ViewModelLoadedAction"
 
-    private val initialized = HashMap<String, Date>()
+    private val initialized = mutableMapOf<String, Date>()
 
     private var onRetrieveViewModelCustomStarted = false
 
@@ -73,7 +73,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
   }
 
   @Throws(ViewModelUnavailableException::class)
-  final override suspend fun onRetrieveViewModel()
+  final override fun onRetrieveViewModel()
   {
     // We check whether another activity instance is already running the business objects retrieval
     if (SweetSplashscreenActivity.onRetrieveViewModelCustomStarted == false)

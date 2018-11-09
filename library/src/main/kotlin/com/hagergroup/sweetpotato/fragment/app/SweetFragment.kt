@@ -143,6 +143,10 @@ abstract class SweetFragment<AggregateClass : Any>
   override fun shouldKeepOn(): Boolean =
       sweetizer?.shouldKeepOn() ?: false
 
+  final override fun onRetrieveDisplayObjects()
+  {
+  }
+
   fun refreshViewModelAndBind()
   {
     refreshViewModelAndBind(null)

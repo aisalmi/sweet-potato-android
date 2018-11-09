@@ -11,7 +11,7 @@ internal class DummySweetFragment
   : SweetFragment<Void>()
 {
 
-  override suspend fun onRetrieveViewModel()
+  override fun onRetrieveViewModel()
   {
   }
 

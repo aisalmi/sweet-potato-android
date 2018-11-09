@@ -7,8 +7,10 @@ package com.hagergroup.sweetpotato.lifecycle
 interface SweetLifeCycle
 {
 
+  fun onRetrieveDisplayObjects()
+
   @Throws(ViewModelUnavailableException::class)
-  suspend fun onRetrieveViewModel()
+  fun onRetrieveViewModel()
 
   fun onBindViewModel()
 

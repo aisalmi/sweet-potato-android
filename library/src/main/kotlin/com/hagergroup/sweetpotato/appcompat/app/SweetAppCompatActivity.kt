@@ -95,6 +95,10 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     sweetizer.registerBroadcastListeners(broadcastListeners)
   }
 
+  override fun onRetrieveDisplayObjects()
+  {
+  }
+
   override fun isRefreshingViewModelAndBinding(): Boolean =
       sweetizer.isRefreshingViewModelAndBinding()
 

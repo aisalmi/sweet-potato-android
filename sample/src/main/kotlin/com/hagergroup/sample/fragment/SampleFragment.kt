@@ -36,7 +36,7 @@ abstract class SampleFragment
 
   @CallSuper
   @Throws(ViewModelUnavailableException::class)
-  override suspend fun onRetrieveViewModel()
+  override fun onRetrieveViewModel()
   {
     getAggregate()?.checkException()
   }

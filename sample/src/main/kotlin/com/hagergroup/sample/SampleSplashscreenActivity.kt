@@ -1,6 +1,5 @@
 package com.hagergroup.sample
 
-import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sample.app.SampleActivityAggregate
 import com.hagergroup.sweetpotato.appcompat.app.SweetSplashscreenActivity
@@ -14,10 +13,8 @@ class SampleSplashscreenActivity
   : SweetSplashscreenActivity<SampleActivityAggregate>()
 {
 
-  override fun onCreate(savedInstanceState: Bundle?)
+  override fun onRetrieveDisplayObjects()
   {
-    super.onCreate(savedInstanceState)
-
     setContentView(R.layout.activity_splashscreen)
   }
 
@@ -26,7 +23,7 @@ class SampleSplashscreenActivity
 
   override fun onRetrieveViewModelCustom()
   {
-//    Thread.sleep(5_000)
+    Thread.sleep(5_000)
   }
 
 }

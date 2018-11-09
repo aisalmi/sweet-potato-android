@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sweetpotato.annotation.SweetSendLoadingIntentAnnotation
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -14,6 +15,8 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenersProvider
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import timber.log.Timber
+import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.full.findAnnotation
 
 /**
@@ -41,6 +44,19 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
     private const val ILLEGAL_STATE_EXCEPTION_FRAGMENT_MESSAGE_SUFFIX = "not attached to Activity"
 
+    val SweetThreadPool = ThreadPoolExecutor(0, Int.MAX_VALUE, 60, TimeUnit.SECONDS, SynchronousQueue<Runnable>(), object : ThreadFactory
+    {
+
+      private val threadCount by lazy { AtomicInteger(1) }
+
+      override fun newThread(runnable: Runnable?): Thread
+      {
+        return Thread(runnable).apply {
+          name = "SweetThreadPool #${threadCount.getAndIncrement()}"
+        }
+      }
+    })
+
     fun isFirstCycle(savedInstanceState: Bundle?): Boolean =
         savedInstanceState?.containsKey(StateContainer.ALREADY_STARTED_EXTRA) ?: false
 
@@ -64,9 +80,13 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
   var resumedForTheFirstTime = true
     private set
 
+  private val futures by lazy { mutableListOf<Future<*>>() }
+
   private var refreshingViewModelAndBindingCount = 0
 
   private var beingRedirected = false
+
+  private var stopHandling = false
 
   private var broadcastReceivers: Array<BroadcastReceiver?>? = null
 
@@ -99,7 +119,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     }
 
     broadcastReceivers?.set(index, broadcastReceiver)
-    activity.registerReceiver(broadcastReceiver, broadcastListener.getIntentFilter())
+    LocalBroadcastManager.getInstance(activity).registerReceiver(broadcastReceiver, broadcastListener.getIntentFilter())
   }
 
   private fun enrichBroadcastListeners(count: Int): Int
@@ -175,7 +195,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     broadcastReceivers?.let { broadcastReceiver ->
       broadcastReceiver.indices.reversed().forEach { indice ->
         broadcastReceiver[indice]?.let { currentBroadcastReceiver ->
-          activity.unregisterReceiver(currentBroadcastReceiver)
+          LocalBroadcastManager.getInstance(activity).unregisterReceiver(currentBroadcastReceiver)
         }
       }
 
@@ -256,6 +276,13 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
     // We unregister all the "BroadcastListener" entities
     unregisterBroadcastListeners()
+
+    futures.forEach {
+      if (it.isDone == false)
+      {
+        it.cancel(true)
+      }
+    }
   }
 
   fun onSaveInstanceState(outState: Bundle)
@@ -269,7 +296,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
   }
 
   fun shouldKeepOn(): Boolean =
-      beingRedirected == false
+      stopHandling == false && beingRedirected == false
 
   @Synchronized
   fun shouldDelayRefreshBusinessObjectsAndDisplay(onOver: Runnable?): Boolean
@@ -322,9 +349,26 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     viewModelRetrieved = true
   }
 
+  fun stopHandling()
+  {
+    stopHandling = true
+  }
+
   fun markNotResumedForTheFirstTime()
   {
     resumedForTheFirstTime = false
+  }
+
+  fun execute(runnable: Runnable)
+  {
+    if (isAliveAsWellAsHostingActivity() == false)
+    {
+      // The hosting entity or Activity can be considered as finished, hence we do nothing
+      return
+    }
+
+    val future = StateContainer.SweetThreadPool.submit(runnable)
+    futures.add(future)
   }
 
 }

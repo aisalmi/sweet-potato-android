@@ -37,10 +37,6 @@ dependencies
   api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
   api("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
 
-  //Coroutines
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0")
-
   //Androidx
   api("androidx.appcompat:appcompat:1.0.0")
   api("androidx.preference:preference:1.0.0")

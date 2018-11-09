@@ -230,8 +230,7 @@ class SampleApplication
           // This is a 40X exception
           if (fragment is Sweetened<*>)
           {
-            val fragment = fragment as? Sweetened<SampleFragmentAggregate>
-            fragment?.getAggregate()?.getLoadingErrorAndRetryAggregate()?.reportViewModelUnavailableException(exception)
+            (fragment as? Sweetened<SampleFragmentAggregate>)?.getAggregate()?.getLoadingErrorAndRetryAggregate()?.reportViewModelUnavailableException(exception)
 
             return true
           }

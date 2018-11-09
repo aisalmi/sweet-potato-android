@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import timber.log.Timber
 
 /**
@@ -27,11 +27,12 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
 
   private val stateContainer by lazy { StateContainer<AggregateClass, ComponentClass>(activity, component) }
 
-  private val coroutineJob by lazy { Job() }
+  override fun onRetrieveDisplayObjects()
+  {
+    sweetable.onRetrieveDisplayObjects()
+  }
 
-  private val coroutineScope by lazy { CoroutineScope(Dispatchers.Main + coroutineJob) }
-
-  override suspend fun onRetrieveViewModel()
+  override fun onRetrieveViewModel()
   {
     sweetable.onRetrieveViewModel()
   }
@@ -83,12 +84,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
 
     stateContainer.onRefreshingViewModelAndBindingStart()
 
-    if (onRetrieveViewModelInternal() == false)
-    {
-      return
-    }
+    stateContainer.execute(Runnable {
+      if (onRetrieveViewModelInternal() == false)
+      {
+        return@Runnable
+      }
 
-    onBindViewModelInternal(onOver)
+      onBindViewModelInternal(onOver)
+    })
   }
 
   override fun isRefreshingViewModelAndBinding(): Boolean =
@@ -132,6 +135,17 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
     stateContainer.firstLifeCycle = if (StateContainer.isFirstCycle(savedInstanceState) == true) false else true
 
     stateContainer.registerBroadcastListeners()
+
+    try
+    {
+      onRetrieveDisplayObjects()
+    }
+    catch (exception: Exception)
+    {
+      stateContainer.stopHandling()
+      sweetable.onException(exception, true)
+      return
+    }
   }
 
   fun onNewIntent()
@@ -200,7 +214,6 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
   {
     Timber.d("Sweetizer::onDestroy")
 
-    coroutineJob.cancel()
     stateContainer.onDestroy()
 
     if (shouldKeepOn() == false)
@@ -214,11 +227,20 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
 
   private fun onRetrieveViewModelInternal(): Boolean
   {
-    return runBlocking {
-      try
-      {
-        onBeforeRefreshViewModelAndBind()
+    return try
+    {
+      onBeforeRefreshViewModelAndBind()
 
+      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+      {
+        // If the entity is no more alive, we give up the process
+        false
+      }
+      else
+      {
+        onRetrieveViewModel()
+
+        // We notify the entity that the business objects have actually been loaded
         if (stateContainer.isAliveAsWellAsHostingActivity() == false)
         {
           // If the entity is no more alive, we give up the process
@@ -226,41 +248,28 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
         }
         else
         {
-          coroutineScope.launch {
-            onRetrieveViewModel()
-          }
-
-          // We notify the entity that the business objects have actually been loaded
-          if (stateContainer.isAliveAsWellAsHostingActivity() == false)
-          {
-            // If the entity is no more alive, we give up the process
-            false
-          }
-          else
-          {
-            stateContainer.viewModelRetrieved()
-            true
-          }
+          stateContainer.viewModelRetrieved()
+          true
         }
       }
-      catch (throwable: Throwable)
+    }
+    catch (throwable: Throwable)
+    {
+      stateContainer.onRefreshingViewModelAndBindingStop(this@Sweetizer)
+
+      // We check whether the issue does not come from a non-alive entity
+      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
       {
-        stateContainer.onRefreshingViewModelAndBindingStop(this@Sweetizer)
+        // In that case, we just ignore the exception: it is very likely that the entity or the hosting Activity have turned as non-alive
+        // during the "onRetrieveBusinessObjects()" method!
+        false
+      }
+      else
+      {
+        // Otherwise, we report the exception
+        onInternalViewModelAvailableException(throwable)
 
-        // We check whether the issue does not come from a non-alive entity
-        if (stateContainer.isAliveAsWellAsHostingActivity() == false)
-        {
-          // In that case, we just ignore the exception: it is very likely that the entity or the hosting Activity have turned as non-alive
-          // during the "onRetrieveBusinessObjects()" method!
-          false
-        }
-        else
-        {
-          // Otherwise, we report the exception
-          onInternalViewModelAvailableException(throwable)
-
-          false
-        }
+        false
       }
     }
   }

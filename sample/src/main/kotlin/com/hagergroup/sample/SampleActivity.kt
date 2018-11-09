@@ -68,7 +68,7 @@ abstract class SampleActivity
   }
 
   @Throws(ViewModelUnavailableException::class)
-  override suspend fun onRetrieveViewModel()
+  override fun onRetrieveViewModel()
   {
   }
 
