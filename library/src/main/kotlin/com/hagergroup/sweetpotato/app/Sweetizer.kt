@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import kotlinx.coroutines.Runnable
 import timber.log.Timber
 
 /**
