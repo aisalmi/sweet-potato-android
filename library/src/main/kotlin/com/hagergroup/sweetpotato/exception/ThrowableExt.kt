@@ -18,7 +18,7 @@ fun Throwable?.searchForCause(vararg exceptionClass: KClass<*>): Throwable?
     exceptionClass.forEach {
       val causeClass = cause?.javaClass
 
-      if (causeClass == it)
+      if (causeClass == it.java)
       {
         return cause
       }

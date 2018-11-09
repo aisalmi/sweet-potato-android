@@ -89,7 +89,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
         return@Runnable
       }
 
-      onBindModelInternal(onOver)
+      activity.runOnUiThread(Runnable {
+        if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+        {
+          return@Runnable
+        }
+
+        onBindModelInternal(onOver)
+      })
     })
   }
 

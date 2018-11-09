@@ -12,6 +12,7 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.toast
+import java.net.UnknownHostException
 
 /**
  * @author Ludovic Roland
@@ -29,6 +30,10 @@ class MainFragment
     const val MY_ACTION = "myAction"
 
   }
+
+  private var throwError = false
+
+  private var throwInternetError = false
 
   override fun getBroadcastListener(): SweetBroadcastListener
   {
@@ -57,6 +62,20 @@ class MainFragment
     super.onRetrieveModel()
 
     Thread.sleep(1_000)
+
+    if (throwError == true)
+    {
+      throwError = false
+
+      throw ModelUnavailableException("Cannot retrieve the model")
+    }
+
+    if (throwInternetError == true)
+    {
+      throwInternetError = false
+
+      throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
+    }
   }
 
   override fun onBindModel()
@@ -64,6 +83,10 @@ class MainFragment
     super.onBindModel()
 
     click.setOnClickListener(this)
+    refreshLoading.setOnClickListener(this)
+    refreshNoLoading.setOnClickListener(this)
+    refreshError.setOnClickListener(this)
+    refreshInternetError.setOnClickListener(this)
   }
 
   override fun onClick(view: View?)
@@ -73,6 +96,33 @@ class MainFragment
       context?.let {
         LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(MainFragment.MY_ACTION))
       }
+    }
+    else if (view == refreshLoading)
+    {
+      refreshModelAndBind(Runnable {
+        context?.toast("Finish !")
+      })
+    }
+    else if (view == refreshNoLoading)
+    {
+      getAggregate()?.getLoadingErrorAndRetryAggregate()?.doNotDisplayLoadingViewNextTime()
+      refreshModelAndBind(Runnable {
+        context?.toast("Finish !")
+      })
+    }
+    else if (view == refreshError)
+    {
+      throwError = true
+      refreshModelAndBind(Runnable {
+        context?.toast("Finish !")
+      })
+    }
+    else if (view == refreshInternetError)
+    {
+      throwInternetError = true
+      refreshModelAndBind(Runnable {
+        context?.toast("Finish !")
+      })
     }
   }
 
