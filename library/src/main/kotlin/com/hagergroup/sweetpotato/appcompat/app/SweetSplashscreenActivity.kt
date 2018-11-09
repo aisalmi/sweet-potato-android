@@ -3,7 +3,7 @@ package com.hagergroup.sweetpotato.appcompat.app
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -34,10 +34,10 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
 
     private var onRetrieveModelCustomOverInvoked = false
 
-    fun isInitialized(activityClass: KClass<out FragmentActivity>): Date? =
+    fun isInitialized(activityClass: KClass<out AppCompatActivity>): Date? =
         SweetSplashscreenActivity.initialized[activityClass.java.name]
 
-    fun markAsInitialized(activityClass: KClass<out FragmentActivity>, isInitialized: Boolean)
+    fun markAsInitialized(activityClass: KClass<out AppCompatActivity>, isInitialized: Boolean)
     {
       if (isInitialized == false)
       {
@@ -149,7 +149,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
     }
   }
 
-  protected abstract fun getNextActivity(): KClass<out FragmentActivity>
+  protected abstract fun getNextActivity(): KClass<out AppCompatActivity>
 
   @Throws(ModelUnavailableException::class)
   protected abstract fun onRetrieveModelCustom()

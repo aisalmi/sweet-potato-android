@@ -2,8 +2,8 @@ package com.hagergroup.sweetpotato.app
 
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
@@ -19,14 +19,14 @@ object SweetActivityController
   interface Redirector
   {
 
-    fun getRedirection(activity: FragmentActivity): Intent?
+    fun getRedirection(activity: AppCompatActivity): Intent?
 
   }
 
   interface Interceptor
   {
 
-    fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
+    fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
 
   }
 
@@ -43,7 +43,7 @@ object SweetActivityController
   var exceptionHandler: SweetExceptionHandler? = null
     private set
 
-  fun extractCallingIntent(activity: FragmentActivity): Intent? =
+  fun extractCallingIntent(activity: AppCompatActivity): Intent? =
       activity.intent.getParcelableExtra(SweetActivityController.CALLING_INTENT_EXTRA)
 
   fun registerRedirector(redirector: SweetActivityController.Redirector)
@@ -63,7 +63,7 @@ object SweetActivityController
   }
 
   @Synchronized
-  fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
+  fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     interceptor?.onLifeCycleEvent(activity, fragment, event)
   }
@@ -77,7 +77,7 @@ object SweetActivityController
       return false
     }
 
-    val activity = if (context is FragmentActivity)
+    val activity = if (context is AppCompatActivity)
     {
       context
     }
@@ -131,7 +131,7 @@ object SweetActivityController
 
   }
 
-  fun needsRedirection(activity: FragmentActivity): Boolean
+  fun needsRedirection(activity: AppCompatActivity): Boolean
   {
     if (redirector == null)
     {

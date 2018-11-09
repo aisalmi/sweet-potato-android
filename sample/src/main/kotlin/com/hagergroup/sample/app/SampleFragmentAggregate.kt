@@ -1,8 +1,8 @@
 package com.hagergroup.sample.app
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.app.SweetActivityInterceptor
 import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
@@ -35,7 +35,7 @@ class SampleFragmentAggregate(fragment: Fragment, fragmentAnnotation: SweetFragm
     fragmentModelUnavailableExceptionKeeper.exception = null
   }
 
-  fun showModelUnavailableException(activity: FragmentActivity, sweetableFragment: Sweetable<*>, exception: ModelUnavailableException)
+  fun showModelUnavailableException(activity: AppCompatActivity, sweetableFragment: Sweetable<*>, exception: ModelUnavailableException)
   {
     rememberModelUnavailableException(exception)
     fragmentLoadingErrorAndRetryAggregate.showModelUnavailableException(activity, sweetableFragment, exception)

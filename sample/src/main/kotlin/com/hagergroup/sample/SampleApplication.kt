@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sample.app.SampleActivityAggregate
 import com.hagergroup.sample.app.SampleConnectivityListener
@@ -59,7 +59,7 @@ class SampleApplication
     return object : SweetActivityController.Redirector
     {
 
-      override fun getRedirection(activity: FragmentActivity): Intent?
+      override fun getRedirection(activity: AppCompatActivity): Intent?
       {
         return if (SweetSplashscreenActivity.isInitialized(SampleSplashscreenActivity::class) == null && activity is SampleSplashscreenActivity == false)
         {
@@ -117,7 +117,7 @@ class SampleApplication
 
     return object : SweetActivityController.Interceptor
     {
-      override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
+      override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
       {
         applicationInterceptor.onLifeCycleEvent(activity, fragment, event)
         loadingAndErrorInterceptor.onLifeCycleEvent(activity, fragment, event)
@@ -134,13 +134,13 @@ class SampleApplication
     return object : ExceptionHandlers.DefaultExceptionHandler(getI18N(), SweetIssueAnalyzer.DefaultIssueAnalyzer(applicationContext))
     {
 
-      override fun onActivityExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
+      override fun onActivityExceptionFallback(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean
       {
         reportIssueIfNecessary(true, throwable)
         return super.onActivityExceptionFallback(activity, fragment, throwable)
       }
 
-      override fun onModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
+      override fun onModelUnavailableExceptionFallback(activity: AppCompatActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
       {
         (fragment as? Sweetable<SampleFragmentAggregate>)?.let {
           if (activity is SampleActivity)
@@ -171,7 +171,7 @@ class SampleApplication
         return super.onModelUnavailableExceptionFallback(activity, fragment, exception)
       }
 
-      override fun handleConnectivityProblemInCause(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
+      override fun handleConnectivityProblemInCause(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
       {
         val exceptionCause = throwable.searchForCause(ModelUnavailableException::class)
 
@@ -198,7 +198,7 @@ class SampleApplication
         return super.onExceptionFallback(isRecoverable, throwable)
       }
 
-      override fun handleOtherCauses(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
+      override fun handleOtherCauses(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean
       {
         if (checkDetachedFragmentProblem(fragment, throwable))
         {

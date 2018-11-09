@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.annotation.RestrictTo
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sweetpotato.annotation.SweetSendLoadingIntentAnnotation
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * @since 2018.11.06
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(private val activity: FragmentActivity, private val component: ComponentClass)
+internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(private val activity: AppCompatActivity, private val component: ComponentClass)
 {
 
   private class RefreshModelAndBind(val onOver: Runnable?)

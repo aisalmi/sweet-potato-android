@@ -2,9 +2,10 @@ package com.hagergroup.sample.app
 
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sample.R
+import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
@@ -15,8 +16,8 @@ import kotlinx.android.synthetic.main.loading_error_and_retry.view.*
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-class SampleActivityAggregate(activity: FragmentActivity, activityAnnotation: SweetActivityAnnotation?)
-  : SweetActivityAggregate(activity, activityAnnotation)
+class SampleActivityAggregate(activity: AppCompatActivity, activityAnnotation: SweetActivityAnnotation?, actionBarAnnotation: SweetActionBarAnnotation?)
+  : SweetActivityAggregate(activity, activityAnnotation, actionBarAnnotation)
 {
 
   class SampleErrorAndRetryManager(view: View)
@@ -29,7 +30,7 @@ class SampleActivityAggregate(activity: FragmentActivity, activityAnnotation: Sw
 
     private val errorAndRetry: View = view.errorAndRetry
 
-    override fun showError(activity: FragmentActivity, throwable: Throwable, fromGuiThread: Boolean, onCompletion: Runnable)
+    override fun showError(activity: AppCompatActivity, throwable: Throwable, fromGuiThread: Boolean, onCompletion: Runnable)
     {
       if (throwable.isAConnectivityProblem() == true)
       {

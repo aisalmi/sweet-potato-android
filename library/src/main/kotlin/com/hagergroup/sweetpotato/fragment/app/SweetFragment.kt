@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
@@ -25,7 +26,7 @@ abstract class SweetFragment<AggregateClass : Any>
   {
     super.onAttach(context)
 
-    activity?.let {
+    (activity as? AppCompatActivity)?.let {
       sweetizer = Sweetizer(it, this, this, this)
     }
   }

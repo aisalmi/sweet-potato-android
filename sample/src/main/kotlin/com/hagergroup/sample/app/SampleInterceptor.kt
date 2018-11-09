@@ -1,7 +1,8 @@
 package com.hagergroup.sample.app
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.app.SweetActivityInterceptor
@@ -14,8 +15,8 @@ class SampleInterceptor
   : SweetActivityInterceptor<SampleActivityAggregate, SampleFragmentAggregate>()
 {
 
-  override fun instantiateActivityAggregate(activity: FragmentActivity, activityAnnotation: SweetActivityAnnotation?): SampleActivityAggregate =
-      SampleActivityAggregate(activity, activityAnnotation)
+  override fun instantiateActivityAggregate(activity: AppCompatActivity, activityAnnotation: SweetActivityAnnotation?, actionBarAnnotation: SweetActionBarAnnotation?): SampleActivityAggregate =
+      SampleActivityAggregate(activity, activityAnnotation, actionBarAnnotation)
 
   override fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: SweetFragmentAnnotation?): SampleFragmentAggregate =
       SampleFragmentAggregate(fragment, fragmentAnnotation)

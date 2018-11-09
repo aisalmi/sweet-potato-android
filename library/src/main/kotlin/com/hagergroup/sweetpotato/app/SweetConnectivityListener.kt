@@ -9,8 +9,8 @@ import android.net.Network
 import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -58,7 +58,7 @@ abstract class SweetConnectivityListener(val context: Context)
     }
   }
 
-  override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     if (event == Lifecycle.Event.ON_CREATE)
     {
@@ -93,7 +93,7 @@ abstract class SweetConnectivityListener(val context: Context)
   protected fun getConnectivityManager(): ConnectivityManager =
       context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-  private fun registerBroadcastListenerLegacy(activity: FragmentActivity?, fragment: Fragment?)
+  private fun registerBroadcastListenerLegacy(activity: AppCompatActivity?, fragment: Fragment?)
   {
     // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
     if (fragment == null && activity?.parent == null)
@@ -117,9 +117,8 @@ abstract class SweetConnectivityListener(val context: Context)
     }
   }
 
-
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  private fun registerBroadcastListener(activity: FragmentActivity?, component: Any?)
+  private fun registerBroadcastListener(activity: AppCompatActivity?, component: Any?)
   {
     // We listen to the network connection potential issues: we do not want child Activities to also register for the connectivity change events
     if (component == null && activity?.parent == null)
@@ -156,7 +155,7 @@ abstract class SweetConnectivityListener(val context: Context)
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-  private fun unregisterBroadcastListener(activity: FragmentActivity?, fragment: Fragment?)
+  private fun unregisterBroadcastListener(activity: AppCompatActivity?, fragment: Fragment?)
   {
     // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
     if (fragment == null && activity?.parent == null)

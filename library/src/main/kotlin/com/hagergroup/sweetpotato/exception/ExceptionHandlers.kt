@@ -3,8 +3,8 @@ package com.hagergroup.sweetpotato.exception
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
@@ -29,7 +29,7 @@ class ExceptionHandlers private constructor()
       DialogRetry, Dialog, Toast
     }
 
-    override fun onModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
+    override fun onModelUnavailableException(activity: AppCompatActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
     {
       return if (handleCommonCauses(activity, fragment, exception, ConnectivityUIExperience.DialogRetry) == true)
       {
@@ -45,7 +45,7 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    override fun onActivityException(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
+    override fun onActivityException(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean
     {
       return if (handleCommonCauses(activity, fragment, throwable, ConnectivityUIExperience.Toast) == true)
       {
@@ -90,7 +90,7 @@ class ExceptionHandlers private constructor()
 
     }
 
-    protected open fun onModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
+    protected open fun onModelUnavailableExceptionFallback(activity: AppCompatActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
     {
       showDialog(activity, i18n.dialogBoxErrorTitle, i18n.businessObjectAvailabilityProblemHint, activity?.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
@@ -108,7 +108,7 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    protected open fun onActivityExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
+    protected open fun onActivityExceptionFallback(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean
     {
       showDialog(activity, i18n.dialogBoxErrorTitle, i18n.otherProblemHint, activity?.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
@@ -132,7 +132,7 @@ class ExceptionHandlers private constructor()
       return false
     }
 
-    protected open fun handleCommonCauses(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
+    protected open fun handleCommonCauses(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
     {
       return if (throwable.isAConnectivityProblem() == true && handleConnectivityProblemInCause(activity, fragment, throwable, connectivityUIExperience) == true)
       {
@@ -156,7 +156,7 @@ class ExceptionHandlers private constructor()
       }
     }
 
-    protected open fun showDialog(activity: FragmentActivity?, dialogTitle: CharSequence, dialogMessage: CharSequence, positiveButton: CharSequence,
+    protected open fun showDialog(activity: AppCompatActivity?, dialogTitle: CharSequence, dialogMessage: CharSequence, positiveButton: CharSequence,
                                   positiveClickListener: DialogInterface.OnClickListener, negativeButton: CharSequence?, negativeClickListener: DialogInterface.OnClickListener?,
                                   onCancelListener: DialogInterface.OnCancelListener?)
     {
@@ -192,10 +192,10 @@ class ExceptionHandlers private constructor()
       })
     }
 
-    protected open fun handleOtherCauses(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean =
+    protected open fun handleOtherCauses(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean =
         false
 
-    protected open fun handleConnectivityProblemInCause(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
+    protected open fun handleConnectivityProblemInCause(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
     {
       if (activity == null)
       {
@@ -253,7 +253,7 @@ class ExceptionHandlers private constructor()
       return false
     }
 
-    protected open fun onShowDialog(activity: FragmentActivity, dialogTitle: CharSequence, dialogMessage: CharSequence, positiveButton: CharSequence, positiveClickListener: DialogInterface.OnClickListener, negativeButton: CharSequence?,
+    protected open fun onShowDialog(activity: AppCompatActivity, dialogTitle: CharSequence, dialogMessage: CharSequence, positiveButton: CharSequence, positiveClickListener: DialogInterface.OnClickListener, negativeButton: CharSequence?,
                                     negativeClickListener: DialogInterface.OnClickListener?, onCancelListener: DialogInterface.OnCancelListener?)
     {
       val builder = AlertDialog.Builder(activity).setTitle(dialogTitle).setIcon(android.R.drawable.ic_dialog_alert).setMessage(dialogMessage).setPositiveButton(positiveButton, positiveClickListener)

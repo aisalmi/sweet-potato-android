@@ -3,7 +3,7 @@ package com.hagergroup.sweetpotato.content
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.annotation.RestrictTo
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * @author Ludovic Roland
@@ -25,14 +25,14 @@ internal abstract class ComponentBroadcastListener
 
   }
 
-  var activity: FragmentActivity
+  var activity: AppCompatActivity
     private set
 
   private val component: Any
 
-  constructor(activity: FragmentActivity) : this(activity, activity)
+  constructor(activity: AppCompatActivity) : this(activity, activity)
 
-  constructor(activity: FragmentActivity, component: Any)
+  constructor(activity: AppCompatActivity, component: Any)
   {
     this.activity = activity
     this.component = component

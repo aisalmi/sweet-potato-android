@@ -6,9 +6,9 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
@@ -65,7 +65,7 @@ abstract class SweetLoadingAndErrorInterceptor
   interface ErrorAndRetryManager
   {
 
-    fun showError(activity: FragmentActivity, throwable: Throwable, fromGuiThread: Boolean, onCompletion: Runnable)
+    fun showError(activity: AppCompatActivity, throwable: Throwable, fromGuiThread: Boolean, onCompletion: Runnable)
 
     fun hide()
 
@@ -239,7 +239,7 @@ abstract class SweetLoadingAndErrorInterceptor
       }
     }
 
-    fun showIssue(activity: FragmentActivity, throwable: Throwable, onCompletion: Runnable?)
+    fun showIssue(activity: AppCompatActivity, throwable: Throwable, onCompletion: Runnable?)
     {
       isHandlingError = true
 
@@ -287,7 +287,7 @@ abstract class SweetLoadingAndErrorInterceptor
 
     private var loadingErrorAndRetryAttributes: LoadingErrorAndRetryAttributes? = null
 
-    fun onCreate(errorAndRetryAttributesProvider: ErrorAndRetryManagerProvider, activity: FragmentActivity, sweetable: Sweetable<*>, issue: ModelUnavailableException?, handleLoading: Boolean)
+    fun onCreate(errorAndRetryAttributesProvider: ErrorAndRetryManagerProvider, activity: AppCompatActivity, sweetable: Sweetable<*>, issue: ModelUnavailableException?, handleLoading: Boolean)
     {
       this.issue.set(issue)
 
@@ -337,19 +337,19 @@ abstract class SweetLoadingAndErrorInterceptor
       displayLoadingViewNextTime = false
     }
 
-    fun showModelUnavailableException(activity: FragmentActivity, sweetable: Sweetable<*>, exception: ModelUnavailableException)
+    fun showModelUnavailableException(activity: AppCompatActivity, sweetable: Sweetable<*>, exception: ModelUnavailableException)
     {
       loadingErrorAndRetryAttributes?.showIssue(activity, exception, Runnable {
         sweetable.refreshModelAndBind(null)
       })
     }
 
-    fun showModelUnavailableException(activity: FragmentActivity, exception: ModelUnavailableException, runnable: Runnable)
+    fun showModelUnavailableException(activity: AppCompatActivity, exception: ModelUnavailableException, runnable: Runnable)
     {
       loadingErrorAndRetryAttributes?.showIssue(activity, exception, runnable)
     }
 
-    fun showException(activity: FragmentActivity, throwable: Throwable, onRetry: Runnable)
+    fun showException(activity: AppCompatActivity, throwable: Throwable, onRetry: Runnable)
     {
       loadingErrorAndRetryAttributes?.showIssue(activity, throwable, onRetry)
     }
@@ -365,7 +365,7 @@ abstract class SweetLoadingAndErrorInterceptor
 
   protected abstract fun getErrorAndRetryAttributesProvider(): ErrorAndRetryManagerProvider
 
-  override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     activity?.let {
       val actualComponent = fragment ?: activity

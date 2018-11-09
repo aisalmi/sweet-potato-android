@@ -1,9 +1,10 @@
 package com.hagergroup.sweetpotato.app
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
+import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
@@ -48,32 +49,33 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
 
   }
 
-  protected abstract fun instantiateActivityAggregate(activity: FragmentActivity, activityAnnotation: SweetActivityAnnotation?): ActivityAggregateClass
+  protected abstract fun instantiateActivityAggregate(activity: AppCompatActivity, activityAnnotation: SweetActivityAnnotation?, actionBarAnnotation: SweetActionBarAnnotation?): ActivityAggregateClass
 
   protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: SweetFragmentAnnotation?): FragmentAggregateClass
 
-  override fun onLifeCycleEvent(activity: FragmentActivity?, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
     if (event == Lifecycle.Event.ON_CREATE)
     {
       if (fragment is Sweetable<*>)
       {
         // It's a Fragment
-        (fragment as Sweetable<FragmentAggregateClass>).let {
-          (it::class.java.getAnnotation(SweetFragmentAnnotation::class.java))?.let { annotation ->
-            it.setAggregate(instantiateFragmentAggregate(fragment, annotation))
-            it.getAggregate()?.onCreate(activity)
-          }
+        (fragment as Sweetable<FragmentAggregateClass>).apply {
+          val sweetFragmentAnnotation = this::class.java.getAnnotation(SweetFragmentAnnotation::class.java)
+
+          this.setAggregate(instantiateFragmentAggregate(fragment, sweetFragmentAnnotation))
+          this.getAggregate()?.onCreate(activity)
         }
       }
       else
       {
         // It's an Activity
-        (activity as? Sweetable<ActivityAggregateClass>)?.let {
-          (it::class.java.getAnnotation(SweetActivityAnnotation::class.java))?.let { annotation ->
-            it.setAggregate(instantiateActivityAggregate(activity, annotation))
-            it.getAggregate()?.onCreate()
-          }
+        (activity as Sweetable<ActivityAggregateClass>).apply {
+          val sweetActivityAnnotation = this::class.java.getAnnotation(SweetActivityAnnotation::class.java)
+          val sweetActionBarAnnotation = this::class.java.getAnnotation(SweetActionBarAnnotation::class.java)
+
+          this.setAggregate(instantiateActivityAggregate(activity, sweetActivityAnnotation, sweetActionBarAnnotation))
+          this.getAggregate()?.onCreate()
         }
       }
     }

@@ -3,7 +3,6 @@ package com.hagergroup.sweetpotato.fragment.app
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import timber.log.Timber
@@ -47,10 +46,10 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, val fragmentAnnota
     }
   }
 
-  fun onCreate(activity: FragmentActivity?)
+  fun onCreate(activity: AppCompatActivity?)
   {
     fragmentAnnotation?.let {
-      (activity as? AppCompatActivity)?.supportActionBar?.let { actionBar ->
+      activity?.supportActionBar?.let { actionBar ->
         val titleIdentifier = fragmentAnnotation.fragmentTitleId
         val subTitleIdentifier = fragmentAnnotation.fragmentSubTitleId
 

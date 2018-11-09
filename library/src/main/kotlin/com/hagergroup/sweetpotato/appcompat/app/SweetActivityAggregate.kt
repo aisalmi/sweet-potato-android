@@ -2,10 +2,11 @@ package com.hagergroup.sweetpotato.appcompat.app
 
 import android.os.Bundle
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.fragment.app.DummySweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
@@ -16,7 +17,7 @@ import kotlin.reflect.KClass
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetActivityAggregate(val activity: FragmentActivity, val activityAnnotation: SweetActivityAnnotation?)
+abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activityAnnotation: SweetActivityAnnotation?, val actionBarAnnotation: SweetActionBarAnnotation?)
   : FragmentManager.OnBackStackChangedListener
 {
 
@@ -132,6 +133,30 @@ abstract class SweetActivityAggregate(val activity: FragmentActivity, val activi
       if (openedFragment == null)
       {
         openParameterFragment()
+      }
+    }
+
+    actionBarAnnotation?.apply {
+      if (this.actionBarBehavior == SweetActionBarAnnotation.ActionBarBehavior.Drawer)
+      {
+        activity.supportActionBar?.apply {
+          setDisplayHomeAsUpEnabled(true)
+          setDisplayShowHomeEnabled(false)
+        }
+      }
+      else if (this.actionBarBehavior == SweetActionBarAnnotation.ActionBarBehavior.Up)
+      {
+        activity.supportActionBar?.apply {
+          setDisplayHomeAsUpEnabled(true)
+          setDisplayShowHomeEnabled(true)
+        }
+      }
+      else
+      {
+        activity.supportActionBar?.apply {
+          setDisplayHomeAsUpEnabled(false)
+          setDisplayShowHomeEnabled(false)
+        }
       }
     }
   }

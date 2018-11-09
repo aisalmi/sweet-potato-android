@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.annotation.RestrictTo
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 /**
@@ -19,7 +19,7 @@ internal abstract class LoadingBroadcastListener
   companion object
   {
 
-    fun broadcastLoading(context: Context, targetActivityClass: Class<out FragmentActivity>, targetComponentClass: Class<*>, isLoading: Boolean, addCategory: Boolean)
+    fun broadcastLoading(context: Context, targetActivityClass: Class<out AppCompatActivity>, targetComponentClass: Class<*>, isLoading: Boolean, addCategory: Boolean)
     {
       val intent = Intent(SweetBroadcastListener.UI_LOAD_ACTION).putExtra(SweetBroadcastListener.UI_LOAD_ACTION_LOADING_EXTRA, isLoading).putExtra(SweetBroadcastListener.ACTION_ACTIVITY_EXTRA, targetActivityClass.name).putExtra(SweetBroadcastListener.ACTION_COMPONENT_EXTRA, targetComponentClass.name)
 
@@ -53,9 +53,9 @@ internal abstract class LoadingBroadcastListener
 
   private var counter = 0
 
-  constructor(activity: FragmentActivity) : this(activity, activity)
+  constructor(activity: AppCompatActivity) : this(activity, activity)
 
-  constructor(activity: FragmentActivity, component: Any) : super(activity, component)
+  constructor(activity: AppCompatActivity, component: Any) : super(activity, component)
 
   override fun getIntentFilter(): IntentFilter =
       getIntentFilter(false)

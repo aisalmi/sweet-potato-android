@@ -2,8 +2,8 @@ package com.hagergroup.sweetpotato.app
 
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import timber.log.Timber
@@ -12,7 +12,7 @@ import timber.log.Timber
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: FragmentActivity,
+class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCompatActivity,
                                                             val sweetable: Sweetable<AggregateClass>,
                                                             val component: ComponentClass,
                                                             val fragment: Fragment?)

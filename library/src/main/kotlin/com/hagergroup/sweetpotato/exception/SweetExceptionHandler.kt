@@ -1,8 +1,8 @@
 package com.hagergroup.sweetpotato.exception
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
@@ -12,9 +12,9 @@ import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 interface SweetExceptionHandler
 {
 
-  fun onModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
+  fun onModelUnavailableException(activity: AppCompatActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
 
-  fun onActivityException(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
+  fun onActivityException(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean
 
   fun onContextException(isRecoverable: Boolean, context: Context?, throwable: Throwable): Boolean
 
