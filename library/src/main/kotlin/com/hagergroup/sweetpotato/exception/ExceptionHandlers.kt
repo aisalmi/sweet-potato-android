@@ -6,8 +6,8 @@ import android.content.DialogInterface
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.hagergroup.sweetpotato.app.SweetApplication
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
 import org.jetbrains.anko.toast
 import timber.log.Timber
 
@@ -29,7 +29,7 @@ class ExceptionHandlers private constructor()
       DialogRetry, Dialog, Toast
     }
 
-    override fun onViewModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
+    override fun onModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
     {
       return if (handleCommonCauses(activity, fragment, exception, ConnectivityUIExperience.DialogRetry) == true)
       {
@@ -41,7 +41,7 @@ class ExceptionHandlers private constructor()
       }
       else
       {
-        return onViewModelUnavailableExceptionFallback(activity, fragment, exception)
+        return onModelUnavailableExceptionFallback(activity, fragment, exception)
       }
     }
 
@@ -90,7 +90,7 @@ class ExceptionHandlers private constructor()
 
     }
 
-    protected open fun onViewModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
+    protected open fun onModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
     {
       showDialog(activity, i18n.dialogBoxErrorTitle, i18n.businessObjectAvailabilityProblemHint, activity?.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
@@ -222,7 +222,7 @@ class ExceptionHandlers private constructor()
             dialog.dismiss()
             if (retry == true)
             {
-              lifeCycle.refreshViewModelAndBind(null)
+              lifeCycle.refreshModelAndBind(null)
             }
             else
             {

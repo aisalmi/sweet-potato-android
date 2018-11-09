@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import timber.log.Timber
 import java.util.*
 import kotlin.reflect.KClass
@@ -24,30 +24,30 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
   companion object
   {
 
-    private const val VIEW_MODEL_LOADED_ACTION = "ViewModelLoadedAction"
+    private const val MODEL_LOADED_ACTION = "modelLoadedAction"
 
     private val initialized = mutableMapOf<String, Date>()
 
-    private var onRetrieveViewModelCustomStarted = false
+    private var onRetrieveModelCustomStarted = false
 
-    private var onRetrieveViewModelCustomOver = false
+    private var onRetrieveModelCustomOver = false
 
-    private var onRetrieveViewModelCustomOverInvoked = false
+    private var onRetrieveModelCustomOverInvoked = false
 
-    fun isInitialized(activityClass: Class<out FragmentActivity>): Date? =
-        SweetSplashscreenActivity.initialized[activityClass.name]
+    fun isInitialized(activityClass: KClass<out FragmentActivity>): Date? =
+        SweetSplashscreenActivity.initialized[activityClass.java.name]
 
-    fun markAsInitialized(activityClass: Class<out FragmentActivity>, isInitialized: Boolean)
+    fun markAsInitialized(activityClass: KClass<out FragmentActivity>, isInitialized: Boolean)
     {
       if (isInitialized == false)
       {
-        SweetSplashscreenActivity.initialized.remove(activityClass.name)
-        SweetSplashscreenActivity.onRetrieveViewModelCustomStarted = false
-        SweetSplashscreenActivity.onRetrieveViewModelCustomOverInvoked = false
+        SweetSplashscreenActivity.initialized.remove(activityClass.java.name)
+        SweetSplashscreenActivity.onRetrieveModelCustomStarted = false
+        SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked = false
       }
       else
       {
-        SweetSplashscreenActivity.initialized[activityClass.name] = Date()
+        SweetSplashscreenActivity.initialized[activityClass.java.name] = Date()
       }
     }
 
@@ -72,40 +72,40 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
     }
   }
 
-  @Throws(ViewModelUnavailableException::class)
-  final override fun onRetrieveViewModel()
+  @Throws(ModelUnavailableException::class)
+  final override fun onRetrieveModel()
   {
     // We check whether another activity instance is already running the business objects retrieval
-    if (SweetSplashscreenActivity.onRetrieveViewModelCustomStarted == false)
+    if (SweetSplashscreenActivity.onRetrieveModelCustomStarted == false)
     {
-      SweetSplashscreenActivity.onRetrieveViewModelCustomStarted = true
-      var onRetrieveBusinessObjectsCustomSuccess = false
+      SweetSplashscreenActivity.onRetrieveModelCustomStarted = true
+      var onRetrieveModelCustomSuccess = false
 
       try
       {
-        onRetrieveViewModelCustom()
-        onRetrieveBusinessObjectsCustomSuccess = true
+        onRetrieveModelCustom()
+        onRetrieveModelCustomSuccess = true
       }
       finally
       {
         // If the retrieval of the business objects is a failure, we assume as if it had not been started
-        if (onRetrieveBusinessObjectsCustomSuccess == false)
+        if (onRetrieveModelCustomSuccess == false)
         {
-          SweetSplashscreenActivity.onRetrieveViewModelCustomStarted = false
+          SweetSplashscreenActivity.onRetrieveModelCustomStarted = false
         }
       }
 
-      SweetSplashscreenActivity.onRetrieveViewModelCustomOver = true
-      LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(SweetSplashscreenActivity.VIEW_MODEL_LOADED_ACTION).addCategory(packageName))
+      SweetSplashscreenActivity.onRetrieveModelCustomOver = true
+      LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(SweetSplashscreenActivity.MODEL_LOADED_ACTION).addCategory(packageName))
     }
-    else if (SweetSplashscreenActivity.onRetrieveViewModelCustomOver == true)
+    else if (SweetSplashscreenActivity.onRetrieveModelCustomOver == true)
     {
       // A previous activity instance has already completed the business objects retrieval, but the current instance was not active at this time
-      LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(SweetSplashscreenActivity.VIEW_MODEL_LOADED_ACTION).addCategory(packageName))
+      LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(SweetSplashscreenActivity.MODEL_LOADED_ACTION).addCategory(packageName))
     }
   }
 
-  override fun onBindViewModel()
+  override fun onBindModel()
   {
   }
 
@@ -124,24 +124,24 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
 
   override fun getIntentFilter(): IntentFilter
   {
-    return IntentFilter(SweetSplashscreenActivity.VIEW_MODEL_LOADED_ACTION).apply {
+    return IntentFilter(SweetSplashscreenActivity.MODEL_LOADED_ACTION).apply {
       addCategory(packageName)
     }
   }
 
   override fun onReceive(context: Context?, intent: Intent?)
   {
-    if (SweetSplashscreenActivity.VIEW_MODEL_LOADED_ACTION == intent?.action)
+    if (SweetSplashscreenActivity.MODEL_LOADED_ACTION == intent?.action)
     {
       markAsInitialized()
 
       if (isFinishing == false)
       {
         // We do not take into account the event on the activity instance which is over
-        if (SweetSplashscreenActivity.onRetrieveViewModelCustomOverInvoked == false)
+        if (SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked == false)
         {
-          onRetrieveViewModelCustomOver(Runnable {
-            SweetSplashscreenActivity.onRetrieveViewModelCustomOverInvoked = true
+          onRetrieveModelCustomOver(Runnable {
+            SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked = true
             finishActivity()
           })
         }
@@ -151,10 +151,10 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
 
   protected abstract fun getNextActivity(): KClass<out FragmentActivity>
 
-  @Throws(ViewModelUnavailableException::class)
-  protected abstract fun onRetrieveViewModelCustom()
+  @Throws(ModelUnavailableException::class)
+  protected abstract fun onRetrieveModelCustom()
 
-  protected open fun onRetrieveViewModelCustomOver(finishRunnable: Runnable)
+  protected open fun onRetrieveModelCustomOver(finishRunnable: Runnable)
   {
     finishRunnable.run()
   }
@@ -184,7 +184,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
 
   private fun markAsInitialized()
   {
-    SweetSplashscreenActivity.markAsInitialized(this@SweetSplashscreenActivity::class.java, true)
+    SweetSplashscreenActivity.markAsInitialized(this@SweetSplashscreenActivity::class, true)
   }
 
   private fun finishActivity()

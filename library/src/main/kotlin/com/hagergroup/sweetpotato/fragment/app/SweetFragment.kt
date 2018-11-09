@@ -123,8 +123,8 @@ abstract class SweetFragment<AggregateClass : Any>
     sweetizer?.registerBroadcastListeners(broadcastListeners)
   }
 
-  override fun isRefreshingViewModelAndBinding(): Boolean =
-      sweetizer?.isRefreshingViewModelAndBinding() ?: false
+  override fun isRefreshingModelAndBinding(): Boolean =
+      sweetizer?.isRefreshingModelAndBinding() ?: false
 
   override fun isFirstLifeCycle(): Boolean =
       sweetizer?.isFirstLifeCycle() ?: false
@@ -135,9 +135,9 @@ abstract class SweetFragment<AggregateClass : Any>
   override fun isAlive(): Boolean =
       sweetizer?.isAlive() ?: false
 
-  override fun refreshViewModelAndBind(onOver: Runnable?)
+  override fun refreshModelAndBind(onOver: Runnable?)
   {
-    sweetizer?.refreshViewModelAndBind(onOver)
+    sweetizer?.refreshModelAndBind(onOver)
   }
 
   override fun shouldKeepOn(): Boolean =
@@ -147,9 +147,9 @@ abstract class SweetFragment<AggregateClass : Any>
   {
   }
 
-  fun refreshViewModelAndBind()
+  fun refreshModelAndBind()
   {
-    refreshViewModelAndBind(null)
+    refreshModelAndBind(null)
   }
 
 }

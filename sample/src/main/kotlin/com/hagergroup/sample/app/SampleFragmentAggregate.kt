@@ -8,7 +8,7 @@ import com.hagergroup.sweetpotato.app.SweetActivityInterceptor
 import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
  * @author Ludovic Roland
@@ -21,46 +21,46 @@ class SampleFragmentAggregate(fragment: Fragment, fragmentAnnotation: SweetFragm
 
   private val fragmentLoadingErrorAndRetryAggregate by lazy { SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregate() }
 
-  private val fragmentViewModelUnavailableExceptionKeeper by lazy { SweetLoadingAndErrorInterceptor.ViewModelUnavailableExceptionKeeper() }
+  private val fragmentModelUnavailableExceptionKeeper by lazy { SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper() }
 
-  val viewModelContainer by lazy { SweetActivityInterceptor.ViewModelContainer() }
+  val modelContainer by lazy { SweetActivityInterceptor.ModelContainer() }
 
-  fun rememberViewModelUnavailableException(exception: ViewModelUnavailableException)
+  fun rememberModelUnavailableException(exception: ModelUnavailableException)
   {
-    fragmentViewModelUnavailableExceptionKeeper.exception = exception
+    fragmentModelUnavailableExceptionKeeper.exception = exception
   }
 
   fun forgetException()
   {
-    fragmentViewModelUnavailableExceptionKeeper.exception = null
+    fragmentModelUnavailableExceptionKeeper.exception = null
   }
 
-  fun showViewModelUnavailableException(activity: FragmentActivity, sweetableFragment: Sweetable<*>, exception: ViewModelUnavailableException)
+  fun showModelUnavailableException(activity: FragmentActivity, sweetableFragment: Sweetable<*>, exception: ModelUnavailableException)
   {
-    rememberViewModelUnavailableException(exception)
-    fragmentLoadingErrorAndRetryAggregate.showViewModelUnavailableException(activity, sweetableFragment, exception)
+    rememberModelUnavailableException(exception)
+    fragmentLoadingErrorAndRetryAggregate.showModelUnavailableException(activity, sweetableFragment, exception)
   }
 
-  @Throws(ViewModelUnavailableException::class)
+  @Throws(ModelUnavailableException::class)
   fun checkException()
   {
-    fragmentViewModelUnavailableExceptionKeeper.checkException()
+    fragmentModelUnavailableExceptionKeeper.checkException()
   }
 
   fun onRestoreInstanceState(bundle: Bundle)
   {
-    viewModelContainer.onRestoreInstanceState(bundle)
+    modelContainer.onRestoreInstanceState(bundle)
   }
 
   fun onSaveInstanceState(bundle: Bundle)
   {
-    viewModelContainer.onSaveInstanceState(bundle)
+    modelContainer.onSaveInstanceState(bundle)
   }
 
   override fun getLoadingErrorAndRetryAggregate(): SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregate =
       fragmentLoadingErrorAndRetryAggregate
 
-  override fun getViewModelUnavailableExceptionKeeper(): SweetLoadingAndErrorInterceptor.ViewModelUnavailableExceptionKeeper =
-      fragmentViewModelUnavailableExceptionKeeper
+  override fun getModelUnavailableExceptionKeeper(): SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper =
+      fragmentModelUnavailableExceptionKeeper
 
 }

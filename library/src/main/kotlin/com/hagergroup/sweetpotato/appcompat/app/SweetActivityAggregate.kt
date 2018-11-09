@@ -129,7 +129,8 @@ abstract class SweetActivityAggregate(val activity: FragmentActivity, val activi
 
       openedFragment = activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*>
 
-      openedFragment?.let {
+      if (openedFragment == null)
+      {
         openParameterFragment()
       }
     }

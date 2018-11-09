@@ -10,7 +10,7 @@ import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetSendLoadingIntentAnnotation
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
  * @author Ludovic Roland
@@ -35,13 +35,13 @@ abstract class SampleFragment
 
 
   @CallSuper
-  @Throws(ViewModelUnavailableException::class)
-  override fun onRetrieveViewModel()
+  @Throws(ModelUnavailableException::class)
+  override fun onRetrieveModel()
   {
     getAggregate()?.checkException()
   }
 
-  override fun onBindViewModel()
+  override fun onBindModel()
   {
   }
 

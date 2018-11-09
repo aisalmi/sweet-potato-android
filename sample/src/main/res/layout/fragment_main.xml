@@ -1,19 +1,21 @@
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
->
-  <LinearLayout
-    android:orientation="vertical"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
   >
-    <TextView
+    <LinearLayout
+      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Hello World !"
-    />
-  </LinearLayout>
+      android:layout_height="match_parent"
+    >
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hello World !"
+      />
+    </LinearLayout>
 
-  <include layout="@layout/loading_error_and_retry"/>
-</RelativeLayout>
+    <include layout="@layout/loading_error_and_retry"/>
+  </RelativeLayout>
+</layout>

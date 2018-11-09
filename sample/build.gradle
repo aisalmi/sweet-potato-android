@@ -6,7 +6,8 @@ android
 {
   compileSdkVersion 28
 
-  defaultConfig {
+  defaultConfig
+  {
     applicationId "com.hagergroup.sample"
 
     minSdkVersion 19
@@ -19,6 +20,11 @@ android
     {
       main.java.srcDirs += "src/main/kotlin"
     }
+  }
+
+  dataBinding
+  {
+    enabled = true
   }
 
   buildTypes

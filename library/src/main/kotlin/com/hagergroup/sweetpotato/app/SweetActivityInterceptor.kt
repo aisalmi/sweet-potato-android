@@ -8,7 +8,7 @@ import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
  * @author Ludovic Roland
@@ -18,23 +18,23 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
   : SweetActivityController.Interceptor
 {
 
-  class ViewModelContainer
+  class ModelContainer
   {
 
     companion object
     {
 
-      private const val VIEW_MODEL_UNAVAILABLE_EXCEPTION_EXTRA = "viewModelUnavailableExceptionExtra"
+      private const val MODEL_UNAVAILABLE_EXCEPTION_EXTRA = "modelUnavailableExceptionExtra"
 
     }
 
-    private var exception: ViewModelUnavailableException? = null
+    private var exception: ModelUnavailableException? = null
 
     fun onRestoreInstanceState(bundle: Bundle?)
     {
       if (bundle != null)
       {
-        exception = bundle.getSerializable(ViewModelContainer.VIEW_MODEL_UNAVAILABLE_EXCEPTION_EXTRA) as? ViewModelUnavailableException
+        exception = bundle.getSerializable(ModelContainer.MODEL_UNAVAILABLE_EXCEPTION_EXTRA) as? ModelUnavailableException
       }
     }
 
@@ -42,7 +42,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
     {
       if (exception != null)
       {
-        bundle.putSerializable(ViewModelContainer.VIEW_MODEL_UNAVAILABLE_EXCEPTION_EXTRA, exception)
+        bundle.putSerializable(ModelContainer.MODEL_UNAVAILABLE_EXCEPTION_EXTRA, exception)
       }
     }
 

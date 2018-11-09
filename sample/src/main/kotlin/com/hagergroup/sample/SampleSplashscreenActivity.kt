@@ -21,7 +21,7 @@ class SampleSplashscreenActivity
   override fun getNextActivity(): KClass<out FragmentActivity> =
       MainActivity::class
 
-  override fun onRetrieveViewModelCustom()
+  override fun onRetrieveModelCustom()
   {
     Thread.sleep(5_000)
   }

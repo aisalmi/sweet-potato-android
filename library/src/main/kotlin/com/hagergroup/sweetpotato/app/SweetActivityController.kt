@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import timber.log.Timber
 
 /**
@@ -88,7 +88,7 @@ object SweetActivityController
 
     try
     {
-      if (activity != null && throwable is ViewModelUnavailableException)
+      if (activity != null && throwable is ModelUnavailableException)
       {
         Timber.w(throwable, "Caught an exception during the retrieval of the business objects from the activity from class with name '${activity::class.qualifiedName}'")
 
@@ -99,7 +99,7 @@ object SweetActivityController
         }
         else
         {
-          exceptionHandler?.onViewModelUnavailableException(activity, fragment, throwable) ?: false
+          exceptionHandler?.onModelUnavailableException(activity, fragment, throwable) ?: false
         }
       }
       else

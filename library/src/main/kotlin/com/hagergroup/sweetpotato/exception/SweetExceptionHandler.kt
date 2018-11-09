@@ -3,7 +3,7 @@ package com.hagergroup.sweetpotato.exception
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
  * @author Ludovic Roland
@@ -12,7 +12,7 @@ import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
 interface SweetExceptionHandler
 {
 
-  fun onViewModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
+  fun onModelUnavailableException(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
 
   fun onActivityException(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable): Boolean
 

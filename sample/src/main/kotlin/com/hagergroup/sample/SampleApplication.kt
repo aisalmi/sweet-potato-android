@@ -17,7 +17,7 @@ import com.hagergroup.sweetpotato.exception.ExceptionHandlers
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.exception.SweetIssueAnalyzer
 import com.hagergroup.sweetpotato.exception.searchForCause
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.util.SweetLogTree
 import com.hagergroup.sweetpotato.ws.CallException
 import timber.log.Timber
@@ -61,7 +61,7 @@ class SampleApplication
 
       override fun getRedirection(activity: FragmentActivity): Intent?
       {
-        return if (SweetSplashscreenActivity.isInitialized(SampleSplashscreenActivity::class.java) == null && activity is SampleSplashscreenActivity == false)
+        return if (SweetSplashscreenActivity.isInitialized(SampleSplashscreenActivity::class) == null && activity is SampleSplashscreenActivity == false)
         {
           Intent(activity, SampleSplashscreenActivity::class.java)
         }
@@ -140,20 +140,20 @@ class SampleApplication
         return super.onActivityExceptionFallback(activity, fragment, throwable)
       }
 
-      override fun onViewModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
+      override fun onModelUnavailableExceptionFallback(activity: FragmentActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
       {
         (fragment as? Sweetable<SampleFragmentAggregate>)?.let {
           if (activity is SampleActivity)
           {
             // We focus on Fragments
-            if (activity is SweetLoadingAndErrorInterceptor.ViewModelUnavailableReporter<*>)
+            if (activity is SweetLoadingAndErrorInterceptor.ModelUnavailableReporter<*>)
             {
-              activity.reportViewModelUnavailableException(it, exception)
+              activity.reportModelUnavailableException(it, exception)
             }
             else if (it.getAggregate() is SampleFragmentAggregate)
             {
               activity.getHandler().post {
-                it.getAggregate()?.showViewModelUnavailableException(activity, it, exception)
+                it.getAggregate()?.showModelUnavailableException(activity, it, exception)
               }
             }
 
@@ -168,17 +168,17 @@ class SampleApplication
 
         reportIssueIfNecessary(true, exception)
 
-        return super.onViewModelUnavailableExceptionFallback(activity, fragment, exception)
+        return super.onModelUnavailableExceptionFallback(activity, fragment, exception)
       }
 
       override fun handleConnectivityProblemInCause(activity: FragmentActivity?, fragment: Fragment?, throwable: Throwable, connectivityUIExperience: ConnectivityUIExperience?): Boolean
       {
-        val exceptionCause = throwable.searchForCause(ViewModelUnavailableException::class)
+        val exceptionCause = throwable.searchForCause(ModelUnavailableException::class)
 
         return if (exceptionCause != null)
         {
           // We handle this connectivity issue has BusinessObjectAvailableException to display better error interface.
-          onViewModelUnavailableExceptionFallback(activity, fragment, exceptionCause as ViewModelUnavailableException)
+          onModelUnavailableExceptionFallback(activity, fragment, exceptionCause as ModelUnavailableException)
         }
         else
         {
@@ -221,7 +221,7 @@ class SampleApplication
       private fun checkDetachedFragmentProblem(fragment: Fragment?, throwable: Throwable?): Boolean =
           fragment != null && throwable.searchForCause(IllegalStateException::class) != null
 
-      private fun checkNotFoundException(fragment: Fragment?, exception: ViewModelUnavailableException): Boolean
+      private fun checkNotFoundException(fragment: Fragment?, exception: ModelUnavailableException): Boolean
       {
         val callException = exception.searchForCause(CallException::class) as? CallException
 
@@ -230,7 +230,7 @@ class SampleApplication
           // This is a 40X exception
           if (fragment is Sweetened<*>)
           {
-            (fragment as? Sweetened<SampleFragmentAggregate>)?.getAggregate()?.getLoadingErrorAndRetryAggregate()?.reportViewModelUnavailableException(exception)
+            (fragment as? Sweetened<SampleFragmentAggregate>)?.getAggregate()?.getLoadingErrorAndRetryAggregate()?.reportModelUnavailableException(exception)
 
             return true
           }

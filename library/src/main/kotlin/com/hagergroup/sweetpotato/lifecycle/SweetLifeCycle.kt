@@ -9,12 +9,12 @@ interface SweetLifeCycle
 
   fun onRetrieveDisplayObjects()
 
-  @Throws(ViewModelUnavailableException::class)
-  fun onRetrieveViewModel()
+  @Throws(ModelUnavailableException::class)
+  fun onRetrieveModel()
 
-  fun onBindViewModel()
+  fun onBindModel()
 
-  fun refreshViewModelAndBind(onOver: Runnable?)
+  fun refreshModelAndBind(onOver: Runnable?)
 
   fun shouldKeepOn(): Boolean
 
@@ -24,6 +24,6 @@ interface SweetLifeCycle
 
   fun isAlive(): Boolean
 
-  fun isRefreshingViewModelAndBinding(): Boolean
+  fun isRefreshingModelAndBinding(): Boolean
 
 }

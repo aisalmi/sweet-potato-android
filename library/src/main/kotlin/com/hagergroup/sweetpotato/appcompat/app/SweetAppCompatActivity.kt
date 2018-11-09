@@ -99,8 +99,8 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   {
   }
 
-  override fun isRefreshingViewModelAndBinding(): Boolean =
-      sweetizer.isRefreshingViewModelAndBinding()
+  override fun isRefreshingModelAndBinding(): Boolean =
+      sweetizer.isRefreshingModelAndBinding()
 
   override fun isFirstLifeCycle(): Boolean =
       sweetizer.isFirstLifeCycle()
@@ -111,9 +111,9 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   override fun isAlive(): Boolean =
       sweetizer.isAlive()
 
-  override fun refreshViewModelAndBind(onOver: Runnable?)
+  override fun refreshModelAndBind(onOver: Runnable?)
   {
-    sweetizer.refreshViewModelAndBind(onOver)
+    sweetizer.refreshModelAndBind(onOver)
   }
 
   override fun shouldKeepOn(): Boolean =
@@ -131,9 +131,9 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     sweetizer.onSaveInstanceState(outState)
   }
 
-  fun refreshViewModelAndBind()
+  fun refreshModelAndBind()
   {
-    refreshViewModelAndBind(null)
+    refreshModelAndBind(null)
   }
 
 }

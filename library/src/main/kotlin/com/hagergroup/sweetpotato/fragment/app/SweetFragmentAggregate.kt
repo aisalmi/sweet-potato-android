@@ -50,18 +50,18 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, val fragmentAnnota
   fun onCreate(activity: FragmentActivity?)
   {
     fragmentAnnotation?.let {
-      (activity as? AppCompatActivity)?.supportActionBar?.let {
+      (activity as? AppCompatActivity)?.supportActionBar?.let { actionBar ->
         val titleIdentifier = fragmentAnnotation.fragmentTitleId
         val subTitleIdentifier = fragmentAnnotation.fragmentSubTitleId
 
         if (titleIdentifier > 0)
         {
-          it.setTitle(titleIdentifier)
+          actionBar.setTitle(titleIdentifier)
         }
 
         if (subTitleIdentifier > 0)
         {
-          it.setSubtitle(subTitleIdentifier)
+          actionBar.setSubtitle(subTitleIdentifier)
         }
       }
     }

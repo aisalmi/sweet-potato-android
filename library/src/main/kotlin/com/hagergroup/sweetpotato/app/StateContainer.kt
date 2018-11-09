@@ -26,12 +26,12 @@ import java.util.concurrent.atomic.AtomicInteger
 internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(private val activity: FragmentActivity, private val component: ComponentClass)
 {
 
-  private class RefreshViewModelAndBind(val onOver: Runnable?)
+  private class RefreshModelAndBind(val onOver: Runnable?)
   {
 
-    fun refreshViewModelAndBind(lifeCycleActivity: SweetLifeCycle)
+    fun refreshModelAndBind(lifeCycleActivity: SweetLifeCycle)
     {
-      lifeCycleActivity.refreshViewModelAndBind(onOver)
+      lifeCycleActivity.refreshModelAndBind(onOver)
     }
 
   }
@@ -67,7 +67,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   var firstLifeCycle = true
 
-  var viewModelRetrieved = false
+  var modelRetrieved = false
     private set
 
   var isInteracting = false
@@ -81,7 +81,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   private val futures by lazy { mutableListOf<Future<*>>() }
 
-  private var refreshingViewModelAndBindingCount = 0
+  private var refreshingModelAndBindingCount = 0
 
   private var beingRedirected = false
 
@@ -89,9 +89,9 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   private var broadcastReceivers: Array<BroadcastReceiver?>? = null
 
-  private var refreshViewModelAndBindNextTime: RefreshViewModelAndBind? = null
+  private var refreshModelAndBindNextTime: RefreshModelAndBind? = null
 
-  private var refreshViewModelAndBindPending: RefreshViewModelAndBind? = null
+  private var refreshModelAndBindPending: RefreshModelAndBind? = null
 
   private fun registerBroadcastListeners(index: Int, broadcastListener: SweetBroadcastListener)
   {
@@ -225,18 +225,18 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     isInteracting = true
   }
 
-  fun getRetrieveViewModelOver(): Runnable? =
-      refreshViewModelAndBindNextTime?.onOver
+  fun getRetrieveModelOver(): Runnable? =
+      refreshModelAndBindNextTime?.onOver
 
-  fun onRefreshingViewModelAndBindingStart()
+  fun onRefreshingModelAndBindingStart()
   {
-    refreshingViewModelAndBindingCount++
+    refreshingModelAndBindingCount++
   }
 
   @Synchronized
-  fun onRefreshingViewModelAndBindingStop(lifeCycleActivity: SweetLifeCycle)
+  fun onRefreshingModelAndBindingStop(lifeCycleActivity: SweetLifeCycle)
   {
-    refreshingViewModelAndBindingCount--
+    refreshingModelAndBindingCount--
 
     // If the entity or the hosting Activity is not alive, we do nothing more
     if (isAliveAsWellAsHostingActivity() == false)
@@ -244,18 +244,18 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
       return
     }
 
-    if (refreshViewModelAndBindPending != null)
+    if (refreshModelAndBindPending != null)
     {
       Timber.d("The stacked refresh of the business objects and display is stacked can now be executed")
 
-      refreshViewModelAndBindPending?.refreshViewModelAndBind(lifeCycleActivity)
-      refreshViewModelAndBindPending = null
+      refreshModelAndBindPending?.refreshModelAndBind(lifeCycleActivity)
+      refreshModelAndBindPending = null
     }
   }
 
-  fun isRefreshingViewModelAndBinding(): Boolean
+  fun isRefreshingModelAndBinding(): Boolean
   {
-    return refreshingViewModelAndBindingCount > 0
+    return refreshingModelAndBindingCount > 0
   }
 
   fun onPause()
@@ -268,7 +268,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     isAlive = false
 
     // If the business objects retrieval and synchronization is not yet completed, we do not forget to notify
-    if (isRefreshingViewModelAndBinding() == true)
+    if (isRefreshingModelAndBinding() == true)
     {
       onStopLoading()
     }
@@ -309,29 +309,29 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     // We test whether the Activity is active (its life-cycle state is between 'onResume()' and 'onPause()'
     if (isInteracting == false)
     {
-      refreshViewModelAndBindNextTime = RefreshViewModelAndBind(onOver)
+      refreshModelAndBindNextTime = RefreshModelAndBind(onOver)
 
       Timber.d("The refresh of the business objects and display is delayed because the Activity is not interacting")
 
       return true
     }
     // We test whether the Activity is already being refreshed
-    if (isRefreshingViewModelAndBinding() == true)
+    if (isRefreshingModelAndBinding() == true)
     {
       // In that case, we need to wait for the refresh action to be over
-      Timber.d("The refresh of the viewModel and bind is stacked because it is already refreshing")
+      Timber.d("The refresh of the model and bind is stacked because it is already refreshing")
 
-      refreshViewModelAndBindPending = RefreshViewModelAndBind(onOver)
+      refreshModelAndBindPending = RefreshModelAndBind(onOver)
 
       return true
     }
 
-    refreshViewModelAndBindNextTime = null
+    refreshModelAndBindNextTime = null
 
     return false
   }
 
-  fun onInternalViewModelAvailableExceptionWorkAround(throwable: Throwable): Boolean
+  fun onInternalModelAvailableExceptionWorkAround(throwable: Throwable): Boolean
   {
     if (throwable is IllegalStateException)
     {
@@ -343,9 +343,9 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     return false
   }
 
-  fun viewModelRetrieved()
+  fun modelRetrieved()
   {
-    viewModelRetrieved = true
+    modelRetrieved = true
   }
 
   fun stopHandling()

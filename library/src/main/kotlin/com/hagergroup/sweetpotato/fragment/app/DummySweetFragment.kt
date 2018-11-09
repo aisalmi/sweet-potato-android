@@ -11,11 +11,11 @@ internal class DummySweetFragment
   : SweetFragment<Void>()
 {
 
-  override fun onRetrieveViewModel()
+  override fun onRetrieveModel()
   {
   }
 
-  override fun onBindViewModel()
+  override fun onBindModel()
   {
   }
 

@@ -4,7 +4,7 @@ package com.hagergroup.sweetpotato.lifecycle
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-class ViewModelUnavailableException
+class ModelUnavailableException
   : Exception
 {
 

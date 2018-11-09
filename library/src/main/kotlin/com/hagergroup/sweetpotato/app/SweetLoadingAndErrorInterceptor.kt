@@ -13,7 +13,7 @@ import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -24,10 +24,10 @@ abstract class SweetLoadingAndErrorInterceptor
   : SweetActivityController.Interceptor
 {
 
-  interface ViewModelUnavailableReporter<FragmentAggregateClass : SweetFragmentAggregate>
+  interface ModelUnavailableReporter<FragmentAggregateClass : SweetFragmentAggregate>
   {
 
-    fun reportViewModelUnavailableException(fragment: Sweetable<FragmentAggregateClass>, viewModelUnavailableException: ViewModelUnavailableException)
+    fun reportModelUnavailableException(fragment: Sweetable<FragmentAggregateClass>, modelUnavailableException: ModelUnavailableException)
   }
 
   interface ErrorAndRetryManagerProvider
@@ -56,7 +56,7 @@ abstract class SweetLoadingAndErrorInterceptor
 
     fun getLoadingErrorAndRetryAggregate(): LoadingErrorAndRetryAggregate
 
-    fun getViewModelUnavailableExceptionKeeper(): ViewModelUnavailableExceptionKeeper
+    fun getModelUnavailableExceptionKeeper(): ModelUnavailableExceptionKeeper
 
   }
 
@@ -71,18 +71,18 @@ abstract class SweetLoadingAndErrorInterceptor
 
   }
 
-  class ViewModelUnavailableExceptionKeeper
+  class ModelUnavailableExceptionKeeper
   {
 
     companion object
     {
 
-      private val VIEW_MODEL_UNAVAILABLE_EXCEPTION_EXTRA = "viewModelUnavailableExceptionExtra"
+      private val MODEL_UNAVAILABLE_EXCEPTION_EXTRA = "modelUnavailableExceptionExtra"
     }
 
-    var exception: ViewModelUnavailableException? = null
+    var exception: ModelUnavailableException? = null
 
-    @Throws(ViewModelUnavailableException::class)
+    @Throws(ModelUnavailableException::class)
     fun checkException()
     {
       val newException = exception
@@ -95,14 +95,14 @@ abstract class SweetLoadingAndErrorInterceptor
 
     fun onRestoreInstanceState(bundle: Bundle?)
     {
-      exception = bundle?.getSerializable(ViewModelUnavailableExceptionKeeper.VIEW_MODEL_UNAVAILABLE_EXCEPTION_EXTRA) as? ViewModelUnavailableException
+      exception = bundle?.getSerializable(ModelUnavailableExceptionKeeper.MODEL_UNAVAILABLE_EXCEPTION_EXTRA) as? ModelUnavailableException
     }
 
     fun onSaveInstanceState(bundle: Bundle)
     {
       if (exception != null)
       {
-        bundle.putSerializable(ViewModelUnavailableExceptionKeeper.VIEW_MODEL_UNAVAILABLE_EXCEPTION_EXTRA, exception)
+        bundle.putSerializable(ModelUnavailableExceptionKeeper.MODEL_UNAVAILABLE_EXCEPTION_EXTRA, exception)
       }
     }
 
@@ -208,7 +208,7 @@ abstract class SweetLoadingAndErrorInterceptor
       }
     }
 
-    fun handleLoading(errorAndRetryManagerProvider: ErrorAndRetryManagerProvider, isLoading: Boolean, issue: AtomicReference<ViewModelUnavailableException>)
+    fun handleLoading(errorAndRetryManagerProvider: ErrorAndRetryManagerProvider, isLoading: Boolean, issue: AtomicReference<ModelUnavailableException>)
     {
       loadingView?.let {
         if (hasErrorAndRetryView() == false && issue.get() != null && isLoading == false)
@@ -281,13 +281,13 @@ abstract class SweetLoadingAndErrorInterceptor
   class LoadingErrorAndRetryAggregate
   {
 
-    private val issue = AtomicReference<ViewModelUnavailableException>()
+    private val issue = AtomicReference<ModelUnavailableException>()
 
     private var displayLoadingViewNextTime = true
 
     private var loadingErrorAndRetryAttributes: LoadingErrorAndRetryAttributes? = null
 
-    fun onCreate(errorAndRetryAttributesProvider: ErrorAndRetryManagerProvider, activity: FragmentActivity, sweetable: Sweetable<*>, issue: ViewModelUnavailableException?, handleLoading: Boolean)
+    fun onCreate(errorAndRetryAttributesProvider: ErrorAndRetryManagerProvider, activity: FragmentActivity, sweetable: Sweetable<*>, issue: ModelUnavailableException?, handleLoading: Boolean)
     {
       this.issue.set(issue)
 
@@ -337,14 +337,14 @@ abstract class SweetLoadingAndErrorInterceptor
       displayLoadingViewNextTime = false
     }
 
-    fun showViewModelUnavailableException(activity: FragmentActivity, sweetable: Sweetable<*>, exception: ViewModelUnavailableException)
+    fun showModelUnavailableException(activity: FragmentActivity, sweetable: Sweetable<*>, exception: ModelUnavailableException)
     {
       loadingErrorAndRetryAttributes?.showIssue(activity, exception, Runnable {
-        sweetable.refreshViewModelAndBind(null)
+        sweetable.refreshModelAndBind(null)
       })
     }
 
-    fun showViewModelUnavailableException(activity: FragmentActivity, exception: ViewModelUnavailableException, runnable: Runnable)
+    fun showModelUnavailableException(activity: FragmentActivity, exception: ModelUnavailableException, runnable: Runnable)
     {
       loadingErrorAndRetryAttributes?.showIssue(activity, exception, runnable)
     }
@@ -354,7 +354,7 @@ abstract class SweetLoadingAndErrorInterceptor
       loadingErrorAndRetryAttributes?.showIssue(activity, throwable, onRetry)
     }
 
-    fun reportViewModelUnavailableException(exception: ViewModelUnavailableException)
+    fun reportModelUnavailableException(exception: ModelUnavailableException)
     {
       issue.set(exception)
     }
@@ -381,7 +381,7 @@ abstract class SweetLoadingAndErrorInterceptor
         if (loadingAndErrorAnnotation?.enabled == true && (event == Lifecycle.Event.ON_CREATE || event == Lifecycle.Event.ON_START || event == Lifecycle.Event.ON_PAUSE))
         {
           val aggregate = sweetable.getAggregate()?.getLoadingErrorAndRetryAggregate()
-          val businessObjectsUnavailableExceptionKeeper = sweetable.getAggregate()?.getViewModelUnavailableExceptionKeeper()
+          val businessObjectsUnavailableExceptionKeeper = sweetable.getAggregate()?.getModelUnavailableExceptionKeeper()
 
           if (event == Lifecycle.Event.ON_CREATE)
           {

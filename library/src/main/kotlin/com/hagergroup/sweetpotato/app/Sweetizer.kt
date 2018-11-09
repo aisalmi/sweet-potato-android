@@ -31,14 +31,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
     sweetable.onRetrieveDisplayObjects()
   }
 
-  override fun onRetrieveViewModel()
+  override fun onRetrieveModel()
   {
-    sweetable.onRetrieveViewModel()
+    sweetable.onRetrieveModel()
   }
 
-  override fun onBindViewModel()
+  override fun onBindModel()
   {
-    sweetable.onBindViewModel()
+    sweetable.onBindModel()
   }
 
   override fun getAggregate(): AggregateClass? =
@@ -62,7 +62,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
     stateContainer.registerBroadcastListeners(broadcastListeners)
   }
 
-  override fun refreshViewModelAndBind(onOver: Runnable?)
+  override fun refreshModelAndBind(onOver: Runnable?)
   {
     if (stateContainer.isAliveAsWellAsHostingActivity() == false)
     {
@@ -81,20 +81,20 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       return
     }
 
-    stateContainer.onRefreshingViewModelAndBindingStart()
+    stateContainer.onRefreshingModelAndBindingStart()
 
     stateContainer.execute(Runnable {
-      if (onRetrieveViewModelInternal() == false)
+      if (onRetrieveModelInternal() == false)
       {
         return@Runnable
       }
 
-      onBindViewModelInternal(onOver)
+      onBindModelInternal(onOver)
     })
   }
 
-  override fun isRefreshingViewModelAndBinding(): Boolean =
-      stateContainer.isRefreshingViewModelAndBinding()
+  override fun isRefreshingModelAndBinding(): Boolean =
+      stateContainer.isRefreshingModelAndBinding()
 
   override fun isFirstLifeCycle(): Boolean =
       stateContainer.firstLifeCycle
@@ -108,9 +108,9 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
   override fun shouldKeepOn(): Boolean =
       stateContainer.shouldKeepOn()
 
-  fun refreshViewModelAndBind()
+  fun refreshModelAndBind()
   {
-    refreshViewModelAndBind(null)
+    refreshModelAndBind(null)
   }
 
   fun onCreate(superMethod: Runnable, savedInstanceState: Bundle?)
@@ -171,7 +171,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
 
     stateContainer.onResume()
 
-    refreshViewModelAndBindInternal()
+    refreshModelAndBindInternal()
   }
 
   fun onSaveInstanceState(outState: Bundle)
@@ -224,11 +224,11 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
     SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_DESTROY)
   }
 
-  private fun onRetrieveViewModelInternal(): Boolean
+  private fun onRetrieveModelInternal(): Boolean
   {
     return try
     {
-      onBeforeRefreshViewModelAndBind()
+      onBeforeRefreshModelAndBind()
 
       if (stateContainer.isAliveAsWellAsHostingActivity() == false)
       {
@@ -237,7 +237,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       }
       else
       {
-        onRetrieveViewModel()
+        onRetrieveModel()
 
         // We notify the entity that the business objects have actually been loaded
         if (stateContainer.isAliveAsWellAsHostingActivity() == false)
@@ -247,14 +247,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
         }
         else
         {
-          stateContainer.viewModelRetrieved()
+          stateContainer.modelRetrieved()
           true
         }
       }
     }
     catch (throwable: Throwable)
     {
-      stateContainer.onRefreshingViewModelAndBindingStop(this@Sweetizer)
+      stateContainer.onRefreshingModelAndBindingStop(this@Sweetizer)
 
       // We check whether the issue does not come from a non-alive entity
       if (stateContainer.isAliveAsWellAsHostingActivity() == false)
@@ -266,29 +266,29 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       else
       {
         // Otherwise, we report the exception
-        onInternalViewModelAvailableException(throwable)
+        onInternalModelAvailableException(throwable)
 
         false
       }
     }
   }
 
-  private fun onBeforeRefreshViewModelAndBind()
+  private fun onBeforeRefreshModelAndBind()
   {
     stateContainer.onStartLoading()
   }
 
-  private fun onBindViewModelInternal(onOver: Runnable?)
+  private fun onBindModelInternal(onOver: Runnable?)
   {
     if (stateContainer.resumedForTheFirstTime == true)
     {
       try
       {
-        onBindViewModel()
+        onBindModel()
       }
       catch (throwable: Throwable)
       {
-        stateContainer.onRefreshingViewModelAndBindingStop(this)
+        stateContainer.onRefreshingModelAndBindingStop(this)
         sweetable.onException(throwable, true)
         stateContainer.onStopLoading()
 
@@ -307,25 +307,25 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: Fragme
       }
       catch (throwable: Throwable)
       {
-        Timber.e(throwable, "An exception occurred while executing the 'refreshViewModelAndBind()' runnable!")
+        Timber.e(throwable, "An exception occurred while executing the 'refreshModelAndBind()' runnable!")
       }
 
     }
-    stateContainer.onRefreshingViewModelAndBindingStop(this)
+    stateContainer.onRefreshingModelAndBindingStop(this)
   }
 
-  private fun refreshViewModelAndBindInternal()
+  private fun refreshModelAndBindInternal()
   {
-    sweetable.refreshViewModelAndBind(stateContainer.getRetrieveViewModelOver())
+    sweetable.refreshModelAndBind(stateContainer.getRetrieveModelOver())
   }
 
-  private fun onInternalViewModelAvailableException(throwable: Throwable)
+  private fun onInternalModelAvailableException(throwable: Throwable)
   {
     Timber.e(throwable, "Cannot retrieve the view model")
 
     stateContainer.onStopLoading()
 
-    if (stateContainer.onInternalViewModelAvailableExceptionWorkAround(throwable) == true)
+    if (stateContainer.onInternalModelAvailableExceptionWorkAround(throwable) == true)
     {
       return
     }

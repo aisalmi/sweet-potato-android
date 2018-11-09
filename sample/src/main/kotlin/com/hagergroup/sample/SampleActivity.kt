@@ -13,7 +13,7 @@ import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.appcompat.app.SweetAppCompatActivity
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
-import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import timber.log.Timber
 import java.util.*
 
@@ -24,10 +24,10 @@ import java.util.*
 @SweetLoadingAndErrorAnnotation(enabled = false, loadingEnabled = false)
 abstract class SampleActivity
   : SweetAppCompatActivity<SampleActivityAggregate>(),
-    SweetLoadingAndErrorInterceptor.ViewModelUnavailableReporter<SampleFragmentAggregate>
+    SweetLoadingAndErrorInterceptor.ModelUnavailableReporter<SampleFragmentAggregate>
 {
 
-  private val viewModelUnavailableFragments = Collections.synchronizedSet(HashSet<Sweetable<SampleFragmentAggregate>>())
+  private val modelUnavailableFragments = Collections.synchronizedSet(HashSet<Sweetable<SampleFragmentAggregate>>())
 
   private var hasBeenPaused = false
 
@@ -67,12 +67,12 @@ abstract class SampleActivity
     }
   }
 
-  @Throws(ViewModelUnavailableException::class)
-  override fun onRetrieveViewModel()
+  @Throws(ModelUnavailableException::class)
+  override fun onRetrieveModel()
   {
   }
 
-  override fun onBindViewModel()
+  override fun onBindModel()
   {
   }
 
@@ -110,17 +110,17 @@ abstract class SampleActivity
     }
   }
 
-  override fun reportViewModelUnavailableException(fragment: Sweetable<SampleFragmentAggregate>, viewModelUnavailableException: ViewModelUnavailableException)
+  override fun reportModelUnavailableException(fragment: Sweetable<SampleFragmentAggregate>, modelUnavailableException: ModelUnavailableException)
   {
-    fragment.getAggregate()?.rememberViewModelUnavailableException(viewModelUnavailableException)
-    viewModelUnavailableFragments.add(fragment)
-    fragment.getAggregate()?.getLoadingErrorAndRetryAggregate()?.showException(this, viewModelUnavailableException, Runnable {
-      val copiedFragments = HashSet(viewModelUnavailableFragments)
-      viewModelUnavailableFragments.clear()
+    fragment.getAggregate()?.rememberModelUnavailableException(modelUnavailableException)
+    modelUnavailableFragments.add(fragment)
+    fragment.getAggregate()?.getLoadingErrorAndRetryAggregate()?.showException(this, modelUnavailableException, Runnable {
+      val copiedFragments = HashSet(modelUnavailableFragments)
+      modelUnavailableFragments.clear()
 
       copiedFragments.forEach {
         it.getAggregate()?.forgetException()
-        it.refreshViewModelAndBind(null)
+        it.refreshModelAndBind(null)
       }
     })
   }
