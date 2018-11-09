@@ -15,7 +15,6 @@ import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.reflect.full.findAnnotation
 
 /**
  * @author Ludovic Roland
@@ -377,7 +376,7 @@ abstract class SweetLoadingAndErrorInterceptor
         val sweetable = actualComponent as Sweetable<LoadingErrorAndRetryAggregateProvider>
 
         // We handle the loading, error and retry feature, but not with the DisableLoadingAndErrorInterceptor-annotated Fragments
-        val loadingAndErrorAnnotation = sweetable::class.findAnnotation<SweetLoadingAndErrorAnnotation>()
+        val loadingAndErrorAnnotation = sweetable::class.java.getAnnotation(SweetLoadingAndErrorAnnotation::class.java)
 
         if (loadingAndErrorAnnotation?.enabled == true && (event == Lifecycle.Event.ON_CREATE || event == Lifecycle.Event.ON_START || event == Lifecycle.Event.ON_PAUSE))
         {

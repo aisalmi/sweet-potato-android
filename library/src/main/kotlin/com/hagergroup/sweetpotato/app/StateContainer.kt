@@ -17,7 +17,6 @@ import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import timber.log.Timber
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.reflect.full.findAnnotation
 
 /**
  * @author Ludovic Roland
@@ -205,7 +204,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   fun onStartLoading()
   {
-    if (component::class.findAnnotation<SweetSendLoadingIntentAnnotation>() != null)
+    if (component::class.java.getAnnotation(SweetSendLoadingIntentAnnotation::class.java) != null)
     {
       // We indicate the activity which is loading, in order to filter the loading events
       LoadingBroadcastListener.broadcastLoading(activity, System.identityHashCode(activity), System.identityHashCode(component), true)
@@ -214,7 +213,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   fun onStopLoading()
   {
-    if (component::class.findAnnotation<SweetSendLoadingIntentAnnotation>() != null)
+    if (component::class.java.getAnnotation(SweetSendLoadingIntentAnnotation::class.java) != null)
     {
       // We indicate the activity which is loading, in order to filter the loading events
       LoadingBroadcastListener.broadcastLoading(activity, System.identityHashCode(activity), System.identityHashCode(component), false)

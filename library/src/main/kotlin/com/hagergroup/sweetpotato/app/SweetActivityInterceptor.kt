@@ -9,7 +9,6 @@ import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
-import kotlin.reflect.full.findAnnotation
 
 /**
  * @author Ludovic Roland
@@ -61,7 +60,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
       {
         // It's a Fragment
         (fragment as Sweetable<FragmentAggregateClass>).let {
-          (it::class.findAnnotation<SweetFragmentAnnotation>())?.let { annotation ->
+          (it::class.java.getAnnotation(SweetFragmentAnnotation::class.java))?.let { annotation ->
             it.setAggregate(instantiateFragmentAggregate(fragment, annotation))
             it.getAggregate()?.onCreate(activity)
           }
@@ -71,7 +70,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
       {
         // It's an Activity
         (activity as? Sweetable<ActivityAggregateClass>)?.let {
-          (it::class.findAnnotation<SweetActivityAnnotation>())?.let { annotation ->
+          (it::class.java.getAnnotation(SweetActivityAnnotation::class.java))?.let { annotation ->
             it.setAggregate(instantiateActivityAggregate(activity, annotation))
             it.getAggregate()?.onCreate()
           }

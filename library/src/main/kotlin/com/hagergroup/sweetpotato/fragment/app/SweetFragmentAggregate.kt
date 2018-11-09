@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import timber.log.Timber
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
 
 /**
  * @author Ludovic Roland
@@ -29,7 +28,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, val fragmentAnnota
     try
     {
       val fragmentTransaction = parentFragment.childFragmentManager.beginTransaction()
-      val childfragment = fragmentClass.createInstance()
+      val childfragment = fragmentClass.java.newInstance()
       childfragment.arguments = parentFragment.arguments
 
       // We (re)set its initial state if necessary

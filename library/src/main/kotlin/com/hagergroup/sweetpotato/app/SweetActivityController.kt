@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.lifecycle.ViewModelUnavailableException
 import timber.log.Timber
-import kotlin.reflect.full.findAnnotation
 
 /**
  * @author Ludovic Roland
@@ -139,12 +138,16 @@ object SweetActivityController
       return false
     }
 
-    if (activity::class.findAnnotation<SweetActivityController.EscapeToRedirectorAnnotation>() != null)
+    Timber.d("Check for annotation")
+
+    if (activity::class.java.getAnnotation(SweetActivityController.EscapeToRedirectorAnnotation::class.java) != null)
     {
       Timber.d("The Activity with class '${activity::class.qualifiedName}' is escaped regarding the Redirector")
 
       return false
     }
+
+    Timber.d("Check for redirection")
 
     val intent = redirector?.getRedirection(activity) ?: return false
 

@@ -11,7 +11,6 @@ import com.hagergroup.sweetpotato.fragment.app.DummySweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
 import timber.log.Timber
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
 
 /**
  * @author Ludovic Roland
@@ -84,7 +83,7 @@ abstract class SweetActivityAggregate(val activity: FragmentActivity, val activi
   {
     try
     {
-      openedFragment = fragmentClass.createInstance()
+      openedFragment = fragmentClass.java.newInstance()
       openedFragment?.arguments = arguments
 
       // We (re)set its initial state if necessary
