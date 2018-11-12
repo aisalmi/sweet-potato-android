@@ -8,12 +8,8 @@ import androidx.annotation.RestrictTo
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 internal class DummySweetFragment
-  : SweetFragment<Void>()
+  : SweetFragment<DummySweetFragmentAggregate>()
 {
-
-  override fun onRetrieveModel()
-  {
-  }
 
   override fun onBindModel()
   {

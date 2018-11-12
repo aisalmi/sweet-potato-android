@@ -3,18 +3,23 @@ package com.hagergroup.sweetpotato.fragment.app
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetFragment<AggregateClass : Any>
+abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
   : Fragment(),
     Sweetable<AggregateClass>
 {
@@ -37,6 +42,23 @@ abstract class SweetFragment<AggregateClass : Any>
     sweetizer?.onCreate(Runnable {
       super@SweetFragment.onCreate(savedInstanceState)
     }, savedInstanceState)
+  }
+
+  @CallSuper
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+  {
+    savedInstanceState?.let {
+      getAggregate()?.onRestoreInstanceState(it)
+    }
+
+    return if (getLayoutId() != -1)
+    {
+      inflater.inflate(getLayoutId(), container, false)
+    }
+    else
+    {
+      inflater.inflate(getAggregate()?.fragmentAnnotation?.layoutId ?: -1, container, false)
+    }
   }
 
   @CallSuper
@@ -93,10 +115,22 @@ abstract class SweetFragment<AggregateClass : Any>
   }
 
   @CallSuper
+  @Throws(ModelUnavailableException::class)
+  override fun onRetrieveModel()
+  {
+    getAggregate()?.checkException()
+  }
+
+  override fun onBindModel()
+  {
+  }
+
+  @CallSuper
   override fun onSaveInstanceState(outState: Bundle)
   {
     super.onSaveInstanceState(outState)
     sweetizer?.onSaveInstanceState(outState)
+    getAggregate()?.onSaveInstanceState(outState)
   }
 
   override fun getAggregate(): AggregateClass?
@@ -152,5 +186,9 @@ abstract class SweetFragment<AggregateClass : Any>
   {
     refreshModelAndBind(null)
   }
+
+  @LayoutRes
+  open fun getLayoutId(): Int =
+      -1
 
 }

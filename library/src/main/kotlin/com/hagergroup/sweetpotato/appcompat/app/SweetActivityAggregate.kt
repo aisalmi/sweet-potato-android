@@ -125,15 +125,31 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
 
   fun onCreate()
   {
-    activityAnnotation?.let {
-      activity.setContentView(activityAnnotation.contentViewId)
-
-      openedFragment = activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*>
-
-      if (openedFragment == null)
-      {
-        openParameterFragment()
+    if (activity is SweetAppCompatActivity<*> && activity.getContentViewId() != -1)
+    {
+      activity.setContentView(activity.getContentViewId())
+    }
+    else
+    {
+      activityAnnotation?.let {
+        activity.setContentView(activityAnnotation.contentViewId)
       }
+    }
+
+    openedFragment = if (activity is SweetAppCompatActivity<*> && activity.getFragmentPlaceholderId() != -1)
+    {
+      activity.supportFragmentManager.findFragmentById(activity.getFragmentPlaceholderId()) as? SweetFragment<*>
+    }
+    else
+    {
+      activityAnnotation?.let {
+        activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*>
+      }
+    }
+
+    if (openedFragment == null)
+    {
+      openParameterFragment()
     }
 
     actionBarAnnotation?.apply {

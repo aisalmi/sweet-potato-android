@@ -3,6 +3,8 @@ package com.hagergroup.sweetpotato.appcompat.app
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
@@ -135,5 +137,13 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   {
     refreshModelAndBind(null)
   }
+
+  @LayoutRes
+  open fun getContentViewId(): Int =
+      -1
+
+  @IdRes
+  open fun getFragmentPlaceholderId(): Int =
+      -1
 
 }
