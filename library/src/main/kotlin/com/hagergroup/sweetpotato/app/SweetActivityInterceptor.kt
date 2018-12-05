@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
@@ -57,7 +58,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
 
   protected abstract fun instantiateActivityAggregate(activity: AppCompatActivity, activityAnnotation: SweetActivityAnnotation?, actionBarAnnotation: SweetActionBarAnnotation?): ActivityAggregateClass
 
-  protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: SweetFragmentAnnotation?): FragmentAggregateClass
+  protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: Any?): FragmentAggregateClass
 
   override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
   {
@@ -67,7 +68,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
       {
         // It's a Fragment
         (fragment as Sweetable<FragmentAggregateClass>).apply {
-          val sweetFragmentAnnotation = this::class.java.getAnnotation(SweetFragmentAnnotation::class.java)
+          val sweetFragmentAnnotation = this::class.java.getAnnotation(SweetFragmentAnnotation::class.java) ?: this::class.java.getAnnotation(SweetViewModelBindingFragmentAnnotation::class.java)
 
           this.setAggregate(instantiateFragmentAggregate(fragment, sweetFragmentAnnotation))
           this.getAggregate()?.onCreate(activity)

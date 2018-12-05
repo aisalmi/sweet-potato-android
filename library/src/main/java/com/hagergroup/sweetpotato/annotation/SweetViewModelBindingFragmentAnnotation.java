@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.StringRes;
+import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel;
+import com.hagergroup.sweetpotato.lifecycle.SweetViewModel;
 
 /**
  * @author Ludovic Roland
@@ -16,7 +18,7 @@ import androidx.annotation.StringRes;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
-public @interface SweetFragmentAnnotation
+public @interface SweetViewModelBindingFragmentAnnotation
 {
 
   @StringRes
@@ -24,6 +26,8 @@ public @interface SweetFragmentAnnotation
 
   @StringRes
   int fragmentSubtitleId() default -1;
+
+  Class<? extends SweetViewModel> viewModelClass() default DummySweetViewModel.class;
 
   @LayoutRes
   int layoutId();

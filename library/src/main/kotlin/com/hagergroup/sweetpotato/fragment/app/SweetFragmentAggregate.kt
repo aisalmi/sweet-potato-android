@@ -2,14 +2,19 @@ package com.hagergroup.sweetpotato.fragment.app
 
 import android.os.Bundle
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.app.SweetActivityInterceptor
 import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
 import com.hagergroup.sweetpotato.app.Sweetable
+import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 import timber.log.Timber
 import kotlin.reflect.KClass
 
@@ -17,9 +22,19 @@ import kotlin.reflect.KClass
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetFragmentAggregate(val fragment: Fragment, val fragmentAnnotation: SweetFragmentAnnotation?)
+abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragmentAnnotation: Any?)
   : SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregateProvider
 {
+
+  init
+  {
+
+    if (fragmentAnnotation !is SweetFragmentAnnotation && fragmentAnnotation !is SweetViewModelBindingFragmentAnnotation)
+    {
+      throw IllegalArgumentException("The fragment annotation field has to be a SweetFragmentAnnotation or a SweetViewModelBindingFragmentAnnotation class")
+    }
+
+  }
 
   interface OnBackPressedListener
   {
@@ -62,8 +77,8 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, val fragmentAnnota
   {
     fragmentAnnotation?.let {
       activity?.supportActionBar?.let { actionBar ->
-        val titleIdentifier = fragmentAnnotation.fragmentTitleId
-        val subTitleIdentifier = fragmentAnnotation.fragmentSubTitleId
+        val titleIdentifier = getFragmentTitleIdFromAnnotation()
+        val subTitleIdentifier = getFragmentSubtitleIdFromAnnotation()
 
         if (titleIdentifier > 0)
         {
@@ -77,6 +92,59 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, val fragmentAnnota
       }
     }
   }
+
+  @StringRes
+  fun getFragmentTitleIdFromAnnotation(): Int
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetFragmentAnnotation                 -> fragmentAnnotation.fragmentTitleId
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.fragmentTitleId
+      else                                       -> -1
+    }
+  }
+
+  @StringRes
+  fun getFragmentSubtitleIdFromAnnotation(): Int
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetFragmentAnnotation                 -> fragmentAnnotation.fragmentSubtitleId
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.fragmentSubtitleId
+      else                                       -> -1
+    }
+  }
+
+  @LayoutRes
+  fun getFragmentLayoutIdFromAnnotation(): Int
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetFragmentAnnotation                 -> fragmentAnnotation.layoutId
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.layoutId
+      else                                       -> -1
+    }
+  }
+
+  fun getFragmentSurviveOnConfigurationChangedFromAnnotation(): Boolean
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetFragmentAnnotation                 -> fragmentAnnotation.surviveOnConfigurationChanged
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.surviveOnConfigurationChanged
+      else                                       -> false
+    }
+  }
+
+  fun getViewModelClassFromAnnotation(): Class<out SweetViewModel>
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.viewModelClass.java
+      else                                       -> DummySweetViewModel::class.java
+    }
+  }
+
 
   fun rememberModelUnavailableException(exception: ModelUnavailableException)
   {

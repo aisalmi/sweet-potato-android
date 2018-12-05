@@ -44,7 +44,7 @@ class SampleApplication
   }
 
   override fun getI18N(): SweetApplication.I18N =
-      SweetApplication.I18N("", "", "", "", "", "", "", "", "")
+      SweetApplication.I18N("", "", "", "", "")
 
   override fun retrieveConnectivityListener(): SweetConnectivityListener =
       SampleConnectivityListener(this)

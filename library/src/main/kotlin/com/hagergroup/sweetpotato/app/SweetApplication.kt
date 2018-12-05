@@ -20,15 +20,11 @@ abstract class SweetApplication
 
   class I18N(val dialogBoxErrorTitle: String,
              val businessObjectAvailabilityProblemHint: String,
-             val serviceProblemHint: String,
              val connectivityProblemHint: String,
              val connectivityProblemRetryHint: String,
-             val otherProblemHint: String,
-             val applicationName: String,
-             val reportButtonLabel: String,
-             val retrievingLogProgressMessage: String)
+             val otherProblemHint: String)
 
-  class Constants(resources: Resources)
+  open class Constants(resources: Resources)
   {
 
     val isSmartphone: Boolean

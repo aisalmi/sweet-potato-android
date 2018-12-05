@@ -51,13 +51,18 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
       getAggregate()?.onRestoreInstanceState(it)
     }
 
+    return inflateLayout(inflater, container)
+  }
+
+  protected open fun inflateLayout(inflater: LayoutInflater, container: ViewGroup?): View?
+  {
     return if (getLayoutId() != -1)
     {
       inflater.inflate(getLayoutId(), container, false)
     }
     else
     {
-      inflater.inflate(getAggregate()?.fragmentAnnotation?.layoutId ?: -1, container, false)
+      inflater.inflate(getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: -1, container, false)
     }
   }
 

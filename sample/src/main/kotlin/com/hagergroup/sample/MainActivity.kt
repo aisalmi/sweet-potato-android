@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetActivityAnnotation(contentViewId = R.layout.activity_main, fragmentPlaceholderId = R.id.fragmentContainer, fragmentClass = MainFragment::class)
+@SweetActivityAnnotation(contentViewId = R.layout.activity_main, fragmentPlaceholderId = R.id.fragmentContainer, fragmentClass = MainFragment::class, canRotate = true)
 @SweetActionBarAnnotation(actionBarBehavior = SweetActionBarAnnotation.ActionBarBehavior.Drawer)
 class MainActivity
   : SampleActivity()

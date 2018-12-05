@@ -6,11 +6,13 @@ import android.content.IntentFilter
 import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
+import com.hagergroup.sample.SecondActivity
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.net.UnknownHostException
 
@@ -18,7 +20,7 @@ import java.net.UnknownHostException
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.expand_button_title)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.expand_button_title, surviveOnConfigurationChanged = true)
 class MainFragment
   : SampleFragment(),
     View.OnClickListener, SweetBroadcastListenerProvider
@@ -58,7 +60,6 @@ class MainFragment
   @Throws(ModelUnavailableException::class)
   override fun onRetrieveModel()
   {
-    //TODO
     super.onRetrieveModel()
 
     Thread.sleep(1_000)
@@ -82,6 +83,7 @@ class MainFragment
   {
     super.onBindModel()
 
+    binding.setOnClickListener(this)
     click.setOnClickListener(this)
     refreshLoading.setOnClickListener(this)
     refreshNoLoading.setOnClickListener(this)
@@ -91,7 +93,11 @@ class MainFragment
 
   override fun onClick(view: View?)
   {
-    if (view == click)
+    if (view == binding)
+    {
+      context?.startActivity<SecondActivity>(SecondFragment.MY_EXTRA to "hey !")
+    }
+    else if (view == click)
     {
       context?.let {
         LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(MainFragment.MY_ACTION))
