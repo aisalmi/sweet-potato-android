@@ -145,6 +145,14 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     }
   }
 
+  fun getViewModelContextFromAnnotation(): SweetViewModelBindingFragmentAnnotation.ViewModelContext
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.viewModelContext
+      else                                       -> SweetViewModelBindingFragmentAnnotation.ViewModelContext.Fragment
+    }
+  }
 
   fun rememberModelUnavailableException(exception: ModelUnavailableException)
   {

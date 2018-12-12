@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
@@ -45,7 +47,17 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
   {
     super.onRetrieveModel()
 
-    viewModel = ViewModelProviders.of(this).get(getAggregate()?.getViewModelClassFromAnnotation() ?: DummySweetViewModel::class.java)
+    val viewModelFactory = getViewModelFactory()
+    val viewModelClass = getAggregate()?.getViewModelClassFromAnnotation() ?: DummySweetViewModel::class.java
+
+    viewModel = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetViewModelBindingFragmentAnnotation.ViewModelContext.Fragment)
+    {
+      ViewModelProviders.of(this@SweetViewModelBindingFragment, viewModelFactory).get(viewModelClass)
+    }
+    else
+    {
+      ViewModelProviders.of(requireActivity(), viewModelFactory).get(viewModelClass)
+    }
 
     if (viewModel?.isAlreadyInitialized == false)
     {
@@ -62,5 +74,8 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
       binding.setVariable(getBindingVariable(), it)
     }
   }
+
+  protected open fun getViewModelFactory(): ViewModelProvider.Factory? =
+      null
 
 }

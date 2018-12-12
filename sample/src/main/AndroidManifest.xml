@@ -34,5 +34,10 @@
       android:name=".SecondActivity"
       android:configChanges="orientation|keyboardHidden|screenLayout"
     />
+
+    <activity
+      android:name=".ThirdActivity"
+      android:configChanges="orientation|keyboardHidden|screenLayout"
+    />
   </application>
 </manifest>

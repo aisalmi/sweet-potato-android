@@ -1,5 +1,6 @@
 package com.hagergroup.sample.viewmodel
 
+import androidx.databinding.ObservableField
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
 /**
@@ -10,5 +11,7 @@ class SecondFragmentViewModel : SweetViewModel()
 {
 
   var myString: String? = null
+
+  val anotherString = ObservableField<String>()
 
 }

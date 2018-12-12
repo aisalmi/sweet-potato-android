@@ -233,14 +233,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
   private fun onRetrieveModelInternal(): Boolean
   {
-    return try
+    try
     {
       onBeforeRefreshModelAndBind()
 
       if (stateContainer.isAliveAsWellAsHostingActivity() == false)
       {
         // If the entity is no more alive, we give up the process
-        false
+        return false
       }
       else
       {
@@ -250,12 +250,12 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
         if (stateContainer.isAliveAsWellAsHostingActivity() == false)
         {
           // If the entity is no more alive, we give up the process
-          false
+          return false
         }
         else
         {
           stateContainer.modelRetrieved()
-          true
+          return true
         }
       }
     }
@@ -268,14 +268,14 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       {
         // In that case, we just ignore the exception: it is very likely that the entity or the hosting Activity have turned as non-alive
         // during the "onRetrieveBusinessObjects()" method!
-        false
+        return false
       }
       else
       {
         // Otherwise, we report the exception
         onInternalModelAvailableException(throwable)
 
-        false
+        return false
       }
     }
   }

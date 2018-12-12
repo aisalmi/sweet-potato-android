@@ -21,6 +21,11 @@ import com.hagergroup.sweetpotato.lifecycle.SweetViewModel;
 public @interface SweetViewModelBindingFragmentAnnotation
 {
 
+  enum ViewModelContext
+  {
+    Fragment, Activity
+  }
+
   @StringRes
   int fragmentTitleId() default -1;
 
@@ -33,5 +38,7 @@ public @interface SweetViewModelBindingFragmentAnnotation
   int layoutId();
 
   boolean surviveOnConfigurationChanged() default false;
+
+  SweetViewModelBindingFragmentAnnotation.ViewModelContext viewModelContext() default SweetViewModelBindingFragmentAnnotation.ViewModelContext.Fragment;
 
 }

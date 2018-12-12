@@ -7,6 +7,7 @@ import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
+import com.hagergroup.sample.ThirdActivity
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
@@ -83,6 +84,7 @@ class MainFragment
   {
     super.onBindModel()
 
+    binding2.setOnClickListener(this)
     binding.setOnClickListener(this)
     click.setOnClickListener(this)
     refreshLoading.setOnClickListener(this)
@@ -95,7 +97,11 @@ class MainFragment
   {
     if (view == binding)
     {
-      context?.startActivity<SecondActivity>(SecondFragment.MY_EXTRA to "hey !")
+      context?.startActivity<SecondActivity>(SecondFragment.MY_EXTRA to "hey !", SecondFragment.ANOTHER_EXTRA to "Another Hey !")
+    }
+    else if (view == binding2)
+    {
+      context?.startActivity<ThirdActivity>(SecondFragment.MY_EXTRA to "hey !", SecondFragment.ANOTHER_EXTRA to "Another Hey !")
     }
     else if (view == click)
     {
