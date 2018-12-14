@@ -330,15 +330,16 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
   {
     Timber.e(throwable, "Cannot retrieve the view model")
 
-    stateContainer.onStopLoading()
-
     if (stateContainer.onInternalModelAvailableExceptionWorkAround(throwable) == true)
     {
+      stateContainer.onStopLoading()
       return
     }
 
     // We need to indicate to the method that it may have been triggered from another thread than the GUI's
     sweetable.onException(throwable, false)
+
+    stateContainer.onStopLoading()
   }
 
   private fun isFragment(): Boolean =

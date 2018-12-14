@@ -340,6 +340,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
         return true
       }
     }
+
     return false
   }
 
