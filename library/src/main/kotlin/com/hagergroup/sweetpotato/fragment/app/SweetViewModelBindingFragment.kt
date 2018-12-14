@@ -26,7 +26,7 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
 
   protected abstract fun getBindingVariable(): Int
 
-  abstract fun computeViewModel(viewModel: SweetViewModel?)
+  abstract fun computeViewModel()
 
   override fun inflateLayout(inflater: LayoutInflater, container: ViewGroup?): View?
   {
@@ -61,9 +61,15 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
 
     if (viewModel?.isAlreadyInitialized == false)
     {
-      computeViewModel(viewModel)
+      computeViewModel()
       viewModel?.isAlreadyInitialized = true
     }
+  }
+
+  override fun refreshModelAndBind(onOver: Runnable?)
+  {
+    viewModel?.isAlreadyInitialized = false
+    super.refreshModelAndBind(onOver)
   }
 
   override fun onBindModel()

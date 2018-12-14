@@ -6,7 +6,6 @@ import com.hagergroup.sample.databinding.FragmentSecondBinding
 import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 import kotlinx.android.synthetic.main.fragment_second.*
 import org.jetbrains.anko.toast
 import java.net.UnknownHostException
@@ -38,7 +37,7 @@ class ThirdFragment
   private var throwInternetError = false
 
   @Throws(ModelUnavailableException::class)
-  override fun computeViewModel(viewModel: SweetViewModel?)
+  override fun computeViewModel()
   {
     Thread.sleep(1_000)
 
@@ -57,8 +56,8 @@ class ThirdFragment
     }
 
     (viewModel as? SecondFragmentViewModel)?.apply {
-      myString = if (count % 2 == 0) arguments?.getString(SecondFragment.MY_EXTRA) else "Count !"
-      anotherString.set(arguments?.getString(SecondFragment.ANOTHER_EXTRA))
+      myString = if (count % 2 == 0) arguments?.getString(ThirdFragment.MY_EXTRA) else "Count !"
+      anotherString.set(arguments?.getString(ThirdFragment.ANOTHER_EXTRA))
     }
   }
 

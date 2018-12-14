@@ -11,5 +11,6 @@ abstract class SweetViewModel
 {
 
   var isAlreadyInitialized = false
+    internal set
 
 }

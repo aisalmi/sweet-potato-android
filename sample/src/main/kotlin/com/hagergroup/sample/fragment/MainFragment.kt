@@ -101,7 +101,7 @@ class MainFragment
     }
     else if (view == binding2)
     {
-      context?.startActivity<ThirdActivity>(SecondFragment.MY_EXTRA to "hey !", SecondFragment.ANOTHER_EXTRA to "Another Hey !")
+      context?.startActivity<ThirdActivity>(ThirdFragment.MY_EXTRA to "go !", ThirdFragment.ANOTHER_EXTRA to "another go !")
     }
     else if (view == click)
     {
