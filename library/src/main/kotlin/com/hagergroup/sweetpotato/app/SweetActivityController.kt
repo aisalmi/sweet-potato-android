@@ -10,15 +10,50 @@ import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import timber.log.Timber
 
 /**
+ * Is responsible for intercepting an activity starting and redirect it to a prerequisite one if necessary, and for handling globally exceptions.
+ * <p>
+ * Everything described here which involves the [android.app.Activity], is applicable provided the activity is a [Sweetable].
+ * </p>
+ * <p>
+ * It is also a container for multiple interfaces relative to its architecture.
+ * </p>
+ *
  * @author Ludovic Roland
  * @since 2018.11.05
  */
 object SweetActivityController
 {
 
+  /**
+   * An interface which is requested when a new [android.app.Activity] is bound to be started.
+   * <p>
+   * The redirector acts as a controller over the activities starting phase: if an activity should be started before another one is really
+   * active, this is the right place to handle this at runtime.
+   * </p>
+   * <p>
+   * This component is especially useful when ones need to make sure that an [android.app.Activity] has actually been submitted to the end-user before
+   * resuming a workflow. The common cases are the traditional application splash screen, or a signin/signup process.
+   * </p>
+   *
+   * @see [registerRedirector]
+   */
   interface Redirector
   {
 
+    /**
+     * Will be invoked by the framework, in order to know whether an [android.app.Activity] should be
+     * started instead of the provided one, which is supposed to have just started, or when the
+     * [android.app.Activity.onNewIntent] method is invoked. However, the method will be not been invoked when those methods are invoked due to a
+     * configuration change.
+     * <p>
+     * Caution: if an [Exception] is thrown during the method execution, the application will crash!
+     * </p>
+     *
+     * @param [activity] which is bound to be displayed
+     * @return `null` if and only if nothing is to be done, i.e. no activity should be started instead. Otherwise, the given intent will be
+     * executed: in that case, the provided activity finishes
+     * @see [needsRedirection]
+     */
     fun getRedirection(activity: AppCompatActivity): Intent?
 
   }

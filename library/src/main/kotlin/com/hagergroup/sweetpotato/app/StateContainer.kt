@@ -19,6 +19,11 @@ import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
+ * There for gathering all instance variables, and in order to make copy and paste smarter.
+ *
+ * @param AggregateClass the aggregate class accessible though the [Sweetened.setAggregate] and [Sweetened.getAggregate] methods
+ * @param ComponentClass the instance the container has been created for
+ *
  * @author Ludovic Roland
  * @since 2018.11.06
  */
