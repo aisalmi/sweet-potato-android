@@ -365,38 +365,36 @@ abstract class SweetLoadingAndErrorInterceptor
 
   protected abstract fun getErrorAndRetryAttributesProvider(): ErrorAndRetryManagerProvider
 
-  override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
   {
-    activity?.let {
-      val actualComponent = fragment ?: activity
+    val actualComponent = fragment ?: activity
 
-      if (actualComponent is Sweetable<*>)
+    if (actualComponent is Sweetable<*>)
+    {
+      // It's a Fragment or an Activity
+      val sweetable = actualComponent as Sweetable<LoadingErrorAndRetryAggregateProvider>
+
+      // We handle the loading, error and retry feature, but not with the DisableLoadingAndErrorInterceptor-annotated Fragments
+      val loadingAndErrorAnnotation = sweetable::class.java.getAnnotation(SweetLoadingAndErrorAnnotation::class.java)
+
+      if (loadingAndErrorAnnotation?.enabled == true && (event == Lifecycle.Event.ON_CREATE || event == Lifecycle.Event.ON_START || event == Lifecycle.Event.ON_PAUSE))
       {
-        // It's a Fragment or an Activity
-        val sweetable = actualComponent as Sweetable<LoadingErrorAndRetryAggregateProvider>
+        val aggregate = sweetable.getAggregate()?.getLoadingErrorAndRetryAggregate()
+        val businessObjectsUnavailableExceptionKeeper = sweetable.getAggregate()?.getModelUnavailableExceptionKeeper()
 
-        // We handle the loading, error and retry feature, but not with the DisableLoadingAndErrorInterceptor-annotated Fragments
-        val loadingAndErrorAnnotation = sweetable::class.java.getAnnotation(SweetLoadingAndErrorAnnotation::class.java)
-
-        if (loadingAndErrorAnnotation?.enabled == true && (event == Lifecycle.Event.ON_CREATE || event == Lifecycle.Event.ON_START || event == Lifecycle.Event.ON_PAUSE))
+        if (event == Lifecycle.Event.ON_CREATE)
         {
-          val aggregate = sweetable.getAggregate()?.getLoadingErrorAndRetryAggregate()
-          val businessObjectsUnavailableExceptionKeeper = sweetable.getAggregate()?.getModelUnavailableExceptionKeeper()
+          aggregate?.onCreate(errorAndRetryAttributesProvider, activity, sweetable, businessObjectsUnavailableExceptionKeeper?.exception, loadingAndErrorAnnotation.loadingEnabled)
+        }
+        else if (event == Lifecycle.Event.ON_START)
+        {
+          val view = fragment?.view ?: activity.findViewById(android.R.id.content)
 
-          if (event == Lifecycle.Event.ON_CREATE)
-          {
-            aggregate?.onCreate(errorAndRetryAttributesProvider, activity, sweetable, businessObjectsUnavailableExceptionKeeper?.exception, loadingAndErrorAnnotation.loadingEnabled)
-          }
-          else if (event == Lifecycle.Event.ON_START)
-          {
-            val view = fragment?.view ?: activity.findViewById(android.R.id.content)
-
-            aggregate?.onStart(errorAndRetryAttributesProvider, view)
-          }
-          else if (event == Lifecycle.Event.ON_PAUSE)
-          {
-            aggregate?.onPause()
-          }
+          aggregate?.onStart(errorAndRetryAttributesProvider, view)
+        }
+        else if (event == Lifecycle.Event.ON_PAUSE)
+        {
+          aggregate?.onPause()
         }
       }
     }

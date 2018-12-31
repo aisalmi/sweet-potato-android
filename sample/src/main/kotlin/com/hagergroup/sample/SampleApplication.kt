@@ -11,7 +11,12 @@ import com.hagergroup.sample.app.SampleActivityAggregate
 import com.hagergroup.sample.app.SampleConnectivityListener
 import com.hagergroup.sample.app.SampleFragmentAggregate
 import com.hagergroup.sample.app.SampleInterceptor
-import com.hagergroup.sweetpotato.app.*
+import com.hagergroup.sweetpotato.app.SweetActivityController
+import com.hagergroup.sweetpotato.app.SweetApplication
+import com.hagergroup.sweetpotato.app.SweetConnectivityListener
+import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
+import com.hagergroup.sweetpotato.app.Sweetable
+import com.hagergroup.sweetpotato.app.Sweetened
 import com.hagergroup.sweetpotato.appcompat.app.SweetSplashscreenActivity
 import com.hagergroup.sweetpotato.exception.ExceptionHandlers
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
@@ -117,7 +122,7 @@ class SampleApplication
 
     return object : SweetActivityController.Interceptor
     {
-      override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
+      override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
       {
         applicationInterceptor.onLifeCycleEvent(activity, fragment, event)
         loadingAndErrorInterceptor.onLifeCycleEvent(activity, fragment, event)

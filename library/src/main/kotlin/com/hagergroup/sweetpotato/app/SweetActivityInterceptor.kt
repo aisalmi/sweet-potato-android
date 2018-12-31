@@ -60,7 +60,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
 
   protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: Any?): FragmentAggregateClass
 
-  override fun onLifeCycleEvent(activity: AppCompatActivity?, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
   {
     if (event == Lifecycle.Event.ON_CREATE)
     {
