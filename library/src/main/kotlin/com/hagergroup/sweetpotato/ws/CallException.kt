@@ -1,6 +1,8 @@
 package com.hagergroup.sweetpotato.ws
 
 /**
+ * The exception that will be thrown if any problem occurs during a web service call.
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

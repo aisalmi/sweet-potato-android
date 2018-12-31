@@ -3,7 +3,6 @@ package com.hagergroup.sweetpotato.util
 import android.util.Log
 import timber.log.Timber
 
-
 /**
  * @author Ludovic Roland
  * @since 2018.11.05
