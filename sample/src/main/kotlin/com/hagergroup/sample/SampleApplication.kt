@@ -126,7 +126,7 @@ class SampleApplication
       {
         applicationInterceptor.onLifeCycleEvent(activity, fragment, event)
         loadingAndErrorInterceptor.onLifeCycleEvent(activity, fragment, event)
-        connectivityListener.onLifeCycleEvent(activity, fragment, event)
+        connectivityListener?.onLifeCycleEvent(activity, fragment, event)
       }
 
     }
@@ -139,7 +139,7 @@ class SampleApplication
     return object : ExceptionHandlers.DefaultExceptionHandler(getI18N(), SweetIssueAnalyzer.DefaultIssueAnalyzer(applicationContext))
     {
 
-      override fun onActivityExceptionFallback(activity: AppCompatActivity?, fragment: Fragment?, throwable: Throwable): Boolean
+      override fun onActivityExceptionFallback(activity: AppCompatActivity, fragment: Fragment?, throwable: Throwable): Boolean
       {
         reportIssueIfNecessary(true, throwable)
         return super.onActivityExceptionFallback(activity, fragment, throwable)

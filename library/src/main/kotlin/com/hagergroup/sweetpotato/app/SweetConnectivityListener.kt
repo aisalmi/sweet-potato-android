@@ -13,11 +13,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.hagergroup.sweetpotato.app.SweetConnectivityListener.Companion.CONNECTIVITY_CHANGED_ACTION
+import com.hagergroup.sweetpotato.app.SweetConnectivityListener.Companion.HAS_CONNECTIVITY_EXTRA
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import timber.log.Timber
 import java.util.*
 
 /**
+ * A basis class responsible for listening to connectivity events.
+ * <p>
+ * <b>Caution: this component requires the Android `android.permission.ACCESS_NETWORK_STATE` permission!</b>.
+ * </p>
+ * <p>
+ * This component will issue a broadcast [Intent], every time the hosting application Internet connectivity status changes with the
+ * [CONNECTIVITY_CHANGED_ACTION] action, and an extra [HAS_CONNECTIVITY_EXTRA], which states the current application connectivity status.
+ * </p>
+ * <p>
+ * This component should be created during the [com.hagergroup.sweetpotato.app.SweetApplication.onCreate] method, and it should be enrolled
+ * to all the hosting application activities, during the [com.hagergroup.sweetpotato.app.SweetApplication.getInterceptor] when
+ * receiving the [Lifecycle.Event.ON_CREATE] and [Lifecycle.Event.ON_RESUME] events.
+ * </p>
+ *
  * @author Ludovic Roland
  * @since 2018.11.06
  */
@@ -28,9 +44,15 @@ abstract class SweetConnectivityListener(val context: Context)
   companion object
   {
 
+    /**
+     * The action that will used to notify via a broadcast [Intent] when the hosting application Internet connectivity changes.
+     */
     const val CONNECTIVITY_CHANGED_ACTION = "connectivityChangedAction"
 
-    const val EXTRA_HAS_CONNECTIVITY = "hasConnectivity"
+    /**
+     * A broadcast [Intent] boolean flag which indicates the hosting application Internet connectivity status.
+     */
+    const val HAS_CONNECTIVITY_EXTRA = "hasConnectivityExtra"
 
   }
 
@@ -58,6 +80,10 @@ abstract class SweetConnectivityListener(val context: Context)
     }
   }
 
+  /**
+   * This method should be invoked during the [com.hagergroup.sweetpotato.app.SweetActivityController.Interceptor.onLifeCycleEvent] method, and
+   * it will handle everything.
+   */
   override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
   {
     if (event == Lifecycle.Event.ON_CREATE)
@@ -81,9 +107,15 @@ abstract class SweetConnectivityListener(val context: Context)
     }
   }
 
+  /**
+   * @return whether the device has Internet connectivity
+   */
   fun hasConnectivity(): Boolean =
       hasConnectivity
 
+  /**
+   * @return the currently active network info
+   */
   fun getActiveNetworkInfo(): NetworkInfo? =
       getConnectivityManager().activeNetworkInfo
 
@@ -193,7 +225,7 @@ abstract class SweetConnectivityListener(val context: Context)
       Timber.i("Received an Internet connectivity change event: the connection is now '$hasConnectivity'")
 
       // We notify the application regarding this connectivity change event
-      LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION).putExtra(SweetConnectivityListener.EXTRA_HAS_CONNECTIVITY, hasConnectivity))
+      LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION).putExtra(SweetConnectivityListener.HAS_CONNECTIVITY_EXTRA, hasConnectivity))
 
       notifyServices(hasConnectivity)
     }

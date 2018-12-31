@@ -8,6 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 /**
+ * A broadcast listener which only watch after [SweetBroadcastListener.UI_LOAD_ACTION] UI loading intents action.
+ * <p>
+ * It is commonly used for [AppCompatActivity] and [androidx.fragment.app.Fragment], to get events when the entity is being loaded.
+ * </p>
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */
@@ -84,6 +89,11 @@ internal abstract class LoadingBroadcastListener
   override fun getAction(): String =
       SweetBroadcastListener.UI_LOAD_ACTION
 
+  /**
+   * Is invoked when a new loading event (intent) occurs.
+   *
+   * @param isLoading is equal to `true` if and only if the underlying activity is not loading anymore
+   */
   protected abstract fun onLoading(isLoading: Boolean)
 
 }

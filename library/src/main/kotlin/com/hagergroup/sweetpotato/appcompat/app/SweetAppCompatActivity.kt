@@ -11,6 +11,10 @@ import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 
 /**
+ * The basis class for all activities available in the framework.
+ *
+ * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ *
  * @author Ludovic Roland
  * @since 2018.11.06
  */
@@ -79,7 +83,7 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   override fun getAggregate(): AggregateClass? =
       sweetizer.getAggregate()
 
-  override fun setAggregate(aggregate: AggregateClass)
+  override fun setAggregate(aggregate: AggregateClass?)
   {
     sweetizer.setAggregate(aggregate)
   }

@@ -6,6 +6,11 @@ import androidx.annotation.RestrictTo
 import androidx.appcompat.app.AppCompatActivity
 
 /**
+ * A broadcast listener which listens only to [SweetBroadcastListener.UI_LOAD_ACTION] intents.
+ * <p>
+ * It is commonly used for [AppCompatActivity] and [androidx.fragment.app.Fragment], to get events when the entity is being loaded.
+ * </p>
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

@@ -143,7 +143,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
     return sweetizer?.getAggregate()
   }
 
-  override fun setAggregate(aggregate: AggregateClass)
+  override fun setAggregate(aggregate: AggregateClass?)
   {
     sweetizer?.setAggregate(aggregate)
   }

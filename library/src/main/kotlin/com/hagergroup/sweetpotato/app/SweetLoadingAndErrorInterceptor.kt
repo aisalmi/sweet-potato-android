@@ -11,12 +11,24 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
+import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregateProvider
 import com.hagergroup.sweetpotato.content.LoadingBroadcastListener
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import java.util.concurrent.atomic.AtomicReference
 
 /**
+ * An interceptor which is responsible for handling two things, very common in applications:
+ * <ol>
+ * <li>the graphical indicators while an entity [AppCompatActivity] or [Fragment] is being loaded: on that purpose, you need to
+ * declare the entity [com.hagergroup.sweetpotato.annotation.SweetSendLoadingIntentAnnotation] annotation, so that loading events are triggered;</li>
+ * <li>the display of errors.</li>
+ * </ol>
+ * <p>
+ * Caution: in order to have this interceptor working, you need to make sure that the entity (deriving hence from [Sweetable]) uses a template
+ * type implementing the [LoadingErrorAndRetryAggregateProvider] interface.
+ * </p>
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

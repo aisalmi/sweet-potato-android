@@ -4,6 +4,8 @@ import android.content.Context
 import com.hagergroup.sweetpotato.app.SweetActivityController
 
 /**
+ * Defined as a wrapper over the built-in [Thread.UncaughtExceptionHandler].
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

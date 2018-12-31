@@ -13,6 +13,8 @@ import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
+ * An interceptor which is responsible for handling the [SweetActionBarAnnotation], [SweetActivityAnnotation] and [SweetFragmentAnnotation] annotations declarations on [AppCompatActivity] and [Fragment].
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

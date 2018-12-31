@@ -13,6 +13,10 @@ import java.util.*
 import kotlin.reflect.KClass
 
 /**
+ * A basis activity class which is displayed while the application is loading.
+ *
+ * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

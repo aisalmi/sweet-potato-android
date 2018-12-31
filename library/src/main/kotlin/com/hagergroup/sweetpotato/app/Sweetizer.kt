@@ -44,7 +44,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
   override fun getAggregate(): AggregateClass? =
       stateContainer.aggregate
 
-  override fun setAggregate(aggregate: AggregateClass)
+  override fun setAggregate(aggregate: AggregateClass?)
   {
     stateContainer.aggregate = aggregate
   }
