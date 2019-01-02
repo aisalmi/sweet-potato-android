@@ -78,18 +78,78 @@ interface SweetLifeCycle
   @Throws(ModelUnavailableException::class)
   fun onRetrieveModel()
 
+  /**
+   * This is the place where the implementing class can initialize the previously retrieved graphical objects. This method is invoked only once during
+   * the entity life cycle.
+   * <p>
+   * This method will be invoked just after the [onRetrieveModel] method first invocation has successfully returned.
+   * </p>
+   * <p>
+   * It is ensured that this method will be invoked from the UI thread!
+   * </p>
+   * <p>
+   * Never invoke this method, only the framework should, because this is a callback!
+   * </p>
+   */
   fun onBindModel()
 
+  /**
+   * Asks the implementing entity to reload its business objects and to synchronize its display. The method invokes the
+   * [onRetrieveModel] method.
+   *
+   * @param onOver if not `null`, this method will be eventually invoked from the UI thread, once the refresh has successfully completed
+   */
   fun refreshModelAndBind(onOver: Runnable?)
 
+  /**
+   * Indicates whether nothing went wrong during the implementing entity, or if a redirection is being processed.
+   * <p>
+   * Thanks to the [com.hagergroup.sweetpotato.app.SweetActivityController.Redirector], it is possible to re-route any [com.hagergroup.sweetpotato.app.Sweetable][AppCompatActivity]
+   * when it starts, if some other [AppCompatActivity] needs to be executed beforehand.
+   * </p>
+   *
+   * @return `true` if and only if the implementing [AppCompatActivity]/[Fragment] entity should resume its execution
+   */
   fun shouldKeepOn(): Boolean
 
+  /**
+   * Provides information about the current entity life cycle.
+   *
+   * @return `true` if and only if the entity life cycle is the first time to execute during its container life
+   */
   fun isFirstLifeCycle(): Boolean
 
+  /**
+   * Provides information about the current entity life cycle.
+   * <p>
+   * It is very handy when it comes to know whether the end-user can interact with the underlying [AppCompatActivity]/[Fragment] entity.
+   * </p>
+   *
+   * @return `true` if and only if the underlying [AppCompatActivity]/[Fragment] entity life-cycle is between the
+   * [AppCompatActivity.onResume]/[Fragment.onResume] and [AppCompatActivity.onPause]/[Fragment.onPause] methods
+   */
   fun isInteracting(): Boolean
 
+  /**
+   * Indicates whether the current entity is still alive.
+   * <p>
+   * It enables to know whether the underlying [AppCompatActivity]/[Fragment] entity UI is still available for being handled.
+   * </p>
+   *
+   * @return `true` if and only if the underlying [AppCompatActivity]/[Fragment] entity [AppCompatActivity.onDestroy]/[Fragment.onDestroy]
+   * method has already been invoked
+   */
   fun isAlive(): Boolean
 
+  /**
+   * Indicates whether the extending [AppCompatActivity]/[Fragment] entity implementing the [SweetLifeCycle] interface is in
+   * the middle of a [refreshModelAndBind] call.
+   * <p>
+   * It is very handy when it comes to disable certain things, like menu entries, while an [AppCompatActivity]/[Fragment] is loading.
+   * </p>
+   *
+   * @return `true` if and only if the [refreshModelAndBind] is being executed.
+   */
   fun isRefreshingModelAndBinding(): Boolean
 
 }

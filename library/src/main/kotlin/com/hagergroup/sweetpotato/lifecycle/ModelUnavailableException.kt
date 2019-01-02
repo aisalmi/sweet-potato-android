@@ -1,6 +1,8 @@
 package com.hagergroup.sweetpotato.lifecycle
 
 /**
+ * This exception should be triggered on the framework methods which allow to throw it, when a business object is not accessible.
+ *
  * @author Ludovic Roland
  * @since 2018.11.06
  */

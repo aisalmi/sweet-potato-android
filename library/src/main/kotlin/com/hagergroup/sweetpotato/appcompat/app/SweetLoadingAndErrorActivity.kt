@@ -15,6 +15,16 @@ import timber.log.Timber
 import java.util.*
 
 /**
+ * A basis class for activities that implements the loading and the error mechanism.
+ *
+ * @param ActivityAggregateClass the activity aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ * @param FragmentAggregateClass the fragment aggregate class
+ *
+ * @see SweetAppCompatActivity
+ * @see SweetActivityAggregate
+ * @see SweetFragmentAggregate
+ * @see SweetLoadingAndErrorInterceptor.ModelUnavailableReporter
+ *
  * @author Ludovic Roland
  * @since 2018.12.05
  */

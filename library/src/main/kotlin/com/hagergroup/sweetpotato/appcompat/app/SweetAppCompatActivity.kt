@@ -15,6 +15,9 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
  *
  * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
  *
+ * @see Sweetable
+ * @see SweetActivityAggregate
+ *
  * @author Ludovic Roland
  * @since 2018.11.06
  */

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
@@ -13,6 +14,15 @@ import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
 /**
+ * A basis class for designing an Android compatibility library [Fragment] compatible with the framework, i.e.
+ * sweet potato ready.
+ * <p>
+ * This implementation use a [SweetViewModel] in order to implement the databinding and the MVVM architecture
+ * </p>
+ *
+ * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ * @param BindingClass the binding class in order to implement the databinding
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */

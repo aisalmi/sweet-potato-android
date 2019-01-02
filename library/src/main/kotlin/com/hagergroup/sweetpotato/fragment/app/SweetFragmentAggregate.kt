@@ -19,6 +19,10 @@ import timber.log.Timber
 import kotlin.reflect.KClass
 
 /**
+ * The basis class for all Fragment Aggregate available in the framework.
+ *
+ * @see SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregateProvider
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */
@@ -49,6 +53,9 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
 
   val modelContainer by lazy { SweetActivityInterceptor.ModelContainer() }
 
+  /**
+   * Open the specified fragment, the previous fragment is add to the back stack.
+   */
   fun openChildFragment(parentFragment: SweetFragment<*>, @IdRes fragmentPlaceholderIdentifier: Int, fragmentClass: KClass<SweetFragment<*>>, savedState: Fragment.SavedState?)
   {
     try

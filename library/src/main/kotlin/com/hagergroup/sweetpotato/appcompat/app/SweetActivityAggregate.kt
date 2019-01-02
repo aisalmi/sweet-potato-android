@@ -14,6 +14,8 @@ import timber.log.Timber
 import kotlin.reflect.KClass
 
 /**
+ * The basis class for all Activity Aggregate available in the framework.
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */
@@ -65,21 +67,55 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
     }
   }
 
+  /**
+   * Replaces the current fragment by the specified fragment one.
+   * Reads the activity annotation in order to add it or not to the backstack.
+   * The fragment is opened with the extras of the activity as its arguments.
+   *
+   * @param fragmentClass the fragment to open
+   */
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>)
   {
     addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
   }
 
+  /**
+   * Replaces the current fragment by the specified fragment one.
+   * The fragment is opened with the extras of the activity as its arguments.
+   *
+   * @param fragmentClass              the fragment to open
+   * @param fragmentContainerIdentifer the identifier of the container whose fragment is to be replaced.
+   * @param addFragmentToBackStack     indicates wether the fragment should be added to the backstack
+   * @param fragmentBackStackName      the name of the fragment into the backstack if it should added
+   */
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?)
   {
     addOrReplaceFragment(fragmentClass, fragmentContainerIdentifer, addFragmentToBackStack, fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
   }
 
+  /**
+   * Replaces the current fragment by the specified fragment one.
+   * Reads the activity annotation in order to add it or not to the backstack.
+   *
+   * @param fragmentClass the fragment to open
+   * @param savedState    the initial saved state of the fragment
+   * @param arguments     the arguments of the fragment
+   */
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, savedState: Fragment.SavedState?, arguments: Bundle?)
   {
     addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, savedState, arguments, FragmentTransactionType.Replace)
   }
 
+  /**
+   * Adds or replaces the current fragment by the specified fragment one.
+   *
+   * @param fragmentClass              the fragment to open
+   * @param fragmentContainerIdentifer the identifier of the container whose fragment is to be replaced.
+   * @param addFragmentToBackStack     indicates wether the fragment should be added to the backstack
+   * @param fragmentBackStackName      the name of the fragment into the backstack if it should added
+   * @param savedState                 the initial saved state of the fragment
+   * @param arguments                  the arguments of the fragment
+   */
   fun addOrReplaceFragment(fragmentClass: KClass<out SweetFragment<*>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?, savedState: Fragment.SavedState?, arguments: Bundle?, fragmentTransactionType: FragmentTransactionType)
   {
     try

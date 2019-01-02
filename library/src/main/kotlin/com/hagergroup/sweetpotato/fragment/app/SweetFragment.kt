@@ -16,6 +16,11 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
+ * A basis class for designing an Android compatibility library [Fragment] compatible with the framework, i.e.
+ * sweet potato ready.
+ *
+ * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ *
  * @author Ludovic Roland
  * @since 2018.11.07
  */
