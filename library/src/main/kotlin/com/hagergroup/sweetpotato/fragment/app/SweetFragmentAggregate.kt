@@ -47,7 +47,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
 
   }
 
-  private val fragmentLoadingErrorAndRetryAggregate by lazy { SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregate() }
+  private val fragmentLoadingErrorAndRetryAggregate by lazy { SweetLoadingAndErrorInterceptor.SweetLoadingErrorAndRetryAggregate() }
 
   private val fragmentModelUnavailableExceptionKeeper by lazy { SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper() }
 
@@ -193,7 +193,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     modelContainer.onSaveInstanceState(bundle)
   }
 
-  override fun getLoadingErrorAndRetryAggregate(): SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregate =
+  override fun getLoadingErrorAndRetryAggregate(): SweetLoadingAndErrorInterceptor.SweetLoadingErrorAndRetryAggregate =
       fragmentLoadingErrorAndRetryAggregate
 
   override fun getModelUnavailableExceptionKeeper(): SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper =

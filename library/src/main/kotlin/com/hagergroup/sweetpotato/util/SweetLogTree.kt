@@ -7,6 +7,7 @@ import timber.log.Timber
  * @author Ludovic Roland
  * @since 2018.11.05
  */
+// source : https://gist.github.com/ogasimli/f9c65407c294f8e0973fbb5697e756a7#file-releaselogtree-java
 class SweetLogTree
   : Timber.Tree()
 {

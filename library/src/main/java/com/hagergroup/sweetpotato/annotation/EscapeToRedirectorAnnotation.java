@@ -6,17 +6,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import android.app.Activity;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hagergroup.sweetpotato.app.SweetActivityController;
+import com.hagergroup.sweetpotato.appcompat.app.SweetAppCompatActivity;
 
 /**
- * An empty interface which should be used as a marker on an {@link Activity}, which does not want to be requested by the
+ * Annotation which should be used as a marker on a {@link SweetAppCompatActivity}, which does not want to be requested by the
  * {@link SweetActivityController.Redirector}.
  * <p>
- * When an {@link Activity} implements this interface, the {@link SweetActivityController.Redirector#getRedirection(AppCompatActivity)} method will not be
+ * When a {@link SweetAppCompatActivity} uses this interface, the {@link SweetActivityController.Redirector#getRedirection(AppCompatActivity)} method will not be
  * invoked.
  * </p>
  *
@@ -25,7 +24,6 @@ import com.hagergroup.sweetpotato.app.SweetActivityController;
  * @author Ludovic Roland
  * @since 2018.12.31
  */
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited

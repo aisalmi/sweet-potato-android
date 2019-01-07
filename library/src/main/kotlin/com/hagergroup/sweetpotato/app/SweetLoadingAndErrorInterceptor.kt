@@ -66,7 +66,7 @@ abstract class SweetLoadingAndErrorInterceptor
   interface LoadingErrorAndRetryAggregateProvider
   {
 
-    fun getLoadingErrorAndRetryAggregate(): LoadingErrorAndRetryAggregate
+    fun getLoadingErrorAndRetryAggregate(): SweetLoadingErrorAndRetryAggregate
 
     fun getModelUnavailableExceptionKeeper(): ModelUnavailableExceptionKeeper
 
@@ -290,7 +290,7 @@ abstract class SweetLoadingAndErrorInterceptor
 
   }
 
-  class LoadingErrorAndRetryAggregate
+  class SweetLoadingErrorAndRetryAggregate
   {
 
     private val issue = AtomicReference<ModelUnavailableException>()
@@ -314,7 +314,7 @@ abstract class SweetLoadingAndErrorInterceptor
           {
             if (displayLoadingViewNextTime == true)
             {
-              loadingErrorAndRetryAttributes?.handleLoading(errorAndRetryAttributesProvider, isLoading, this@LoadingErrorAndRetryAggregate.issue)
+              loadingErrorAndRetryAttributes?.handleLoading(errorAndRetryAttributesProvider, isLoading, this@SweetLoadingErrorAndRetryAggregate.issue)
             }
             else
             {

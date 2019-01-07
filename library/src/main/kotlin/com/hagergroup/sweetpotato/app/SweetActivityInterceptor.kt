@@ -52,7 +52,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
 
   }
 
-  private val fragmentLoadingErrorAndRetryAggregate by lazy { SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregate() }
+  private val fragmentLoadingErrorAndRetryAggregate by lazy { SweetLoadingAndErrorInterceptor.SweetLoadingErrorAndRetryAggregate() }
 
   private val fragmentModelUnavailableExceptionKeeper by lazy { SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper() }
 
