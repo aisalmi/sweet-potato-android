@@ -1,5 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://hagerdigitalfactory.visualstudio.com/Digital%20Factory%20Documentation/_apis/build/status/sweet-potato-android-master?branchName=master)](https://hagerdigitalfactory.visualstudio.com/Digital%20Factory%20Documentation/_build/latest?definitionId=36?branchName=master)
+[ ![Download](https://api.bintray.com/packages/hagergroup/Maven/sweetpotato/images/download.svg) ](https://bintray.com/hagergroup/Maven/sweetpotato/_latestVersion)
 
 # Sweet Potato Android
 
@@ -25,7 +26,16 @@ Our goal is to make building products easier, faster, and more fun from the simp
 
 ## Installation
 
-Gradle is the only supported build configuration, so just add the dependency to your project `build.gradle` file.
+Gradle is the only supported build configuration, so just add the dependency to your project `build.gradle` file :
+
+```groovy
+dependencies 
+{
+  implementation "com.hagergroup:sweetpotato:0.1"
+}
+```
+
+The latest version of Sweet Potato is [ ![Download](https://api.bintray.com/packages/hagergroup/Maven/sweetpotato/images/download.svg) ](https://bintray.com/hagergroup/Maven/sweetpotato/_latestVersion)
 
 ## Components to Know
 
