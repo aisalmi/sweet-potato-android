@@ -2,6 +2,8 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "com.novoda.bintray-release"
+apply plugin: "maven"
+apply plugin: "maven-publish"
 
 android
 {
@@ -68,4 +70,27 @@ publish
   publishVersion = android.defaultConfig.versionName
   desc = "Sweet Potato is the Android framework from Hager Group mainly written in Kotlin and only compatible with Android Jetpack.It provides a light-weight wrapper around Android components that contains everyting you need!"
   website = "https://github.com/hagergroup/sweet-potato-android"
+}
+
+uploadArchives
+{
+  repositories
+  {
+    mavenDeployer
+    {
+      snapshotRepository(url: findProperty("azureArtifactsUrl") ?: "")
+      {
+        authentication(userName: findProperty("azureArtifactsUsername") ?: "", password: findProperty("azureArtifactsGradleAccessToken") ?: "")
+      }
+
+      pom.project
+      {
+        name "Sweet Potato"
+        groupId "com.hagergroup"
+        artifactId "sweetpotato"
+        version android.defaultConfig.versionName
+        packaging "aar"
+      }
+    }
+  }
 }
