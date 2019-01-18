@@ -29,7 +29,7 @@ import java.util.*
  * [CONNECTIVITY_CHANGED_ACTION] action, and an extra [HAS_CONNECTIVITY_EXTRA], which states the current application connectivity status.
  * </p>
  * <p>
- * This component should be created during the [com.hagergroup.sweetpotato.app.SweetApplication.onCreate] method, and it should be enrolled
+ * This component should be created during the [com.hagergroup.sweetpotato.app.SweetApplication.retrieveConnectivityListener] method, and it should be enrolled
  * to all the hosting application activities, during the [com.hagergroup.sweetpotato.app.SweetApplication.getInterceptor] when
  * receiving the [Lifecycle.Event.ON_CREATE] and [Lifecycle.Event.ON_RESUME] events.
  * </p>
