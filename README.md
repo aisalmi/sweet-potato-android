@@ -31,7 +31,7 @@ Gradle is the only supported build configuration, so just add the dependency to 
 ```groovy
 dependencies 
 {
-  implementation "com.hagergroup:sweetpotato:0.1"
+  implementation "com.hagergroup:sweet-potato:0.1"
 }
 ```
 
