@@ -115,7 +115,7 @@ object SweetActivityController
    * @return an [Intent] that may be started if the provided [AppCompatActivity] actually contains a reference to
    * another [AppCompatActivity] ; `null` otherwise
    *
-   * @see CALLING_INTENT
+   * @see CALLING_INTENT_EXTRA
    * @see needsRedirection
    * @see registerInterceptor
    */
