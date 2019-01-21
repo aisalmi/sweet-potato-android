@@ -40,7 +40,7 @@ abstract class SweetApplication
   /**
    * Contains various attributes in order to have some context of the app environment.
    */
-  open class Constants(resources: Resources)
+  open class ApplicationConstants(resources: Resources)
   {
 
     val isSmartphone: Boolean
@@ -69,11 +69,11 @@ abstract class SweetApplication
     var isOnCreatedDone = false
       private set
 
-    lateinit var applicationConstants: Constants
-
   }
 
-  protected var connectivityListener: SweetConnectivityListener? = null
+  var applicationConstants: ApplicationConstants? = null
+
+  var connectivityListener: SweetConnectivityListener? = null
 
   /**
    * Indicates whether the [onCreate] method has already been invoked.
@@ -167,7 +167,9 @@ abstract class SweetApplication
         connectivityListener = it
       }
 
-      applicationConstants = Constants(resources)
+      retrieveApplicationConstants()?.let {
+        applicationConstants = it
+      }
 
       onCreateCustom()
 
@@ -223,6 +225,21 @@ abstract class SweetApplication
    * @see [SweetConnectivityListener]
    */
   protected open fun retrieveConnectivityListener(): SweetConnectivityListener? =
+      null
+
+  /**
+   * This callback will be invoked by the application instance, in order to get a reference on the application [ApplicationConstants]:
+   * this method is responsible for creating an instance of this very simple class. Override this method, in order to provide your own class.
+   * <p>
+   * It is ensured that the framework will only call once this method (unless you explicitly invoke it, which you should not), during the
+   * [onCreate] method execution.
+   * </p>
+   *
+   * @return an instance which will provide some constants. Returns `null` by default
+   *
+   * @see [ApplicationConstants]
+   */
+  protected open fun retrieveApplicationConstants(): ApplicationConstants? =
       null
 
   /**
