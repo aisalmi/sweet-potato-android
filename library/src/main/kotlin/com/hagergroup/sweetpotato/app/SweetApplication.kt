@@ -58,6 +58,7 @@ abstract class SweetApplication
       this.isTablet = resources.getBoolean(R.bool.isTablet)
       this.canRotate = resources.getBoolean(R.bool.canRotate)
     }
+
   }
 
   companion object
@@ -69,9 +70,9 @@ abstract class SweetApplication
     var isOnCreatedDone = false
       private set
 
-  }
+    lateinit var applicationConstants: ApplicationConstants
 
-  var applicationConstants: ApplicationConstants? = null
+  }
 
   var connectivityListener: SweetConnectivityListener? = null
 
