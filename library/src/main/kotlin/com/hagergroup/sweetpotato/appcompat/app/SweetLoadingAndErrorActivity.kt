@@ -65,7 +65,7 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
         //In order to respect the Android navigation guidelines, we should use the NavUtils class but...
         // NavUtils.navigateUpFromSameTask(this);
         finish()
-        super.onOptionsItemSelected(item)
+        true
       }
       else              ->
       {
