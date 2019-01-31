@@ -3,7 +3,7 @@ package com.hagergroup.sweetpotato.app
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 
 /**
- * All [android.app.Activity] and [androidx.fragment.app.Fragment] entities of the framework must at least implement this composite interface.
+ * All [androidx.appcompat.app.AppCompatActivity] and [androidx.fragment.app.Fragment] entities of the framework must at least implement this composite interface.
  * <p>
  * Any entity implementing this interface is considered as Sweet Potato ready (or Sweet Potato compliant) and benefit from all the framework features.
  * </p>
