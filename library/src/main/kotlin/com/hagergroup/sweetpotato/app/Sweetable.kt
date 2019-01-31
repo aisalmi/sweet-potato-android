@@ -13,7 +13,7 @@ import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
  * as explained in the [com.hagergroup.sweetpotato.content.SweetBroadcastListener].
  * </p>
  * <p>
- * When it is required to have an existing [android.app.Activity] or [androidx.fragment.app.Fragment] implement this interface, you may use the
+ * When it is required to have an existing [androidx.appcompat.app.AppCompatActivity] or [androidx.fragment.app.Fragment] implement this interface, you may use the
  * [Sweetizer] on that purpose.
  * </p>
  *
