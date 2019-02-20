@@ -18,7 +18,7 @@ Centralized exception handling
 Activity redirection
 Events interception
 Application helper
-Threading
+Threading / Coroutines
 Broadcasting
 MVVM with databinding or MVC ready
 
