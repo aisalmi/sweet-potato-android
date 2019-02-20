@@ -37,7 +37,7 @@ dependencies
 
 The latest version of Sweet Potato is [ ![Download](https://api.bintray.com/packages/hagergroup/Maven/sweetpotato/images/download.svg) ](https://bintray.com/hagergroup/Maven/sweetpotato/_latestVersion)
 
-## Components to Know
+## Components to know
 
 |             |  Conductor Components |
 ------|------------------------------
@@ -46,6 +46,7 @@ The latest version of Sweet Potato is [ ![Download](https://api.bintray.com/pack
 **Interceptor** | A component which handles in one place most of the entities (`AppCompatActivity` and `Fragment`) life cycle events through a dedicated class.
 **Redirector** | A component which controls if an Activity should always be displayed before another one
 **SweetExceptionHandler** | A component which centralizes exception handling. Whenever an exception is thrown during the application, it can be handled in a centralized and secure way whenever an exception is thrown during the application, it can be handled in a centralized and secure way
+**SweetGuardedCoroutine** | A component which allows to run a command in a Coroutine way and that may thow an exception during its execution
 
 ## Getting Started
 
