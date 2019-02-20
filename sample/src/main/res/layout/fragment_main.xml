@@ -62,6 +62,20 @@
       android:layout_height="wrap_content"
       android:text="refresh with internet error"
     />
+
+    <Button
+      android:id="@+id/coroutines"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="SweetCouroutines"
+    />
+
+    <Button
+      android:id="@+id/coroutinesError"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="SweetCouroutines error"
+    />
   </LinearLayout>
 
   <include layout="@layout/loading_error_and_retry"/>

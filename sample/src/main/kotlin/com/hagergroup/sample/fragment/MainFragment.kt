@@ -11,10 +11,14 @@ import com.hagergroup.sample.ThirdActivity
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
+import com.hagergroup.sweetpotato.coroutines.SweetCoroutines
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.delay
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import timber.log.Timber
+import java.net.URL
 import java.net.UnknownHostException
 
 /**
@@ -91,6 +95,8 @@ class MainFragment
     refreshNoLoading.setOnClickListener(this)
     refreshError.setOnClickListener(this)
     refreshInternetError.setOnClickListener(this)
+    coroutines.setOnClickListener(this)
+    coroutinesError.setOnClickListener(this)
   }
 
   override fun onClick(view: View?)
@@ -136,6 +142,41 @@ class MainFragment
         context?.toast("Finish !")
       })
     }
+    else if (view == coroutines)
+    {
+      startSweetCoroutines()
+    }
+    else if (view == coroutinesError)
+    {
+      startSweetCoroutinesError()
+    }
+  }
+
+  private fun startSweetCoroutines()
+  {
+    SweetCoroutines.execute(object : SweetCoroutines.SweetGuardedCoroutine(context)
+    {
+      override suspend fun run()
+      {
+        val oracle = URL("https://www.google.com/")
+        oracle.openConnection().inputStream.use {
+          Timber.d(it.bufferedReader().readText())
+        }
+      }
+    })
+  }
+
+  private fun startSweetCoroutinesError()
+  {
+    SweetCoroutines.execute(object : SweetCoroutines.SweetGuardedCoroutine(context)
+    {
+      override suspend fun run()
+      {
+        delay(2_000)
+
+        23.div(0)
+      }
+    })
   }
 
 }

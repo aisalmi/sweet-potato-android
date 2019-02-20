@@ -131,7 +131,7 @@ sealed class ExceptionHandlers
      */
     protected open fun onModelUnavailableExceptionFallback(activity: AppCompatActivity?, fragment: Fragment?, exception: ModelUnavailableException): Boolean
     {
-      showDialog(activity, i18n.dialogBoxErrorTitle, i18n.businessObjectAvailabilityProblemHint, activity?.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
+      showDialog(activity, i18n.dialogBoxErrorTitle, i18n.businessObjectAvailabilityProblemHint, activity?.getString(android.R.string.ok) ?: "OK", DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
 
         // We leave the activity, because we cannot go any further
@@ -165,7 +165,7 @@ sealed class ExceptionHandlers
      */
     protected open fun onActivityExceptionFallback(activity: AppCompatActivity, fragment: Fragment?, throwable: Throwable): Boolean
     {
-      showDialog(activity, i18n.dialogBoxErrorTitle, i18n.otherProblemHint, activity.getString(android.R.string.ok) ?: "ok", DialogInterface.OnClickListener { dialog, _ ->
+      showDialog(activity, i18n.dialogBoxErrorTitle, i18n.otherProblemHint, activity.getString(android.R.string.ok), DialogInterface.OnClickListener { dialog, _ ->
         dialog.dismiss()
 
         // We leave the activity, because we cannot go any further
@@ -354,7 +354,7 @@ sealed class ExceptionHandlers
         else
         {
           val retry = connectivityUIExperience == ConnectivityUIExperience.DialogRetry && activity is SweetLifeCycle
-          showDialog(activity, i18n.dialogBoxErrorTitle, if (retry == true) i18n.connectivityProblemRetryHint else i18n.connectivityProblemHint, activity.getString(android.R.string.ok), DialogInterface.OnClickListener { dialog, _ ->
+          showDialog(activity, i18n.dialogBoxErrorTitle, i18n.connectivityProblemHint, activity.getString(android.R.string.ok), DialogInterface.OnClickListener { dialog, _ ->
             dialog.dismiss()
             if (retry == true)
             {

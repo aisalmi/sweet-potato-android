@@ -28,13 +28,11 @@ abstract class SweetApplication
    * @param dialogBoxErrorTitle                   the title that will be used when the framework displays an error dialog box
    * @param businessObjectAvailabilityProblemHint the body of the error dialog box when the business objects are not available on an [androidx.appcompat.app.AppCompatActivity]
    * @param connectivityProblemHint               the body of the error dialog box a connectivity issue occurs
-   * @param connectivityProblemRetryHint          the body of the error dialog box a connectivity issue occurs, and that a "Retry" button is displayed
    * @param otherProblemHint                      the "Retry" button label of the dialog box when a connectivity issue occurs
    */
   class I18N(val dialogBoxErrorTitle: String,
              val businessObjectAvailabilityProblemHint: String,
              val connectivityProblemHint: String,
-             val connectivityProblemRetryHint: String,
              val otherProblemHint: String)
 
   /**

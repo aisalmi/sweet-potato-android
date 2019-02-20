@@ -49,7 +49,7 @@ class SampleApplication
   }
 
   override fun getI18N(): SweetApplication.I18N =
-      SweetApplication.I18N("", "", "", "", "")
+      SweetApplication.I18N(getString(R.string.error), getString(R.string.businessProblem), getString(R.string.connectivityProblem), getString(R.string.unavailableService))
 
   override fun retrieveConnectivityListener(): SweetConnectivityListener =
       SampleConnectivityListener(this)

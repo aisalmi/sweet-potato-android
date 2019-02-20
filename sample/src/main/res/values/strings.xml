@@ -2,6 +2,8 @@
   <string name="app_name">Sample</string>
   <string name="loading">Loading&#8230;</string>
   <string name="retry">Retry</string>
-  <string name="unavailableService">This page cannot be displayed properly.</string>
+  <string name="error">Error</string>
+  <string name="businessProblem">Cannot retrieve data</string>
+  <string name="unavailableService">An error occurred while trying to display this page.</string>
   <string name="connectivityProblem">Your terminal is not currently connected to Internet, or your connection is very poor.\n\nPlease, check your connection and try again.</string>
 </resources>
