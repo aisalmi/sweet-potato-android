@@ -15,7 +15,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.12.12
  */
-@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.expand_button_title, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetViewModelBindingFragmentAnnotation.ViewModelContext.Activity)
+@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetViewModelBindingFragmentAnnotation.ViewModelContext.Activity)
 class ThirdFragment
   : SampleViewModelBindingFragment<FragmentSecondBinding>(),
     View.OnClickListener

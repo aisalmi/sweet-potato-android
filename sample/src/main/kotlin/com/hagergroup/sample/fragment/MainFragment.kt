@@ -25,7 +25,7 @@ import java.net.UnknownHostException
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.expand_button_title, surviveOnConfigurationChanged = true)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, surviveOnConfigurationChanged = true)
 class MainFragment
   : SampleFragment(),
     View.OnClickListener, SweetBroadcastListenerProvider
