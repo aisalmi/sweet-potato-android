@@ -18,7 +18,7 @@ import timber.log.Timber
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-abstract class SweetApplication
+abstract class SweetApplication<ApplicationConstantsClass : SweetApplication.ApplicationConstants>
   : Application()
 {
 
@@ -68,7 +68,12 @@ abstract class SweetApplication
     var isOnCreatedDone = false
       private set
 
-    lateinit var applicationConstants: ApplicationConstants
+    private lateinit var applicationConstants: ApplicationConstants
+
+    fun <ApplicationConstantClass : ApplicationConstants> getApplicationConstants(): ApplicationConstantClass
+    {
+      return applicationConstants as ApplicationConstantClass
+    }
 
   }
 
@@ -234,12 +239,12 @@ abstract class SweetApplication
    * [onCreate] method execution.
    * </p>
    *
-   * @return an instance which will provide some constants. Returns `null` by default
+   * @return an instance which will provide some constants. Returns an instance of [ApplicationConstants] by default
    *
    * @see [ApplicationConstants]
    */
   protected open fun retrieveApplicationConstants(): ApplicationConstants? =
-      null
+      ApplicationConstants(resources)
 
   /**
    * This callback will be invoked by the application instance, in order to get a reference on the application [SweetActivityController.Interceptor]:

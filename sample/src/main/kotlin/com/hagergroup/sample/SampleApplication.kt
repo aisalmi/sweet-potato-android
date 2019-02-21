@@ -33,7 +33,7 @@ import java.net.HttpURLConnection
  * @since 2018.11.08
  */
 class SampleApplication
-  : SweetApplication()
+  : SweetApplication<SweetApplication.ApplicationConstants>()
 {
 
   override fun setupTimber()

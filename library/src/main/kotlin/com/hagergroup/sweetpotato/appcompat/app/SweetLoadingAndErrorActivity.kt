@@ -44,7 +44,7 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
   {
     super.onCreate(savedInstanceState)
 
-    if (getAggregate()?.activityAnnotation?.canRotate == false && SweetApplication.applicationConstants.canRotate == false)
+    if (getAggregate()?.activityAnnotation?.canRotate == false && SweetApplication.getApplicationConstants<SweetApplication.ApplicationConstants>().canRotate == false)
     {
       // This Activity is not authorized to rotate
       val requestedOrientation = requestedOrientation
