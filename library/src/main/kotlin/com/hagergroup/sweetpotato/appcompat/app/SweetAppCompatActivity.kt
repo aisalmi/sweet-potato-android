@@ -120,9 +120,9 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   override fun isAlive(): Boolean =
       sweetizer.isAlive()
 
-  override fun refreshModelAndBind(onOver: Runnable?)
+  override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
   {
-    sweetizer.refreshModelAndBind(onOver)
+    sweetizer.refreshModelAndBind(retrieveModel, onOver, immediately)
   }
 
   override fun shouldKeepOn(): Boolean =
@@ -142,7 +142,7 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
 
   fun refreshModelAndBind()
   {
-    refreshModelAndBind(null)
+    refreshModelAndBind(true, null, false)
   }
 
   @LayoutRes

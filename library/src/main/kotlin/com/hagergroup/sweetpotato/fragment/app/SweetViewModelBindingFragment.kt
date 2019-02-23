@@ -76,10 +76,10 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
     }
   }
 
-  override fun refreshModelAndBind(onOver: Runnable?)
+  override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
   {
     viewModel?.isAlreadyInitialized = false
-    super.refreshModelAndBind(onOver)
+    super.refreshModelAndBind(retrieveModel, onOver, immediately)
   }
 
   override fun onBindModel()

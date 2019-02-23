@@ -15,7 +15,11 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenersProvider
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import timber.log.Timber
-import java.util.concurrent.*
+import java.util.concurrent.Future
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -31,12 +35,12 @@ import java.util.concurrent.atomic.AtomicInteger
 internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(private val activity: AppCompatActivity, private val component: ComponentClass)
 {
 
-  private class RefreshModelAndBind(val onOver: Runnable?)
+  private class RefreshModelAndBind(val retrieveModel: Boolean, val onOver: Runnable?)
   {
 
     fun refreshModelAndBind(lifeCycleActivity: SweetLifeCycle)
     {
-      lifeCycleActivity.refreshModelAndBind(onOver)
+      lifeCycleActivity.refreshModelAndBind(retrieveModel, onOver, true)
     }
 
   }
@@ -230,6 +234,9 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     isInteracting = true
   }
 
+  fun isRetrievingModel(): Boolean =
+      modelRetrieved == false || refreshModelAndBindNextTime?.retrieveModel == true
+
   fun getRetrieveModelOver(): Runnable? =
       refreshModelAndBindNextTime?.onOver
 
@@ -303,7 +310,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
       stopHandling == false && beingRedirected == false
 
   @Synchronized
-  fun shouldDelayRefreshBusinessObjectsAndDisplay(onOver: Runnable?): Boolean
+  fun shouldDelayRefreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean?): Boolean
   {
     // If the entity or the hosting Activity is finishing, we give up
     if (isAliveAsWellAsHostingActivity() == false)
@@ -312,9 +319,9 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     }
 
     // We test whether the Activity is active (its life-cycle state is between 'onResume()' and 'onPause()'
-    if (isInteracting == false)
+    if (isInteracting == false && immediately == false)
     {
-      refreshModelAndBindNextTime = RefreshModelAndBind(onOver)
+      refreshModelAndBindNextTime = RefreshModelAndBind(retrieveModel, onOver)
 
       Timber.d("The refresh of the business objects and display is delayed because the Activity is not interacting")
 
@@ -326,7 +333,7 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
       // In that case, we need to wait for the refresh action to be over
       Timber.d("The refresh of the model and bind is stacked because it is already refreshing")
 
-      refreshModelAndBindPending = RefreshModelAndBind(onOver)
+      refreshModelAndBindPending = RefreshModelAndBind(retrieveModel, onOver)
 
       return true
     }

@@ -75,16 +75,16 @@ class ThirdFragment
     if (view == refreshError)
     {
       throwError = true
-      refreshModelAndBind(Runnable {
+      refreshModelAndBind(true, Runnable {
         context?.toast("Finish !")
-      })
+      }, true)
     }
     else if (view == refreshInternetError)
     {
       throwInternetError = true
-      refreshModelAndBind(Runnable {
+      refreshModelAndBind(true, Runnable {
         context?.toast("Finish !")
-      })
+      }, true)
     }
     else if (view == observableField)
     {

@@ -358,7 +358,7 @@ sealed class ExceptionHandlers
             dialog.dismiss()
             if (retry == true)
             {
-              lifeCycle.refreshModelAndBind(null)
+              lifeCycle.refreshModelAndBind(true, null, false)
             }
             else
             {

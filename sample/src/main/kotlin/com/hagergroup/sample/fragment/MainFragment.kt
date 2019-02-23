@@ -117,30 +117,30 @@ class MainFragment
     }
     else if (view == refreshLoading)
     {
-      refreshModelAndBind(Runnable {
+      refreshModelAndBind(true, Runnable {
         context?.toast("Finish !")
-      })
+      }, true)
     }
     else if (view == refreshNoLoading)
     {
       getAggregate()?.getLoadingErrorAndRetryAggregate()?.doNotDisplayLoadingViewNextTime()
-      refreshModelAndBind(Runnable {
+      refreshModelAndBind(true, Runnable {
         context?.toast("Finish !")
-      })
+      }, true)
     }
     else if (view == refreshError)
     {
       throwError = true
-      refreshModelAndBind(Runnable {
+      refreshModelAndBind(true, Runnable {
         context?.toast("Finish !")
-      })
+      }, true)
     }
     else if (view == refreshInternetError)
     {
       throwInternetError = true
-      refreshModelAndBind(Runnable {
+      refreshModelAndBind(true, Runnable {
         context?.toast("Finish !")
-      })
+      }, true)
     }
     else if (view == coroutines)
     {

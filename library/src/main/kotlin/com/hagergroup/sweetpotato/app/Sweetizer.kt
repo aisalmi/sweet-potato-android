@@ -62,7 +62,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     stateContainer.registerBroadcastListeners(broadcastListeners)
   }
 
-  override fun refreshModelAndBind(onOver: Runnable?)
+  override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
   {
     if (stateContainer.isAliveAsWellAsHostingActivity() == false)
     {
@@ -70,7 +70,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       return
     }
 
-    if (stateContainer.shouldDelayRefreshBusinessObjectsAndDisplay(onOver) == true)
+    if (stateContainer.shouldDelayRefreshModelAndBind(retrieveModel, onOver, immediately) == true)
     {
       return
     }
@@ -84,7 +84,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     stateContainer.onRefreshingModelAndBindingStart()
 
     stateContainer.execute(Runnable {
-      if (onRetrieveModelInternal() == false)
+      if (onRetrieveModelInternal(retrieveModel) == false)
       {
         return@Runnable
       }
@@ -117,7 +117,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
   fun refreshModelAndBind()
   {
-    refreshModelAndBind(null)
+    refreshModelAndBind(true, null, false)
   }
 
   fun onCreate(superMethod: Runnable, savedInstanceState: Bundle?)
@@ -231,19 +231,20 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_DESTROY)
   }
 
-  private fun onRetrieveModelInternal(): Boolean
+  private fun onRetrieveModelInternal(retrieveModel: Boolean): Boolean
   {
     try
     {
       onBeforeRefreshModelAndBind()
 
-      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+      if (retrieveModel == true)
       {
-        // If the entity is no more alive, we give up the process
-        return false
-      }
-      else
-      {
+        if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+        {
+          // If the entity is no more alive, we give up the process
+          return false
+        }
+
         onRetrieveModel()
 
         // We notify the entity that the business objects have actually been loaded
@@ -252,12 +253,10 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
           // If the entity is no more alive, we give up the process
           return false
         }
-        else
-        {
-          stateContainer.modelRetrieved()
-          return true
-        }
       }
+
+      stateContainer.modelRetrieved()
+      return true
     }
     catch (throwable: Throwable)
     {
@@ -323,7 +322,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
   private fun refreshModelAndBindInternal()
   {
-    sweetable.refreshModelAndBind(stateContainer.getRetrieveModelOver())
+    sweetable.refreshModelAndBind(stateContainer.isRetrievingModel(), stateContainer.getRetrieveModelOver(), true)
   }
 
   private fun onInternalModelAvailableException(throwable: Throwable)

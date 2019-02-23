@@ -97,9 +97,13 @@ interface SweetLifeCycle
    * Asks the implementing entity to reload its business objects and to synchronize its display. The method invokes the
    * [onRetrieveModel] method.
    *
-   * @param onOver if not `null`, this method will be eventually invoked from the UI thread, once the refresh has successfully completed
+   * @param retrieveModel indicates whether the [onRetrieveModel]  method should be invoked or not
+   * @param onOver                  if not `null`, this method will be eventually invoked from the UI thread
+   * @param immediately             if this flag is set to `true`, even if the implementing entity is not currently displayed, the execution will be run at once. If
+   *                                set to `false`, the execution will be delayed until the entity [AppCompatActivity.onResume] or [Fragment.onResume]
+   *                                method is invoked
    */
-  fun refreshModelAndBind(onOver: Runnable?)
+  fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
 
   /**
    * Indicates whether nothing went wrong during the implementing entity, or if a redirection is being processed.

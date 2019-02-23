@@ -118,7 +118,7 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
 
       copiedFragments.forEach {
         it.getAggregate()?.forgetException()
-        it.refreshModelAndBind(null)
+        it.refreshModelAndBind(true, null, false)
       }
     })
   }
