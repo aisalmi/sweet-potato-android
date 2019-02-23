@@ -3,6 +3,7 @@ package com.hagergroup.sweetpotato.appcompat.app
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -186,6 +187,22 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
     if (openedFragment == null)
     {
       openParameterFragment()
+    }
+
+    if (activity is SweetAppCompatActivity<*> && activity.getToolbarId() != -1)
+    {
+      val toolbar = activity.findViewById<Toolbar>(activity.getToolbarId())
+      activity.setSupportActionBar(toolbar)
+    }
+    else
+    {
+      actionBarAnnotation?.let {
+        if (it.toolbarId != -1)
+        {
+          val toolbar = activity.findViewById<Toolbar>(it.toolbarId)
+          activity.setSupportActionBar(toolbar)
+        }
+      }
     }
 
     actionBarAnnotation?.apply {

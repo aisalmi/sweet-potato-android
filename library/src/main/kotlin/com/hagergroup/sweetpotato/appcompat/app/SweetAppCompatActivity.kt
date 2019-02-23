@@ -153,4 +153,8 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   open fun getFragmentPlaceholderId(): Int =
       -1
 
+  @IdRes
+  open fun getToolbarId(): Int =
+      -1
+
 }
