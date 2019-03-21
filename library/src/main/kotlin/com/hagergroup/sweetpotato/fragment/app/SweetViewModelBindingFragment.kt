@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.OnRebindCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,16 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
 
   protected abstract fun getBindingVariable(): Int
 
+  private val onRebindCallback = object : OnRebindCallback<BindingClass>()
+  {
+
+    override fun onPreBind(binding: BindingClass): Boolean
+    {
+      return false
+    }
+
+  }
+
   abstract fun computeViewModel()
 
   override fun inflateLayout(inflater: LayoutInflater, container: ViewGroup?): View?
@@ -47,6 +58,11 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
     else
     {
       DataBindingUtil.inflate(inflater, getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: -1, container, false)
+    }
+
+    if (getAggregate()?.getPreBindBehaviourFromAnnotation() == false)
+    {
+      binding.addOnRebindCallback(onRebindCallback)
     }
 
     return binding.root
@@ -87,6 +103,7 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
     super.onBindModel()
 
     viewModel?.let {
+      binding.removeOnRebindCallback(onRebindCallback)
       binding.setVariable(getBindingVariable(), it)
     }
   }

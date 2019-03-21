@@ -2,8 +2,9 @@ package com.hagergroup.sample.fragment
 
 import android.view.View
 import com.hagergroup.sample.R
-import com.hagergroup.sample.databinding.FragmentSecondBinding
+import com.hagergroup.sample.databinding.FragmentThirdBinding
 import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
+import com.hagergroup.sample.viewmodel.ThirdFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_second.*
@@ -15,9 +16,9 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.12.12
  */
-@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetViewModelBindingFragmentAnnotation.ViewModelContext.Activity)
+@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetViewModelBindingFragmentAnnotation.ViewModelContext.Activity)
 class ThirdFragment
-  : SampleViewModelBindingFragment<FragmentSecondBinding>(),
+  : SampleViewModelBindingFragment<FragmentThirdBinding>(),
     View.OnClickListener
 {
 
@@ -55,7 +56,7 @@ class ThirdFragment
       throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
     }
 
-    (viewModel as? SecondFragmentViewModel)?.apply {
+    (viewModel as? ThirdFragmentViewModel)?.apply {
       myString = if (count % 2 == 0) arguments?.getString(ThirdFragment.MY_EXTRA) else "Count !"
       anotherString.set(arguments?.getString(ThirdFragment.ANOTHER_EXTRA))
     }

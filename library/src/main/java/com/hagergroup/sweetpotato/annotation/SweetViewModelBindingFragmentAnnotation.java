@@ -73,6 +73,11 @@ public @interface SweetViewModelBindingFragmentAnnotation
   boolean surviveOnConfigurationChanged() default false;
 
   /**
+   * @return true if databinding should be done a first time before setting the model
+   */
+  boolean preBind() default false;
+
+  /**
    * @return the context to be attached to the {@link SweetViewModel}.
    */
   SweetViewModelBindingFragmentAnnotation.ViewModelContext viewModelContext() default SweetViewModelBindingFragmentAnnotation.ViewModelContext.Fragment;

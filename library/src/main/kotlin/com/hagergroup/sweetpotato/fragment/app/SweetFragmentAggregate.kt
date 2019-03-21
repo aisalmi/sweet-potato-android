@@ -152,6 +152,15 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     }
   }
 
+  fun getPreBindBehaviourFromAnnotation(): Boolean
+  {
+    return when (fragmentAnnotation)
+    {
+      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.preBind
+      else                                       -> true
+    }
+  }
+
   fun getViewModelContextFromAnnotation(): SweetViewModelBindingFragmentAnnotation.ViewModelContext
   {
     return when (fragmentAnnotation)
