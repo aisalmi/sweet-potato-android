@@ -104,8 +104,8 @@ class SampleFragment
 ### Minimal ViewModel implementation
 
 ```kotlin
-class SecondFragmentViewModel
-  : SweetViewModel()
+class SecondFragmentViewModel(application: Application)
+  : SweetViewModel(application)
 {
 
   var myString: String? = null
