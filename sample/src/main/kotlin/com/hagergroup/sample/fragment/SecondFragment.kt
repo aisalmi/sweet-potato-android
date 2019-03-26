@@ -15,7 +15,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, preBind = true, surviveOnConfigurationChanged = false)
+@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false)
 class SecondFragment
   : SampleViewModelBindingFragment<FragmentSecondBinding>(),
     View.OnClickListener
@@ -57,7 +57,7 @@ class SecondFragment
 
     (viewModel as? SecondFragmentViewModel)?.apply {
       myString = if (count % 2 == 0) arguments?.getString(SecondFragment.MY_EXTRA) else "Count !"
-      anotherString.set(arguments?.getString(SecondFragment.ANOTHER_EXTRA))
+      anotherString.postValue(arguments?.getString(SecondFragment.ANOTHER_EXTRA))
     }
   }
 
@@ -88,7 +88,7 @@ class SecondFragment
     }
     else if (view == observableField)
     {
-      (viewModel as SecondFragmentViewModel).anotherString.set(UUID.randomUUID().toString())
+      (viewModel as SecondFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
     }
   }
 

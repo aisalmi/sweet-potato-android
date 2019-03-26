@@ -110,7 +110,7 @@ class SecondFragmentViewModel(application: Application)
 
   var myString: String? = null
 
-  val anotherString = ObservableField<String>()
+  val anotherString = MutableLiveData<String>()
 
 }
 ```

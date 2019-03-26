@@ -2,8 +2,7 @@ package com.hagergroup.sample.viewmodel
 
 import android.app.Application
 import androidx.annotation.StringRes
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import com.hagergroup.sample.R
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
@@ -17,9 +16,11 @@ class ThirdFragmentViewModel(application: Application)
 
   var myString: String? = null
 
-  val anotherString = ObservableField<String>()
+  val anotherString = MutableLiveData<String>()
 
   @StringRes
-  val resString = ObservableInt(R.string.app_name)
+  val resString = MutableLiveData<Int>().apply {
+    postValue(R.string.app_name)
+  }
 
 }

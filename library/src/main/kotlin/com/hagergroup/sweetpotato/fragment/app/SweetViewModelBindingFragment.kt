@@ -60,6 +60,8 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
       DataBindingUtil.inflate(inflater, getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: -1, container, false)
     }
 
+    binding.lifecycleOwner = viewLifecycleOwner
+
     if (getAggregate()?.getPreBindBehaviourFromAnnotation() == false)
     {
       binding.addOnRebindCallback(onRebindCallback)

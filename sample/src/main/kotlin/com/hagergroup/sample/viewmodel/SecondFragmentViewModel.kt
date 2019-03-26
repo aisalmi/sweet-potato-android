@@ -1,7 +1,7 @@
 package com.hagergroup.sample.viewmodel
 
 import android.app.Application
-import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
 /**
@@ -14,6 +14,6 @@ class SecondFragmentViewModel(application: Application)
 
   var myString: String? = null
 
-  val anotherString = ObservableField<String>()
+  val anotherString = MutableLiveData<String>()
 
 }

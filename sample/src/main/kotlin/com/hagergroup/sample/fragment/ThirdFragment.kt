@@ -3,7 +3,6 @@ package com.hagergroup.sample.fragment
 import android.view.View
 import com.hagergroup.sample.R
 import com.hagergroup.sample.databinding.FragmentThirdBinding
-import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
 import com.hagergroup.sample.viewmodel.ThirdFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
@@ -58,7 +57,7 @@ class ThirdFragment
 
     (viewModel as? ThirdFragmentViewModel)?.apply {
       myString = if (count % 2 == 0) arguments?.getString(ThirdFragment.MY_EXTRA) else "Count !"
-      anotherString.set(arguments?.getString(ThirdFragment.ANOTHER_EXTRA))
+      anotherString.postValue(arguments?.getString(ThirdFragment.ANOTHER_EXTRA))
     }
   }
 
@@ -89,7 +88,7 @@ class ThirdFragment
     }
     else if (view == observableField)
     {
-      (viewModel as SecondFragmentViewModel).anotherString.set(UUID.randomUUID().toString())
+      (viewModel as ThirdFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
     }
   }
 
