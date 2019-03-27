@@ -11,6 +11,7 @@ import com.hagergroup.sample.app.SampleActivityAggregate
 import com.hagergroup.sample.app.SampleConnectivityListener
 import com.hagergroup.sample.app.SampleFragmentAggregate
 import com.hagergroup.sample.app.SampleInterceptor
+import com.hagergroup.sample.exception.CallException
 import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.app.SweetConnectivityListener
@@ -24,7 +25,6 @@ import com.hagergroup.sweetpotato.exception.SweetIssueAnalyzer
 import com.hagergroup.sweetpotato.exception.searchForCause
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.util.SweetLogTree
-import com.hagergroup.sweetpotato.ws.CallException
 import timber.log.Timber
 import java.net.HttpURLConnection
 

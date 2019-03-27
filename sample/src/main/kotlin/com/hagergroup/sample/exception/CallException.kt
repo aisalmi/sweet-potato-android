@@ -1,4 +1,4 @@
-package com.hagergroup.sweetpotato.ws
+package com.hagergroup.sample.exception
 
 /**
  * The exception that will be thrown if any problem occurs during a web service call.
