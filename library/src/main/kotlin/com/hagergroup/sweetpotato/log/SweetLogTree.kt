@@ -1,4 +1,4 @@
-package com.hagergroup.sweetpotato.util
+package com.hagergroup.sweetpotato.log
 
 import android.util.Log
 import timber.log.Timber

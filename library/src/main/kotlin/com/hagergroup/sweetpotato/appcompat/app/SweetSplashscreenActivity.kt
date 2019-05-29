@@ -191,7 +191,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
     SweetSplashscreenActivity.markAsInitialized(this@SweetSplashscreenActivity::class, true)
   }
 
-  private fun finishActivity()
+  protected open fun finishActivity()
   {
     if (isFinishing == false)
     {

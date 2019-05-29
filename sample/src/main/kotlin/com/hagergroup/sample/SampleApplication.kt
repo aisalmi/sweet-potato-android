@@ -24,7 +24,7 @@ import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.exception.SweetIssueAnalyzer
 import com.hagergroup.sweetpotato.exception.searchForCause
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import com.hagergroup.sweetpotato.util.SweetLogTree
+import com.hagergroup.sweetpotato.log.SweetLogTree
 import timber.log.Timber
 import java.net.HttpURLConnection
 
