@@ -15,7 +15,7 @@ import com.hagergroup.sweetpotato.appcompat.app.SweetAppCompatActivity;
  * Annotation which should be used as a marker on a {@link SweetAppCompatActivity}, which does not want to be requested by the
  * {@link SweetActivityController.Redirector}.
  * <p>
- * When a {@link SweetAppCompatActivity} uses this interface, the {@link SweetActivityController.Redirector#getRedirection(AppCompatActivity)} method will not be
+ * When a {@link SweetAppCompatActivity} uses this annotation, the {@link SweetActivityController.Redirector#getRedirection(AppCompatActivity)} method will not be
  * invoked.
  * </p>
  *

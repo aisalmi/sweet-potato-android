@@ -16,7 +16,7 @@ import com.hagergroup.sweetpotato.appcompat.app.SweetAppCompatActivity;
 /**
  * Annotation which should be used on a {@link SweetAppCompatActivity}, in order to configure the {@link Toolbar}/{@link ActionBar} behavior.
  * <p>
- * When a {@link SweetAppCompatActivity} uses this interface, the associated {@link SweetActivityAggregate} will configure the behavior of the {@link Toolbar}/{@link ActionBar}.
+ * When a {@link SweetAppCompatActivity} uses this annotation, the associated {@link SweetActivityAggregate} will configure the behavior of the {@link Toolbar}/{@link ActionBar}.
  * </p>
  *
  * @author Ludovic Roland

@@ -13,7 +13,7 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 /**
  * The basis class for all activities available in the framework.
  *
- * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ * @param AggregateClass the aggregate class accessible through the [setAggregate] and [getAggregate] methods
  *
  * @see Sweetable
  * @see SweetActivityAggregate

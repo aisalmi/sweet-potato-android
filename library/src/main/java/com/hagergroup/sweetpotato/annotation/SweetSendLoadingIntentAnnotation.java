@@ -12,7 +12,7 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider;
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment;
 
 /**
- * When an {@link SweetAppCompatActivity} or a {@link SweetFragment} implements that interface, it will send broadcast intents while loading and once the loading is over.
+ * When an {@link SweetAppCompatActivity} or a {@link SweetFragment} implements this annotation, it will send broadcast intents while loading and once the loading is over.
  *
  * @see SweetBroadcastListener
  * @see SweetBroadcastListenerProvider

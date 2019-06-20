@@ -13,7 +13,7 @@ import com.hagergroup.sweetpotato.fragment.app.SweetFragment;
 /**
  * Annotation which should be used on a {@link SweetFragment}, in order to configure the loading and the error behaviors.
  * <p>
- * When a {@link SweetFragment} uses this interface, the {@link SweetLoadingAndErrorInterceptor} will handle and configure the loading and error behavior.
+ * When a {@link SweetFragment} uses this annotation, the {@link SweetLoadingAndErrorInterceptor} will handle and configure the loading and error behavior.
  * </p>
  *
  * @author Ludovic Roland
