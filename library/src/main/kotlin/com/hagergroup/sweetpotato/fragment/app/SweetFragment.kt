@@ -32,7 +32,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
   private var sweetizer: Sweetizer<AggregateClass, SweetFragment<AggregateClass>>? = null
 
   @CallSuper
-  override fun onAttach(context: Context?)
+  override fun onAttach(context: Context)
   {
     super.onAttach(context)
 
