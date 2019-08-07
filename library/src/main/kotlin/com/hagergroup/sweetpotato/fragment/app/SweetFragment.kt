@@ -111,6 +111,18 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
     }
   }
 
+  override fun onDestroyView()
+  {
+    try
+    {
+      sweetizer?.onDestroyView()
+    }
+    finally
+    {
+      super.onDestroyView()
+    }
+  }
+
   @CallSuper
   override fun onDestroy()
   {

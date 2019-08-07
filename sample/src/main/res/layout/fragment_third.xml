@@ -55,6 +55,13 @@
         android:layout_height="wrap_content"
         android:text="MutableLiveData field"
       />
+
+      <Button
+        android:id="@+id/backstack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Replace fragment with backstack"
+      />
     </LinearLayout>
 
     <include layout="@layout/loading_error_and_retry"/>

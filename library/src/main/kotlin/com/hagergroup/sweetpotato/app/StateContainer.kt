@@ -88,6 +88,9 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
   var resumedForTheFirstTime = true
     private set
 
+  var backFromBackStack = false
+    private set
+
   private val futures by lazy { mutableListOf<Future<*>>() }
 
   private var refreshingModelAndBindingCount = 0
@@ -275,8 +278,14 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
     isInteracting = false
   }
 
+  fun onDestroyView()
+  {
+    backFromBackStack = true
+  }
+
   fun onDestroy()
   {
+    backFromBackStack = false
     isAlive = false
 
     // If the business objects retrieval and synchronization is not yet completed, we do not forget to notify

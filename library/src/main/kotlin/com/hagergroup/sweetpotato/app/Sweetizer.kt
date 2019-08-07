@@ -216,6 +216,13 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_STOP)
   }
 
+  fun onDestroyView()
+  {
+    Timber.d("Sweetizer::onDestroyView")
+
+    stateContainer.onDestroyView()
+  }
+
   fun onDestroy()
   {
     Timber.d("Sweetizer::onDestroy")
@@ -286,7 +293,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
   private fun onBindModelInternal(onOver: Runnable?)
   {
-    if (stateContainer.resumedForTheFirstTime == true)
+    if (stateContainer.resumedForTheFirstTime == true || stateContainer.backFromBackStack == true)
     {
       try
       {
@@ -317,6 +324,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       }
 
     }
+
     stateContainer.onRefreshingModelAndBindingStop(this)
   }
 

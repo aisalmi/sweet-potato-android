@@ -2,15 +2,11 @@ package com.hagergroup.sample.fragment
 
 import android.view.View
 import com.hagergroup.sample.R
-import com.hagergroup.sample.SampleActivity
 import com.hagergroup.sample.databinding.FragmentThirdBinding
 import com.hagergroup.sample.viewmodel.ThirdFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import kotlinx.android.synthetic.main.fragment_second.observableField
-import kotlinx.android.synthetic.main.fragment_second.refreshError
-import kotlinx.android.synthetic.main.fragment_second.refreshInternetError
-import kotlinx.android.synthetic.main.fragment_third.*
+import kotlinx.android.synthetic.main.fragment_second.*
 import org.jetbrains.anko.toast
 import java.net.UnknownHostException
 import java.util.*
@@ -20,7 +16,7 @@ import java.util.*
  * @since 2018.12.12
  */
 @SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetViewModelBindingFragmentAnnotation.ViewModelContext.Activity)
-class ThirdFragment
+class BackstackFragment
   : SampleViewModelBindingFragment<FragmentThirdBinding>(),
     View.OnClickListener
 {
@@ -72,7 +68,6 @@ class ThirdFragment
     refreshError.setOnClickListener(this)
     refreshInternetError.setOnClickListener(this)
     observableField.setOnClickListener(this)
-    backstack.setOnClickListener(this)
   }
 
   override fun onClick(view: View?)
@@ -94,10 +89,6 @@ class ThirdFragment
     else if (view == observableField)
     {
       (viewModel as ThirdFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
-    }
-    else if(view == backstack)
-    {
-      (activity as? SampleActivity)?.getAggregate()?.replaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment")
     }
   }
 
