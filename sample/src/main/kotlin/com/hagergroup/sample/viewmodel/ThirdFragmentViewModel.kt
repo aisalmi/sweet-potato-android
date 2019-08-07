@@ -14,12 +14,13 @@ class ThirdFragmentViewModel(application: Application)
   : SweetViewModel(application)
 {
 
+  val persons = mutableListOf<String>()
+
   var myString: String? = null
 
   val anotherString = MutableLiveData<String>()
 
-  @StringRes
-  val resString = MutableLiveData<Int>().apply {
+  val resString = MutableLiveData<@StringRes Int>().apply {
     postValue(R.string.app_name)
   }
 

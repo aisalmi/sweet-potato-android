@@ -3,9 +3,11 @@ package com.hagergroup.sample.fragment
 import android.view.View
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SampleActivity
+import com.hagergroup.sample.adapter.MyAdapter
 import com.hagergroup.sample.databinding.FragmentThirdBinding
 import com.hagergroup.sample.viewmodel.ThirdFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
+import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_second.observableField
 import kotlinx.android.synthetic.main.fragment_second.refreshError
@@ -62,6 +64,7 @@ class ThirdFragment
     (viewModel as? ThirdFragmentViewModel)?.apply {
       myString = if (count % 2 == 0) arguments?.getString(ThirdFragment.MY_EXTRA) else "Count !"
       anotherString.postValue(arguments?.getString(ThirdFragment.ANOTHER_EXTRA))
+      persons.addAll(Array(15) { "Person ${it + 1}" })
     }
   }
 
@@ -73,6 +76,11 @@ class ThirdFragment
     refreshInternetError.setOnClickListener(this)
     observableField.setOnClickListener(this)
     backstack.setOnClickListener(this)
+
+    list.apply {
+      setHasFixedSize(true)
+      adapter = MyAdapter((viewModel as? ThirdFragmentViewModel)?.persons ?: emptyList())
+    }
   }
 
   override fun onClick(view: View?)
@@ -95,9 +103,9 @@ class ThirdFragment
     {
       (viewModel as ThirdFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
     }
-    else if(view == backstack)
+    else if (view == backstack)
     {
-      (activity as? SampleActivity)?.getAggregate()?.replaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment")
+      (activity as? SampleActivity)?.getAggregate()?.addOrReplaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment", null, null, SweetActivityAggregate.FragmentTransactionType.Add)
     }
   }
 
