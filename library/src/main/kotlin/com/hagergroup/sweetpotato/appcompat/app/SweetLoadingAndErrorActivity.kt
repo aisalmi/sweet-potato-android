@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.core.app.ActivityCompat
 import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
 import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
@@ -64,7 +65,7 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
       {
         //In order to respect the Android navigation guidelines, we should use the NavUtils class but...
         // NavUtils.navigateUpFromSameTask(this);
-        finish()
+        onBackPressed()
         true
       }
       else              ->
@@ -104,7 +105,14 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
 
     if (isFinishing == false)
     {
-      super.onBackPressed()
+      if (supportFragmentManager?.backStackEntryCount == 1)
+      {
+        ActivityCompat.finishAfterTransition(this@SweetLoadingAndErrorActivity)
+      }
+      else
+      {
+        super.onBackPressed()
+      }
     }
   }
 

@@ -105,7 +105,7 @@ class BackstackFragment
     }
     else if (view == backstack)
     {
-      (activity as? SampleActivity)?.getAggregate()?.addOrReplaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment", null, null, SweetActivityAggregate.FragmentTransactionType.Add)
+      (activity as? SampleActivity)?.getAggregate()?.addOrReplaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment" + System.identityHashCode(this@BackstackFragment), null, null, SweetActivityAggregate.FragmentTransactionType.Add)
     }
   }
 
