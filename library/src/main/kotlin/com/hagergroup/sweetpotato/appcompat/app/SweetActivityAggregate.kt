@@ -36,6 +36,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
   }
 
   var openedFragment: SweetFragment<*>? = null
+    private set
 
   private var lastBackstackFragment: SweetFragment<*>? = null
 
