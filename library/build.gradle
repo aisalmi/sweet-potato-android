@@ -15,7 +15,7 @@ android
     targetSdkVersion 28
 
     versionCode 11
-    versionName "0.7.2.002-SNAPSHOT"
+    versionName "0.7.2.003-SNAPSHOT"
 
     sourceSets
     {
