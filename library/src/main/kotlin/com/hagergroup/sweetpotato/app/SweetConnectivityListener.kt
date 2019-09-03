@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.Build
@@ -229,6 +230,35 @@ abstract class SweetConnectivityListener(val context: Context)
 
       notifyServices(hasConnectivity)
     }
+  }
+
+  fun isWifiConnected(): Boolean
+  {
+    val activeNetworkInfo = getActiveNetworkInfo()
+
+    if (activeNetworkInfo != null)
+    {
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+      {
+        if (activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI && activeNetworkInfo.isConnected == true)
+        {
+          return true
+        }
+
+        return false
+      }
+      else
+      {
+        if (getConnectivityManager().getNetworkCapabilities(getConnectivityManager().activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true)
+        {
+          return true
+        }
+
+        return false
+      }
+    }
+
+    return false
   }
 
 }
