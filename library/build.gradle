@@ -1,21 +1,22 @@
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-kapt"
 apply plugin: "com.novoda.bintray-release"
 apply plugin: "maven"
 apply plugin: "maven-publish"
 
 android
 {
-  compileSdkVersion 28
+  compileSdkVersion 29
 
   defaultConfig
   {
     minSdkVersion 19
-    targetSdkVersion 28
+    targetSdkVersion 29
 
-    versionCode 13
-    versionName "0.7.3"
+    versionCode 14
+    versionName "0.7.4.001-SNAPSHOT"
 
     sourceSets
     {
