@@ -5,18 +5,15 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-
-/**
- * @author Ludovic Roland
- * @since 2019.05.29
- */
-
 /**
  * Awaits for completion of the task without blocking a thread.
  *
  * This suspending function is cancellable.
  * If the [Job] of the current coroutine is cancelled or completed while this suspending function is waiting, this function
  * stops waiting for the completion stage and immediately resumes with [CancellationException].
+ *
+ * @author Ludovic Roland
+ * @since 2019.09.17
  */
 public suspend fun <T> Task<T>.await(): T?
 {
