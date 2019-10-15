@@ -9,6 +9,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.net.NetworkRequest
+import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -69,17 +70,12 @@ abstract class SweetConnectivityListener(val context: Context)
   {
     activitiesCount = 0
 
-    // We immediately extract the connectivity status
-    val activeNetworkInfo = getActiveNetworkInfo()
+    hasConnectivity = isConnected()
 
-    if (activeNetworkInfo?.isConnected == false)
-    {
-      Timber.i("The Internet connection is off")
-
-      hasConnectivity = false
-      notifyServices(hasConnectivity)
-    }
+    notifyServices(hasConnectivity)
   }
+
+  protected abstract fun notifyServices(hasConnectivity: Boolean)
 
   /**
    * This method should be invoked during the [com.hagergroup.sweetpotato.app.SweetActivityController.Interceptor.onLifeCycleEvent] method, and
@@ -117,14 +113,18 @@ abstract class SweetConnectivityListener(val context: Context)
   /**
    * @return the currently active network info
    */
-  fun getActiveNetworkInfo(): NetworkInfo? =
+  private fun getActiveNetworkInfo(): NetworkInfo? =
       getConnectivityManager().activeNetworkInfo
 
-  protected abstract fun notifyServices(hasConnectivity: Boolean)
-
+  @TargetApi(Build.VERSION_CODES.M)
+  private fun getActiveNetwork(): Network? =
+      getConnectivityManager().activeNetwork
 
   protected fun getConnectivityManager(): ConnectivityManager =
       context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+  protected fun getWifiManager(): WifiManager =
+      context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
   private fun registerBroadcastListenerLegacy(activity: AppCompatActivity?, fragment: Fragment?)
   {
@@ -234,11 +234,11 @@ abstract class SweetConnectivityListener(val context: Context)
 
   fun isWifiConnected(): Boolean
   {
-    val activeNetworkInfo = getActiveNetworkInfo()
-
-    if (activeNetworkInfo != null)
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
     {
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+      val activeNetworkInfo = getActiveNetworkInfo()
+
+      if (activeNetworkInfo != null)
       {
         if (activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI && activeNetworkInfo.isConnected == true)
         {
@@ -247,18 +247,46 @@ abstract class SweetConnectivityListener(val context: Context)
 
         return false
       }
-      else
+    }
+    else
+    {
+      if (getConnectivityManager().getNetworkCapabilities(getActiveNetwork())?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true)
       {
-        if (getConnectivityManager().getNetworkCapabilities(getConnectivityManager().activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true)
-        {
-          return true
-        }
-
-        return false
+        return true
       }
+
+      return false
     }
 
     return false
+  }
+
+  fun isWifiActivated(): Boolean =
+      getWifiManager().isWifiEnabled
+
+  private fun isConnected(): Boolean
+  {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+    {
+      // We immediately extract the connectivity status
+      val isConnected = getActiveNetworkInfo()?.isConnected
+      Timber.i("The Internet connection is connected: '$isConnected'")
+
+      return isConnected ?: false
+    }
+    else
+    {
+      val networkCapabilities = getConnectivityManager().getNetworkCapabilities(getActiveNetwork()) ?: return false
+
+      return when
+      {
+        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)     -> true
+        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        else                                                                     -> false
+      }
+
+    }
   }
 
 }
