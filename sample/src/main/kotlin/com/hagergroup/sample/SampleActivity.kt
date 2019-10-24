@@ -14,7 +14,7 @@ abstract class SampleActivity
 {
 
   @Throws(ModelUnavailableException::class)
-  override fun onRetrieveModel()
+  override suspend fun onRetrieveModel()
   {
   }
 

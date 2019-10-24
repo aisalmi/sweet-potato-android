@@ -37,7 +37,7 @@ class SecondFragment
   private var throwInternetError = false
 
   @Throws(ModelUnavailableException::class)
-  override fun computeViewModel()
+  override suspend fun computeViewModel()
   {
     Thread.sleep(1_000)
 
