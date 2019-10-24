@@ -4,8 +4,8 @@ import android.content.Context
 import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.coroutines.SweetCoroutines.SweetGuardedCoroutine
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -67,9 +67,9 @@ class SweetCoroutines
      *
      * @param guardedCoroutine the command to run
      */
-    fun execute(guardedCoroutine: SweetGuardedCoroutine)
+    fun execute(coroutineScope: CoroutineScope, guardedCoroutine: SweetGuardedCoroutine)
     {
-      GlobalScope.launch(Dispatchers.Default + CoroutineExceptionHandler { _, throwable ->
+      coroutineScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
         Timber.w(throwable, "An error occurred while executing the SweetCoroutine")
 
         val modifiedThrowable = guardedCoroutine.onThrowable(throwable)

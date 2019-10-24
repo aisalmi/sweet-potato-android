@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -15,7 +18,8 @@ import timber.log.Timber
 class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCompatActivity,
                                                             val sweetable: Sweetable<AggregateClass>,
                                                             val component: ComponentClass,
-                                                            val fragment: Fragment?)
+                                                            val fragment: Fragment?,
+                                                            val coroutineScope: CoroutineScope)
   : Sweetable<AggregateClass>
 {
 
@@ -83,21 +87,17 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
     stateContainer.onRefreshingModelAndBindingStart()
 
-    stateContainer.execute(Runnable {
-      if (onRetrieveModelInternal(retrieveModel) == false)
+    coroutineScope.launch(context = Dispatchers.IO) {
+      if (onRetrieveModelInternal(retrieveModel) == true)
       {
-        return@Runnable
-      }
-
-      activity.runOnUiThread(Runnable {
-        if (stateContainer.isAliveAsWellAsHostingActivity() == false)
-        {
-          return@Runnable
+        launch(context = Dispatchers.Main) {
+          if (stateContainer.isAliveAsWellAsHostingActivity() == true)
+          {
+            onBindModelInternal(onOver)
+          }
         }
-
-        onBindModelInternal(onOver)
-      })
-    })
+      }
+    }
   }
 
   override fun isRefreshingModelAndBinding(): Boolean =

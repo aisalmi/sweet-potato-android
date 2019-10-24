@@ -15,12 +15,6 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenersProvider
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import timber.log.Timber
-import java.util.concurrent.Future
-import java.util.concurrent.SynchronousQueue
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * There for gathering all instance variables, and in order to make copy and paste smarter.
@@ -52,19 +46,6 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
     private const val ILLEGAL_STATE_EXCEPTION_FRAGMENT_MESSAGE_SUFFIX = "not attached to Activity"
 
-    val SweetThreadPool = ThreadPoolExecutor(0, Int.MAX_VALUE, 60, TimeUnit.SECONDS, SynchronousQueue<Runnable>(), object : ThreadFactory
-    {
-
-      private val threadCount by lazy { AtomicInteger(1) }
-
-      override fun newThread(runnable: Runnable?): Thread
-      {
-        return Thread(runnable).apply {
-          name = "SweetThreadPool #${threadCount.getAndIncrement()}"
-        }
-      }
-    })
-
     fun isFirstCycle(savedInstanceState: Bundle?): Boolean =
         savedInstanceState?.containsKey(StateContainer.ALREADY_STARTED_EXTRA) ?: false
 
@@ -90,8 +71,6 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
   var backFromBackStack = false
     private set
-
-  private val futures by lazy { mutableListOf<Future<*>>() }
 
   private var refreshingModelAndBindingCount = 0
 
@@ -296,13 +275,6 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
 
     // We unregister all the "BroadcastListener" entities
     unregisterBroadcastListeners()
-
-    futures.forEach {
-      if (it.isDone == false)
-      {
-        it.cancel(true)
-      }
-    }
   }
 
   fun onSaveInstanceState(outState: Bundle)
@@ -378,18 +350,6 @@ internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(privat
   fun markNotResumedForTheFirstTime()
   {
     resumedForTheFirstTime = false
-  }
-
-  fun execute(runnable: Runnable)
-  {
-    if (isAliveAsWellAsHostingActivity() == false)
-    {
-      // The hosting entity or Activity can be considered as finished, hence we do nothing
-      return
-    }
-
-    val future = StateContainer.SweetThreadPool.submit(runnable)
-    futures.add(future)
   }
 
 }

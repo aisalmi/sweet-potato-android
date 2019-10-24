@@ -6,6 +6,7 @@ import android.os.Handler
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -26,7 +27,7 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     Sweetable<AggregateClass>
 {
 
-  private val sweetizer by lazy { Sweetizer(this, this, this, null) }
+  private val sweetizer by lazy { Sweetizer(this, this, this, null, lifecycleScope) }
 
   override fun onCreate(savedInstanceState: Bundle?)
   {

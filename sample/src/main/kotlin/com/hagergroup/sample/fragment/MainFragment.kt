@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
@@ -154,7 +155,7 @@ class MainFragment
 
   private fun startSweetCoroutines()
   {
-    SweetCoroutines.execute(object : SweetCoroutines.SweetGuardedCoroutine(context)
+    SweetCoroutines.execute(lifecycleScope, object : SweetCoroutines.SweetGuardedCoroutine(context)
     {
       override suspend fun run()
       {
@@ -168,7 +169,7 @@ class MainFragment
 
   private fun startSweetCoroutinesError()
   {
-    SweetCoroutines.execute(object : SweetCoroutines.SweetGuardedCoroutine(context)
+    SweetCoroutines.execute(lifecycleScope, object : SweetCoroutines.SweetGuardedCoroutine(context)
     {
       override suspend fun run()
       {

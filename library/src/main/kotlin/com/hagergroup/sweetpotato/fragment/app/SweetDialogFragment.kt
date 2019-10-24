@@ -10,6 +10,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -37,7 +38,7 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate>
     super.onAttach(context)
 
     (activity as? AppCompatActivity)?.let {
-      sweetizer = Sweetizer(it, this, this, this)
+      sweetizer = Sweetizer(it, this, this, this, lifecycleScope)
     }
   }
 
