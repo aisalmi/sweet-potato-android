@@ -77,7 +77,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
   }
 
   @Throws(ModelUnavailableException::class)
-  final override fun onRetrieveModel()
+  final override suspend fun onRetrieveModel()
   {
     // We check whether another activity instance is already running the business objects retrieval
     if (SweetSplashscreenActivity.onRetrieveModelCustomStarted == false)

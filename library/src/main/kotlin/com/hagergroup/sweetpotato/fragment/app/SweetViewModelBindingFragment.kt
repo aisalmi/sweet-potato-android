@@ -71,7 +71,7 @@ abstract class SweetViewModelBindingFragment<AggregateClass : SweetFragmentAggre
   }
 
   @Throws(ModelUnavailableException::class)
-  override fun onRetrieveModel()
+  override suspend fun onRetrieveModel()
   {
     super.onRetrieveModel()
 

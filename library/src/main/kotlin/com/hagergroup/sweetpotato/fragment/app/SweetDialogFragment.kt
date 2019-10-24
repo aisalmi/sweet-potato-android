@@ -139,7 +139,7 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate>
 
   @CallSuper
   @Throws(ModelUnavailableException::class)
-  override fun onRetrieveModel()
+  override suspend fun onRetrieveModel()
   {
     getAggregate()?.checkException()
   }
