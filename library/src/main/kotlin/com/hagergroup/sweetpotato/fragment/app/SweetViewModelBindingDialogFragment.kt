@@ -47,7 +47,7 @@ abstract class SweetViewModelBindingDialogFragment<AggregateClass : SweetFragmen
 
   }
 
-  abstract fun computeViewModel()
+  abstract suspend fun computeViewModel()
 
   override fun inflateLayout(inflater: LayoutInflater, container: ViewGroup?): View?
   {
