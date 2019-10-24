@@ -178,7 +178,7 @@ class MainFragment
         23.div(0)
       }
 
-      override fun onThrowable(throwable: Throwable): Throwable?
+      override suspend fun onThrowable(throwable: Throwable): Throwable?
       {
         Timber.w(throwable, "An error occurred")
 
