@@ -76,7 +76,7 @@ interface SweetLifeCycle
    * that the current entity cannot continue its execution
    */
   @Throws(ModelUnavailableException::class)
-  fun onRetrieveModel()
+  suspend fun onRetrieveModel()
 
   /**
    * This is the place where the implementing class can initialize the previously retrieved graphical objects. This method is invoked only once during

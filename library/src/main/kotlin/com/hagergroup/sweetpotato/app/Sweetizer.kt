@@ -35,7 +35,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     sweetable.onRetrieveDisplayObjects()
   }
 
-  override fun onRetrieveModel()
+  override suspend fun onRetrieveModel()
   {
     sweetable.onRetrieveModel()
   }
@@ -238,7 +238,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_DESTROY)
   }
 
-  private fun onRetrieveModelInternal(retrieveModel: Boolean): Boolean
+  private suspend fun onRetrieveModelInternal(retrieveModel: Boolean): Boolean
   {
     try
     {
