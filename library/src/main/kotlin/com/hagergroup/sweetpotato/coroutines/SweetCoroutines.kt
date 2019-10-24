@@ -54,7 +54,7 @@ class SweetCoroutines
      * @return `null` if and only if the method has handled the exception and that the [com.hagergroup.sweetpotato.exception.SweetExceptionHandler] should not be
      * invoked ; otherwise, the [Throwable]  that should be submitted to the [com.hagergroup.sweetpotato.exception.SweetExceptionHandler]
      */
-    open fun onThrowable(throwable: Throwable): Throwable? =
+    open suspend fun onThrowable(throwable: Throwable): Throwable? =
         throwable
 
   }
@@ -70,13 +70,16 @@ class SweetCoroutines
     fun execute(coroutineScope: CoroutineScope, guardedCoroutine: SweetGuardedCoroutine)
     {
       coroutineScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
-        Timber.w(throwable, "An error occurred while executing the SweetCoroutine")
-
-        val modifiedThrowable = guardedCoroutine.onThrowable(throwable)
-
-        if (modifiedThrowable != null)
+        coroutineScope.launch(Dispatchers.Main)
         {
-          SweetActivityController.handleException(true, guardedCoroutine.context, null, modifiedThrowable)
+          Timber.w(throwable, "An error occurred while executing the SweetCoroutine")
+
+          val modifiedThrowable = guardedCoroutine.onThrowable(throwable)
+
+          if (modifiedThrowable != null)
+          {
+            SweetActivityController.handleException(true, guardedCoroutine.context, null, modifiedThrowable)
+          }
         }
       }) {
         guardedCoroutine.run()
