@@ -113,6 +113,7 @@ abstract class SweetConnectivityListener(val context: Context)
   /**
    * @return the currently active network info
    */
+  @Deprecated("Please use #getActiveNetwork()", ReplaceWith("getActiveNetwork()"))
   private fun getActiveNetworkInfo(): NetworkInfo? =
       getConnectivityManager().activeNetworkInfo
 
@@ -120,10 +121,10 @@ abstract class SweetConnectivityListener(val context: Context)
   private fun getActiveNetwork(): Network? =
       getConnectivityManager().activeNetwork
 
-  protected fun getConnectivityManager(): ConnectivityManager =
+  fun getConnectivityManager(): ConnectivityManager =
       context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-  protected fun getWifiManager(): WifiManager =
+  fun getWifiManager(): WifiManager =
       context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
   private fun registerBroadcastListenerLegacy(activity: AppCompatActivity?, fragment: Fragment?)
