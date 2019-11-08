@@ -15,8 +15,8 @@ android
     minSdkVersion 19
     targetSdkVersion 29
 
-    versionCode 19
-    versionName "1.0.0.005-SNAPSHOT"
+    versionCode 20
+    versionName "1.0.0.006-SNAPSHOT"
 
     sourceSets
     {
@@ -63,12 +63,12 @@ dependencies
   api "androidx.core:core-ktx:1.1.0"
   api "androidx.appcompat:appcompat:1.1.0"
   api "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
-  api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc01"
+  api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc02"
   api "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
   api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
   // Play Core
-  implementation "com.google.android.play:core:1.6.3"
+  implementation "com.google.android.play:core:1.6.4"
 
   // Anko
   api "org.jetbrains.anko:anko-commons:0.10.8"
