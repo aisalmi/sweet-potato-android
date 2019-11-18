@@ -105,7 +105,7 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
 
     if (isFinishing == false)
     {
-      if (supportFragmentManager?.backStackEntryCount == 1)
+      if (supportFragmentManager.backStackEntryCount == 1)
       {
         ActivityCompat.finishAfterTransition(this@SweetLoadingAndErrorActivity)
       }
