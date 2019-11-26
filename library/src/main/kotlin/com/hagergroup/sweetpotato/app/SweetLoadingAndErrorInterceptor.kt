@@ -349,6 +349,11 @@ abstract class SweetLoadingAndErrorInterceptor
       displayLoadingViewNextTime = false
     }
 
+    fun showLoading()
+    {
+      loadingErrorAndRetryAttributes?.showLoading()
+    }
+
     fun showModelUnavailableException(activity: AppCompatActivity, sweetable: Sweetable<*>, exception: ModelUnavailableException)
     {
       loadingErrorAndRetryAttributes?.showIssue(activity, exception, Runnable {

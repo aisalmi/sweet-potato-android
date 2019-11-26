@@ -15,8 +15,8 @@ android
     minSdkVersion 19
     targetSdkVersion 29
 
-    versionCode 20
-    versionName "1.0.0.006-SNAPSHOT"
+    versionCode 21
+    versionName "1.0.0.007-SNAPSHOT"
 
     sourceSets
     {
@@ -59,7 +59,7 @@ dependencies
   api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
   api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
-  // Androidx
+  // Androidxlifecycle_version
   api "androidx.core:core-ktx:1.1.0"
   api "androidx.appcompat:appcompat:1.1.0"
   api "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
