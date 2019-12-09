@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
-import com.hagergroup.sample.ThirdActivity
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
@@ -16,8 +16,6 @@ import com.hagergroup.sweetpotato.coroutines.SweetCoroutines
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.delay
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.net.URL
 import java.net.UnknownHostException
@@ -56,7 +54,7 @@ class MainFragment
       {
         if (intent?.action == MainFragment.MY_ACTION)
         {
-          context?.toast("Click !")
+          Toast.makeText(context, "Click !", Toast.LENGTH_SHORT).show()
         }
       }
 
@@ -104,11 +102,21 @@ class MainFragment
   {
     if (view == binding)
     {
-      context?.startActivity<SecondActivity>(SecondFragment.MY_EXTRA to "hey !", SecondFragment.ANOTHER_EXTRA to "Another Hey !")
+      val intent = Intent(context, SecondActivity::class.java).apply {
+        putExtra(SecondFragment.MY_EXTRA, "hey !")
+        putExtra(SecondFragment.ANOTHER_EXTRA, "Another Hey !")
+      }
+
+      startActivity(intent)
     }
     else if (view == binding2)
     {
-      context?.startActivity<ThirdActivity>(ThirdFragment.MY_EXTRA to "go !", ThirdFragment.ANOTHER_EXTRA to "another go !")
+      val intent = Intent(context, SecondActivity::class.java).apply {
+        putExtra(ThirdFragment.MY_EXTRA, "go !")
+        putExtra(ThirdFragment.ANOTHER_EXTRA, "Another go !")
+      }
+
+      startActivity(intent)
     }
     else if (view == click)
     {
@@ -119,28 +127,28 @@ class MainFragment
     else if (view == refreshLoading)
     {
       refreshModelAndBind(true, Runnable {
-        context?.toast("Finish !")
+        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }, true)
     }
     else if (view == refreshNoLoading)
     {
       getAggregate()?.getLoadingErrorAndRetryAggregate()?.doNotDisplayLoadingViewNextTime()
       refreshModelAndBind(true, Runnable {
-        context?.toast("Finish !")
+        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }, true)
     }
     else if (view == refreshError)
     {
       throwError = true
       refreshModelAndBind(true, Runnable {
-        context?.toast("Finish !")
+        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }, true)
     }
     else if (view == refreshInternetError)
     {
       throwInternetError = true
       refreshModelAndBind(true, Runnable {
-        context?.toast("Finish !")
+        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }, true)
     }
     else if (view == coroutines)

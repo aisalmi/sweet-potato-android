@@ -2,13 +2,13 @@ package com.hagergroup.sweetpotato.exception
 
 import android.content.Context
 import android.content.DialogInterface
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
-import org.jetbrains.anko.toast
 import timber.log.Timber
 
 /**
@@ -349,7 +349,7 @@ sealed class ExceptionHandlers
       activity.runOnUiThread {
         if (lifeCycle == null || connectivityUIExperience == ConnectivityUIExperience.Toast)
         {
-          activity.toast(i18n.connectivityProblemHint)
+          Toast.makeText(activity, i18n.connectivityProblemHint, Toast.LENGTH_SHORT).show()
         }
         else
         {

@@ -1,13 +1,13 @@
 package com.hagergroup.sample.fragment
 
 import android.view.View
+import android.widget.Toast
 import com.hagergroup.sample.R
 import com.hagergroup.sample.databinding.FragmentSecondBinding
 import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_second.*
-import org.jetbrains.anko.toast
 import java.net.UnknownHostException
 import java.util.*
 
@@ -76,14 +76,14 @@ class SecondFragment
     {
       throwError = true
       refreshModelAndBind(true, Runnable {
-        context?.toast("Finish !")
+        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }, true)
     }
     else if (view == refreshInternetError)
     {
       throwInternetError = true
       refreshModelAndBind(true, Runnable {
-        context?.toast("Finish !")
+        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }, true)
     }
     else if (view == observableField)
