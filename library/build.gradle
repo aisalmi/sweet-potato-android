@@ -15,8 +15,8 @@ android
     minSdkVersion 19
     targetSdkVersion 29
 
-    versionCode 24
-    versionName "1.0.0.0010-SNAPSHOT"
+    versionCode 25
+    versionName "1.0.0.0011-SNAPSHOT"
 
     sourceSets
     {
