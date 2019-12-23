@@ -41,7 +41,7 @@ public @interface SweetActivityAnnotation
   /**
    * @return the {@link SweetFragment} class to be created and displayed in the {@link SweetActivityAnnotation#fragmentPlaceholderId()} view holder.
    */
-  Class<? extends SweetFragment<?>> fragmentClass() default DummySweetFragment.class;
+  Class<? extends SweetFragment<?, ?, ?>> fragmentClass() default DummySweetFragment.class;
 
   /**
    * @return if the fragment referred into the {@link SweetActivityAnnotation#fragmentClass()} should be added to the backStack or not.

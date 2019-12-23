@@ -3,30 +3,31 @@ package com.hagergroup.sample.fragment
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
+import com.hagergroup.sample.databinding.FragmentMainBinding
+import com.hagergroup.sample.viewmodel.MainFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.coroutines.SweetCoroutines
-import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.net.URL
-import java.net.UnknownHostException
 
 /**
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, surviveOnConfigurationChanged = true)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, viewModelClass = MainFragmentViewModel::class, surviveOnConfigurationChanged = true)
 class MainFragment
-  : SampleFragment(),
+  : SampleFragment<FragmentMainBinding, MainFragmentViewModel>(),
     View.OnClickListener, SweetBroadcastListenerProvider
 {
 
@@ -36,10 +37,6 @@ class MainFragment
     const val MY_ACTION = "myAction"
 
   }
-
-  private var throwError = false
-
-  private var throwInternetError = false
 
   override fun getBroadcastListener(): SweetBroadcastListener
   {
@@ -57,38 +54,15 @@ class MainFragment
           Toast.makeText(context, "Click !", Toast.LENGTH_SHORT).show()
         }
       }
-
     }
   }
 
-  @Throws(ModelUnavailableException::class)
-  override suspend fun onRetrieveModel()
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
-    super.onRetrieveModel()
+    super.onViewCreated(view, savedInstanceState)
 
-    Thread.sleep(1_000)
-
-    if (throwError == true)
-    {
-      throwError = false
-
-      throw ModelUnavailableException("Cannot retrieve the model")
-    }
-
-    if (throwInternetError == true)
-    {
-      throwInternetError = false
-
-      throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
-    }
-  }
-
-  override fun onBindModel()
-  {
-    super.onBindModel()
-
-    binding2.setOnClickListener(this)
-    binding.setOnClickListener(this)
+    openBinding.setOnClickListener(this)
+    openBinding2.setOnClickListener(this)
     click.setOnClickListener(this)
     refreshLoading.setOnClickListener(this)
     refreshNoLoading.setOnClickListener(this)
@@ -100,7 +74,7 @@ class MainFragment
 
   override fun onClick(view: View?)
   {
-    if (view == binding)
+    if (view == openBinding)
     {
       val intent = Intent(context, SecondActivity::class.java).apply {
         putExtra(SecondFragment.MY_EXTRA, "hey !")
@@ -109,7 +83,7 @@ class MainFragment
 
       startActivity(intent)
     }
-    else if (view == binding2)
+    else if (view == openBinding2)
     {
       val intent = Intent(context, SecondActivity::class.java).apply {
         putExtra(ThirdFragment.MY_EXTRA, "go !")
@@ -126,30 +100,33 @@ class MainFragment
     }
     else if (view == refreshLoading)
     {
-      refreshModelAndBind(true, Runnable {
+      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      })
     }
     else if (view == refreshNoLoading)
     {
-      getAggregate()?.getLoadingErrorAndRetryAggregate()?.doNotDisplayLoadingViewNextTime()
-      refreshModelAndBind(true, Runnable {
+      getCastedViewModel()?.refreshViewModel(arguments,false, Runnable {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      })
     }
     else if (view == refreshError)
     {
-      throwError = true
-      refreshModelAndBind(true, Runnable {
-        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      getCastedViewModel()?.apply {
+        throwError = true
+        getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+        })
+      }
     }
     else if (view == refreshInternetError)
     {
-      throwInternetError = true
-      refreshModelAndBind(true, Runnable {
-        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      getCastedViewModel()?.apply {
+        throwInternetError = true
+        getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+        })
+      }
     }
     else if (view == coroutines)
     {

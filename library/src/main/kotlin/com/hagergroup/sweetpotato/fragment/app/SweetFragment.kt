@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
+import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
@@ -109,6 +110,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
 
     createViewModel()
     observeStates()
+    computeViewModel()
   }
 
   protected open fun createViewModel()
@@ -140,6 +142,11 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
     })
   }
 
+  protected open fun computeViewModel()
+  {
+    viewModel?.computeViewModelInternal(arguments)
+  }
+
   override fun onResume()
   {
     super.onResume()
@@ -162,6 +169,24 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
   {
     super.onDestroy()
     sweetizer?.onDestroy()
+  }
+
+  override fun getAggregate(): AggregateClass? =
+      sweetizer?.getAggregate()
+
+  override fun setAggregate(aggregate: AggregateClass?)
+  {
+    sweetizer?.setAggregate(aggregate)
+  }
+
+  override fun onException(throwable: Throwable, fromGuiThread: Boolean)
+  {
+    sweetizer?.onException(throwable, fromGuiThread)
+  }
+
+  override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
+  {
+    sweetizer?.registerBroadcastListeners(broadcastListeners)
   }
 
   protected open fun onErrorState()

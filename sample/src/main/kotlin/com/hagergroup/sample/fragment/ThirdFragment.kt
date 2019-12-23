@@ -1,5 +1,6 @@
 package com.hagergroup.sample.fragment
 
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.hagergroup.sample.R
@@ -9,8 +10,7 @@ import com.hagergroup.sample.databinding.FragmentThirdBinding
 import com.hagergroup.sample.viewmodel.ThirdFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
-import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import java.net.UnknownHostException
+import kotlinx.android.synthetic.main.fragment_third.*
 import java.util.*
 
 /**
@@ -19,7 +19,7 @@ import java.util.*
  */
 @SweetFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetFragmentAnnotation.ViewModelContext.Activity)
 class ThirdFragment
-  : SampleViewModelBindingFragment<FragmentThirdBinding>(),
+  : SampleFragment<FragmentThirdBinding, ThirdFragmentViewModel>(),
     View.OnClickListener
 {
 
@@ -32,68 +32,41 @@ class ThirdFragment
 
   }
 
-  private var count = 0
 
-  private var throwError = false
-
-  private var throwInternetError = false
-
-  @Throws(ModelUnavailableException::class)
-  override suspend fun computeViewModel()
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
-    Thread.sleep(1_000)
+    super.onViewCreated(view, savedInstanceState)
 
-    if (throwError == true)
-    {
-      throwError = false
+    refreshError?.setOnClickListener(this)
+    refreshInternetError?.setOnClickListener(this)
+    observableField?.setOnClickListener(this)
+    backstack?.setOnClickListener(this)
 
-      throw ModelUnavailableException("Cannot retrieve the model")
-    }
-
-    if (throwInternetError == true)
-    {
-      throwInternetError = false
-
-      throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
-    }
-
-    (viewModel as? ThirdFragmentViewModel)?.apply {
-      myString = if (count % 2 == 0) arguments?.getString(ThirdFragment.MY_EXTRA) else "Count !"
-      anotherString.postValue(arguments?.getString(ThirdFragment.ANOTHER_EXTRA))
-      persons.addAll(Array(15) { "Person ${it + 1}" })
-    }
+    list?.setHasFixedSize(true)
   }
 
-  override fun onBindModel()
+  override fun onLoadedState()
   {
-    super.onBindModel()
+    super.onLoadedState()
 
-    refreshError.setOnClickListener(this)
-    refreshInternetError.setOnClickListener(this)
-    observableField.setOnClickListener(this)
-    backstack.setOnClickListener(this)
-
-    list.apply {
-      setHasFixedSize(true)
-      adapter = MyAdapter((viewModel as? ThirdFragmentViewModel)?.persons ?: emptyList())
-    }
+    list?.adapter = MyAdapter(getCastedViewModel()?.persons ?: emptyList())
   }
 
   override fun onClick(view: View?)
   {
     if (view == refreshError)
     {
-      throwError = true
-      refreshModelAndBind(true, Runnable {
+      getCastedViewModel()?.throwError = true
+      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      })
     }
     else if (view == refreshInternetError)
     {
-      throwInternetError = true
-      refreshModelAndBind(true, Runnable {
+      getCastedViewModel()?.throwInternetError = true
+      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      })
     }
     else if (view == observableField)
     {

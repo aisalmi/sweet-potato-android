@@ -1,13 +1,13 @@
 package com.hagergroup.sample.fragment
 
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.hagergroup.sample.R
 import com.hagergroup.sample.databinding.FragmentSecondBinding
 import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
-import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import java.net.UnknownHostException
+import kotlinx.android.synthetic.main.fragment_second.*
 import java.util.*
 
 /**
@@ -16,7 +16,7 @@ import java.util.*
  */
 @SweetFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false)
 class SecondFragment
-  : SampleViewModelBindingFragment<FragmentSecondBinding>(),
+  : SampleFragment<FragmentSecondBinding, SecondFragmentViewModel>(),
     View.OnClickListener
 {
 
@@ -29,40 +29,9 @@ class SecondFragment
 
   }
 
-  private var count = 0
-
-  private var throwError = false
-
-  private var throwInternetError = false
-
-  @Throws(ModelUnavailableException::class)
-  override suspend fun computeViewModel()
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
-    Thread.sleep(1_000)
-
-    if (throwError == true)
-    {
-      throwError = false
-
-      throw ModelUnavailableException("Cannot retrieve the model")
-    }
-
-    if (throwInternetError == true)
-    {
-      throwInternetError = false
-
-      throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
-    }
-
-    (viewModel as? SecondFragmentViewModel)?.apply {
-      myString = if (count % 2 == 0) arguments?.getString(SecondFragment.MY_EXTRA) else "Count !"
-      anotherString.postValue(arguments?.getString(SecondFragment.ANOTHER_EXTRA))
-    }
-  }
-
-  override fun onBindModel()
-  {
-    super.onBindModel()
+    super.onViewCreated(view, savedInstanceState)
 
     refreshError.setOnClickListener(this)
     refreshInternetError.setOnClickListener(this)
@@ -73,21 +42,22 @@ class SecondFragment
   {
     if (view == refreshError)
     {
-      throwError = true
-      refreshModelAndBind(true, Runnable {
+      getCastedViewModel()?.throwError = true
+
+      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      })
     }
     else if (view == refreshInternetError)
     {
-      throwInternetError = true
-      refreshModelAndBind(true, Runnable {
+      getCastedViewModel()?.throwInternetError = true
+      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      }, true)
+      })
     }
     else if (view == observableField)
     {
-      (viewModel as SecondFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
+      getCastedViewModel()?.anotherString?.postValue(UUID.randomUUID().toString())
     }
   }
 

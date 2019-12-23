@@ -20,9 +20,9 @@ class MainActivity
 
   private lateinit var drawerToggle: ActionBarDrawerToggle
 
-  override fun onRetrieveDisplayObjects()
+  override fun onCreate(savedInstanceState: Bundle?)
   {
-    super.onRetrieveDisplayObjects()
+    super.onCreate(savedInstanceState)
 
     drawerToggle = ActionBarDrawerToggle(this, drawerLayout, null, R.string.app_name, R.string.app_name)
     drawerLayout.addDrawerListener(drawerToggle)

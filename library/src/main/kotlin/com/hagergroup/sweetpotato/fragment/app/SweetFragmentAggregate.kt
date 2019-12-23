@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
-import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 import timber.log.Timber
@@ -20,7 +19,6 @@ import kotlin.reflect.KClass
  * @since 2018.11.07
  */
 abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragmentAnnotation: Any?)
-  : SweetActivityController.Interceptor
 {
 
   interface OnBackPressedListener
@@ -78,7 +76,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.fragmentTitleId
-      else                                                                                -> null
+      else                       -> null
     }
   }
 
@@ -88,7 +86,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.fragmentSubtitleId
-      else                                                                                -> null
+      else                       -> null
     }
   }
 
@@ -98,7 +96,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.layoutId
-      else                                                                                -> null
+      else                       -> null
     }
   }
 
@@ -107,7 +105,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.surviveOnConfigurationChanged
-      else                                                                                -> false
+      else                       -> false
     }
   }
 
@@ -116,7 +114,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.viewModelClass.java
-      else                                                                                -> DummySweetViewModel::class.java
+      else                       -> DummySweetViewModel::class.java
     }
   }
 
@@ -125,7 +123,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.preBind
-      else                                                                                -> true
+      else                       -> true
     }
   }
 
@@ -134,7 +132,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.viewModelContext
-      else                                                                                -> SweetFragmentAnnotation.ViewModelContext.Fragment
+      else                       -> SweetFragmentAnnotation.ViewModelContext.Fragment
     }
   }
 

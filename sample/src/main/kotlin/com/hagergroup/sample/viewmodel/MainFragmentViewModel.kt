@@ -2,8 +2,6 @@ package com.hagergroup.sample.viewmodel
 
 import android.app.Application
 import android.os.Bundle
-import androidx.lifecycle.MutableLiveData
-import com.hagergroup.sample.fragment.SecondFragment
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 import kotlinx.coroutines.delay
@@ -11,15 +9,11 @@ import java.net.UnknownHostException
 
 /**
  * @author Ludovic Roland
- * @since 2018.11.09
+ * @since 2019.12.23
  */
-class SecondFragmentViewModel(application: Application)
+class MainFragmentViewModel(application: Application)
   : SweetViewModel(application)
 {
-
-  var myString: String? = null
-
-  val anotherString = MutableLiveData<String>()
 
   var throwError = false
 
@@ -42,8 +36,6 @@ class SecondFragmentViewModel(application: Application)
 
       throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
     }
-
-    myString = arguments?.getString(SecondFragment.MY_EXTRA)
-    anotherString.postValue(arguments?.getString(SecondFragment.ANOTHER_EXTRA))
   }
+
 }

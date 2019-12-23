@@ -1,82 +1,84 @@
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
->
-  <LinearLayout
-    android:orientation="vertical"
+<layout>
+  <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  >
-    <TextView
+    >
+    <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Hello World !"
-    />
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hello World !"
+        />
 
-    <Button
-      android:id="@+id/binding"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Open ViewModel Binding Fragment!"
-    />
+      <Button
+        android:id="@+id/openBinding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open ViewModel Binding Fragment!"
+        />
 
-    <Button
-      android:id="@+id/binding2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Open ViewModel Binding Fragment2!"
-    />
+      <Button
+        android:id="@+id/openBinding2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open ViewModel Binding Fragment2!"
+        />
 
-    <Button
-      android:id="@+id/click"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Click !"
-    />
+      <Button
+        android:id="@+id/click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click !"
+        />
 
-    <Button
-      android:id="@+id/refreshLoading"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="refresh loading"
-    />
+      <Button
+        android:id="@+id/refreshLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh loading"
+        />
 
-    <Button
-      android:id="@+id/refreshNoLoading"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="refresh no loading"
-    />
+      <Button
+        android:id="@+id/refreshNoLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh no loading"
+        />
 
-    <Button
-      android:id="@+id/refreshError"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="refresh with error"
-    />
+      <Button
+        android:id="@+id/refreshError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh with error"
+        />
 
-    <Button
-      android:id="@+id/refreshInternetError"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="refresh with internet error"
-    />
+      <Button
+        android:id="@+id/refreshInternetError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh with internet error"
+        />
 
-    <Button
-      android:id="@+id/coroutines"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="SweetCouroutines"
-    />
+      <Button
+        android:id="@+id/coroutines"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SweetCouroutines"
+        />
 
-    <Button
-      android:id="@+id/coroutinesError"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="SweetCouroutines error"
-    />
-  </LinearLayout>
+      <Button
+        android:id="@+id/coroutinesError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SweetCouroutines error"
+        />
+    </LinearLayout>
 
-  <include layout="@layout/loading_error_and_retry"/>
-</RelativeLayout>
+    <include layout="@layout/loading_error_and_retry" />
+  </RelativeLayout>
+</layout>

@@ -1,7 +1,9 @@
 package com.hagergroup.sample.fragment
 
 import com.hagergroup.sample.R
+import com.hagergroup.sample.databinding.FragmentMenuBinding
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
+import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 
 /**
  * @author Ludovic Roland
@@ -9,4 +11,4 @@ import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
  */
 @SweetFragmentAnnotation(layoutId = R.layout.fragment_menu)
 class MenuFragment
-  : SampleFragment()
+  : SampleFragment<FragmentMenuBinding, DummySweetViewModel>()

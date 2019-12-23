@@ -1,6 +1,7 @@
 package com.hagergroup.sweetpotato.lifecycle
 
 import android.app.Application
+import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -52,9 +53,9 @@ abstract class SweetViewModel(application: Application)
     if (it is State.ErrorState) View.VISIBLE else View.INVISIBLE
   }
 
-  abstract suspend fun computeViewModel()
+  abstract suspend fun computeViewModel(arguments: Bundle?)
 
-  open fun computeViewModelInternal(displayLoadingState: Boolean = true, runnable: Runnable? = null)
+  open fun computeViewModelInternal(arguments: Bundle?, displayLoadingState: Boolean = true, runnable: Runnable? = null)
   {
     viewModelScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
       viewModelScope.launch(Dispatchers.Main)
@@ -71,7 +72,7 @@ abstract class SweetViewModel(application: Application)
 
       delay(200)
 
-      computeViewModel()
+      computeViewModel(arguments)
 
       state.postValue(State.LoadedState)
 
@@ -79,9 +80,9 @@ abstract class SweetViewModel(application: Application)
     }
   }
 
-  open fun refreshViewModel(displayLoadingState: Boolean = true, runnable: Runnable? = null)
+  open fun refreshViewModel(arguments: Bundle?, displayLoadingState: Boolean = true, runnable: Runnable? = null)
   {
-    computeViewModelInternal(displayLoadingState, runnable)
+    computeViewModelInternal(arguments, displayLoadingState, runnable)
   }
 
 }
