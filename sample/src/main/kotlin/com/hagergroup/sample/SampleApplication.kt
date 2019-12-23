@@ -17,7 +17,6 @@ import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.app.SweetConnectivityListener
 import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
 import com.hagergroup.sweetpotato.app.Sweetable
-import com.hagergroup.sweetpotato.app.Sweetened
 import com.hagergroup.sweetpotato.appcompat.app.SweetSplashscreenActivity
 import com.hagergroup.sweetpotato.exception.ExceptionHandlers
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
@@ -233,9 +232,9 @@ class SampleApplication
         if (callException != null && callException.code >= HttpURLConnection.HTTP_BAD_REQUEST && callException.code < HttpURLConnection.HTTP_INTERNAL_ERROR)
         {
           // This is a 40X exception
-          if (fragment is Sweetened<*>)
+          if (fragment is Sweetable<*>)
           {
-            (fragment as? Sweetened<SampleFragmentAggregate>)?.getAggregate()?.getLoadingErrorAndRetryAggregate()?.reportModelUnavailableException(exception)
+            (fragment as? Sweetable<SampleFragmentAggregate>)?.getAggregate()?.getLoadingErrorAndRetryAggregate()?.reportModelUnavailableException(exception)
 
             return true
           }

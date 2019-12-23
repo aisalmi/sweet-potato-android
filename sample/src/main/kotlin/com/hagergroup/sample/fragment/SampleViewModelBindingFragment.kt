@@ -4,8 +4,8 @@ import androidx.databinding.ViewDataBinding
 import com.hagergroup.sample.app.SampleFragmentAggregate
 import com.hagergroup.sweetpotato.annotation.SweetLoadingAndErrorAnnotation
 import com.hagergroup.sweetpotato.annotation.SweetSendLoadingIntentAnnotation
+import com.hagergroup.sweetpotato.fragment.app.SweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
-import com.hagergroup.sweetpotato.fragment.app.SweetViewModelBindingFragment
 
 /**
  * @author Ludovic Roland
@@ -14,7 +14,7 @@ import com.hagergroup.sweetpotato.fragment.app.SweetViewModelBindingFragment
 @SweetLoadingAndErrorAnnotation
 @SweetSendLoadingIntentAnnotation
 abstract class SampleViewModelBindingFragment<BindingClass : ViewDataBinding>
-  : SweetViewModelBindingFragment<SampleFragmentAggregate, BindingClass>(),
+  : SweetFragment<SampleFragmentAggregate, BindingClass>(),
     SweetFragmentAggregate.OnBackPressedListener
 {
 

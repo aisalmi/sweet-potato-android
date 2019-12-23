@@ -9,7 +9,7 @@ package com.hagergroup.sweetpotato.content
  * [SweetBroadcastListener] at the same time, and because the framework takes care of unregistering it when the embedding entity is destroyed.
  * </p>
  *
- * @see com.hagergroup.sweetpotato.app.Sweetened.registerBroadcastListeners
+ * @see com.hagergroup.sweetpotato.app.Sweetable.registerBroadcastListeners
  * @see SweetBroadcastListener
  * @see SweetBroadcastListenersProvider
  *

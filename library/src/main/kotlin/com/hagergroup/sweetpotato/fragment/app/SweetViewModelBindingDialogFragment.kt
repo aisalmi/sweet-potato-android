@@ -8,7 +8,7 @@ import androidx.databinding.OnRebindCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
@@ -77,7 +77,7 @@ abstract class SweetViewModelBindingDialogFragment<AggregateClass : SweetFragmen
     val viewModelFactory = getViewModelFactory()
     val viewModelClass = getAggregate()?.getViewModelClassFromAnnotation() ?: DummySweetViewModel::class.java
 
-    viewModel = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetViewModelBindingFragmentAnnotation.ViewModelContext.Fragment)
+    viewModel = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetFragmentAnnotation.ViewModelContext.Fragment)
     {
       if (viewModelFactory != null)
       {

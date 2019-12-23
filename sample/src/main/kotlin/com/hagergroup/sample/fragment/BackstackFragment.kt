@@ -7,13 +7,9 @@ import com.hagergroup.sample.SampleActivity
 import com.hagergroup.sample.adapter.MyAdapter
 import com.hagergroup.sample.databinding.FragmentThirdBinding
 import com.hagergroup.sample.viewmodel.ThirdFragmentViewModel
-import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import kotlinx.android.synthetic.main.fragment_second.observableField
-import kotlinx.android.synthetic.main.fragment_second.refreshError
-import kotlinx.android.synthetic.main.fragment_second.refreshInternetError
-import kotlinx.android.synthetic.main.fragment_third.*
 import java.net.UnknownHostException
 import java.util.*
 
@@ -21,7 +17,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.12.12
  */
-@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetViewModelBindingFragmentAnnotation.ViewModelContext.Activity)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetFragmentAnnotation.ViewModelContext.Activity)
 class BackstackFragment
   : SampleViewModelBindingFragment<FragmentThirdBinding>(),
     View.OnClickListener

@@ -35,10 +35,10 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
     activity.supportFragmentManager.addOnBackStackChangedListener(this)
   }
 
-  var openedFragment: SweetFragment<*>? = null
+  var openedFragment: SweetFragment<*, *, *>? = null
     private set
 
-  private var lastBackstackFragment: SweetFragment<*>? = null
+  private var lastBackstackFragment: SweetFragment<*, *, *>? = null
 
   private var lastBackstackCount: Int = 0
 
@@ -63,7 +63,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
 
       if (tag != null)
       {
-        lastBackstackFragment = fragmentManager.findFragmentByTag(tag) as SweetFragment<*>
+        lastBackstackFragment = fragmentManager.findFragmentByTag(tag) as SweetFragment<*, *, *>
       }
     }
   }
@@ -75,7 +75,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
    *
    * @param fragmentClass the fragment to open
    */
-  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>)
+  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*, *, *>>)
   {
     addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
   }
@@ -89,7 +89,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
    * @param addFragmentToBackStack     indicates wether the fragment should be added to the backstack
    * @param fragmentBackStackName      the name of the fragment into the backstack if it should added
    */
-  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?)
+  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*, *, *>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?)
   {
     addOrReplaceFragment(fragmentClass, fragmentContainerIdentifer, addFragmentToBackStack, fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
   }
@@ -102,7 +102,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
    * @param savedState    the initial saved state of the fragment
    * @param arguments     the arguments of the fragment
    */
-  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*>>, savedState: Fragment.SavedState?, arguments: Bundle?)
+  fun replaceFragment(fragmentClass: KClass<out SweetFragment<*, *, *>>, savedState: Fragment.SavedState?, arguments: Bundle?)
   {
     addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, savedState, arguments, FragmentTransactionType.Replace)
   }
@@ -117,7 +117,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
    * @param savedState                 the initial saved state of the fragment
    * @param arguments                  the arguments of the fragment
    */
-  fun addOrReplaceFragment(fragmentClass: KClass<out SweetFragment<*>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?, savedState: Fragment.SavedState?, arguments: Bundle?, fragmentTransactionType: FragmentTransactionType)
+  fun addOrReplaceFragment(fragmentClass: KClass<out SweetFragment<*, *, *>>, @IdRes fragmentContainerIdentifer: Int, addFragmentToBackStack: Boolean, fragmentBackStackName: String?, savedState: Fragment.SavedState?, arguments: Bundle?, fragmentTransactionType: FragmentTransactionType)
   {
     try
     {
@@ -157,14 +157,15 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
     {
       Timber.e(exception, "Unable to instanciate the openedFragment '${fragmentClass.simpleName}'")
     }
-
   }
 
   fun onCreate()
   {
-    if (activity is SweetAppCompatActivity<*> && activity.getContentViewId() != -1)
+    if (activity is SweetAppCompatActivity<*> && activity.getContentViewId() != null)
     {
-      activity.setContentView(activity.getContentViewId())
+      activity.getContentViewId()?.let {
+        activity.setContentView(it)
+      }
     }
     else
     {
@@ -173,14 +174,16 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
       }
     }
 
-    openedFragment = if (activity is SweetAppCompatActivity<*> && activity.getFragmentPlaceholderId() != -1)
+    openedFragment = if (activity is SweetAppCompatActivity<*> && activity.getFragmentPlaceholderId() != null)
     {
-      activity.supportFragmentManager.findFragmentById(activity.getFragmentPlaceholderId()) as? SweetFragment<*>
+      activity.getFragmentPlaceholderId()?.let {
+        activity.supportFragmentManager.findFragmentById(it) as? SweetFragment<*, *, *>
+      }
     }
     else
     {
       activityAnnotation?.let {
-        activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*>
+        activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*, *, *>
       }
     }
 
@@ -189,10 +192,12 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
       openParameterFragment()
     }
 
-    if (activity is SweetAppCompatActivity<*> && activity.getToolbarId() != -1)
+    if (activity is SweetAppCompatActivity<*> && activity.getToolbarId() != null)
     {
-      val toolbar = activity.findViewById<Toolbar>(activity.getToolbarId())
-      activity.setSupportActionBar(toolbar)
+      activity.getToolbarId()?.let {
+        val toolbar = activity.findViewById<Toolbar>(it)
+        activity.setSupportActionBar(toolbar)
+      }
     }
     else
     {

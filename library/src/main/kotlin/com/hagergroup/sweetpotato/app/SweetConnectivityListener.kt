@@ -147,7 +147,7 @@ abstract class SweetConnectivityListener(val context: Context)
 
       }
 
-      (activity as? Sweetened<*>)?.registerBroadcastListeners(arrayOf(broadcastListener))
+      (activity as? Sweetable<*>)?.registerBroadcastListeners(arrayOf(broadcastListener))
     }
   }
 

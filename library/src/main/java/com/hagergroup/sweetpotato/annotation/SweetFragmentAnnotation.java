@@ -11,6 +11,8 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment;
+import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel;
+import com.hagergroup.sweetpotato.lifecycle.SweetViewModel;
 
 /**
  * Annotation which should be used on a {@link SweetFragment}, in order to configure it.
@@ -25,6 +27,22 @@ public @interface SweetFragmentAnnotation
 {
 
   /**
+   * Defines the context which should be attached to the {@link SweetViewModel} holds by the {@link SweetFragment}.
+   */
+  enum ViewModelContext
+  {
+    /**
+     * The {@link SweetViewModel} should be attached to the fragment
+     */
+    Fragment,
+
+    /**
+     * The {@link SweetViewModel} should be attached to the activity
+     */
+    Activity
+  }
+
+  /**
    * @return the string identifier to be used on {@link ActionBar#setTitle(int)}.
    */
   @StringRes
@@ -37,6 +55,11 @@ public @interface SweetFragmentAnnotation
   int fragmentSubtitleId() default -1;
 
   /**
+   * @return the {@link SweetViewModel} class to be created and held by the fragment.
+   */
+  Class<? extends SweetViewModel> viewModelClass() default DummySweetViewModel.class;
+
+  /**
    * @return the layout identifier to be used in the
    * {@link SweetFragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method.
    */
@@ -47,5 +70,15 @@ public @interface SweetFragmentAnnotation
    * @return true if the fragment should survive when the configuration changes
    */
   boolean surviveOnConfigurationChanged() default false;
+
+  /**
+   * @return true if databinding should be done a first time before setting the model
+   */
+  boolean preBind() default false;
+
+  /**
+   * @return the context to be attached to the {@link SweetViewModel}.
+   */
+  SweetFragmentAnnotation.ViewModelContext viewModelContext() default SweetFragmentAnnotation.ViewModelContext.Fragment;
 
 }

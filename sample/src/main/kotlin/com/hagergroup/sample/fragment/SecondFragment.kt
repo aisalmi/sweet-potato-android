@@ -5,9 +5,8 @@ import android.widget.Toast
 import com.hagergroup.sample.R
 import com.hagergroup.sample.databinding.FragmentSecondBinding
 import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
-import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
+import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
-import kotlinx.android.synthetic.main.fragment_second.*
 import java.net.UnknownHostException
 import java.util.*
 
@@ -15,7 +14,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetViewModelBindingFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false)
 class SecondFragment
   : SampleViewModelBindingFragment<FragmentSecondBinding>(),
     View.OnClickListener

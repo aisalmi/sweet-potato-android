@@ -1,6 +1,5 @@
 package com.hagergroup.sweetpotato.fragment.app
 
-import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -8,12 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
-import com.hagergroup.sweetpotato.annotation.SweetViewModelBindingFragmentAnnotation
-import com.hagergroup.sweetpotato.app.SweetActivityInterceptor
-import com.hagergroup.sweetpotato.app.SweetLoadingAndErrorInterceptor
-import com.hagergroup.sweetpotato.app.Sweetable
+import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
-import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 import timber.log.Timber
 import kotlin.reflect.KClass
@@ -21,24 +16,12 @@ import kotlin.reflect.KClass
 /**
  * The basis class for all Fragment Aggregate available in the framework.
  *
- * @see SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregateProvider
- *
  * @author Ludovic Roland
  * @since 2018.11.07
  */
 abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragmentAnnotation: Any?)
-  : SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregateProvider
+  : SweetActivityController.Interceptor
 {
-
-  init
-  {
-
-    if (fragmentAnnotation !is SweetFragmentAnnotation && fragmentAnnotation !is SweetViewModelBindingFragmentAnnotation)
-    {
-      throw IllegalArgumentException("The fragment annotation field has to be a SweetFragmentAnnotation or a SweetViewModelBindingFragmentAnnotation class")
-    }
-
-  }
 
   interface OnBackPressedListener
   {
@@ -47,36 +30,30 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
 
   }
 
-  private val fragmentLoadingErrorAndRetryAggregate by lazy { SweetLoadingAndErrorInterceptor.SweetLoadingErrorAndRetryAggregate() }
-
-  private val fragmentModelUnavailableExceptionKeeper by lazy { SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper() }
-
-  val modelContainer by lazy { SweetActivityInterceptor.ModelContainer() }
-
   /**
    * Open the specified fragment, the previous fragment is add to the back stack.
    */
-  fun openChildFragment(parentFragment: SweetFragment<*>, @IdRes fragmentPlaceholderIdentifier: Int, fragmentClass: KClass<SweetFragment<*>>, savedState: Fragment.SavedState?)
+  fun openChildFragment(parentFragment: SweetFragment<*, *, *>, @IdRes fragmentPlaceholderIdentifier: Int, fragmentClass: KClass<SweetFragment<*, *, *>>, savedState: Fragment.SavedState?)
   {
     try
     {
       val fragmentTransaction = parentFragment.childFragmentManager.beginTransaction()
-      val childfragment = fragmentClass.java.newInstance()
-      childfragment.arguments = parentFragment.arguments
+      val childFragment = fragmentClass.java.newInstance()
+      childFragment.arguments = parentFragment.arguments
 
       // We (re)set its initial state if necessary
       if (savedState != null)
       {
-        childfragment.setInitialSavedState(savedState)
+        childFragment.setInitialSavedState(savedState)
       }
 
-      fragmentTransaction.replace(fragmentPlaceholderIdentifier, childfragment)
+      fragmentTransaction.replace(fragmentPlaceholderIdentifier, childFragment)
       fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
       fragmentTransaction.commit()
     }
     catch (exception: Exception)
     {
-      Timber.e(exception, "Unable to instanciate the openedFragment '${fragmentClass.simpleName}'")
+      Timber.e(exception, "Unable to open the fragment '${fragmentClass.simpleName}'")
     }
   }
 
@@ -84,52 +61,44 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   {
     fragmentAnnotation?.let {
       activity?.supportActionBar?.let { actionBar ->
-        val titleIdentifier = getFragmentTitleIdFromAnnotation()
-        val subTitleIdentifier = getFragmentSubtitleIdFromAnnotation()
-
-        if (titleIdentifier > 0)
-        {
-          actionBar.setTitle(titleIdentifier)
+        getFragmentTitleIdFromAnnotation()?.let {
+          actionBar.setTitle(it)
         }
 
-        if (subTitleIdentifier > 0)
-        {
-          actionBar.setSubtitle(subTitleIdentifier)
+        getFragmentSubtitleIdFromAnnotation()?.let {
+          actionBar.setSubtitle(it)
         }
       }
     }
   }
 
   @StringRes
-  fun getFragmentTitleIdFromAnnotation(): Int
+  fun getFragmentTitleIdFromAnnotation(): Int?
   {
     return when (fragmentAnnotation)
     {
-      is SweetFragmentAnnotation                 -> fragmentAnnotation.fragmentTitleId
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.fragmentTitleId
-      else                                       -> -1
+      is SweetFragmentAnnotation -> fragmentAnnotation.fragmentTitleId
+      else                                                                                -> null
     }
   }
 
   @StringRes
-  fun getFragmentSubtitleIdFromAnnotation(): Int
+  fun getFragmentSubtitleIdFromAnnotation(): Int?
   {
     return when (fragmentAnnotation)
     {
-      is SweetFragmentAnnotation                 -> fragmentAnnotation.fragmentSubtitleId
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.fragmentSubtitleId
-      else                                       -> -1
+      is SweetFragmentAnnotation -> fragmentAnnotation.fragmentSubtitleId
+      else                                                                                -> null
     }
   }
 
   @LayoutRes
-  fun getFragmentLayoutIdFromAnnotation(): Int
+  fun getFragmentLayoutIdFromAnnotation(): Int?
   {
     return when (fragmentAnnotation)
     {
-      is SweetFragmentAnnotation                 -> fragmentAnnotation.layoutId
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.layoutId
-      else                                       -> -1
+      is SweetFragmentAnnotation -> fragmentAnnotation.layoutId
+      else                                                                                -> null
     }
   }
 
@@ -137,9 +106,8 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   {
     return when (fragmentAnnotation)
     {
-      is SweetFragmentAnnotation                 -> fragmentAnnotation.surviveOnConfigurationChanged
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.surviveOnConfigurationChanged
-      else                                       -> false
+      is SweetFragmentAnnotation -> fragmentAnnotation.surviveOnConfigurationChanged
+      else                                                                                -> false
     }
   }
 
@@ -147,8 +115,8 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   {
     return when (fragmentAnnotation)
     {
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.viewModelClass.java
-      else                                       -> DummySweetViewModel::class.java
+      is SweetFragmentAnnotation -> fragmentAnnotation.viewModelClass.java
+      else                                                                                -> DummySweetViewModel::class.java
     }
   }
 
@@ -156,56 +124,18 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   {
     return when (fragmentAnnotation)
     {
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.preBind
-      else                                       -> true
+      is SweetFragmentAnnotation -> fragmentAnnotation.preBind
+      else                                                                                -> true
     }
   }
 
-  fun getViewModelContextFromAnnotation(): SweetViewModelBindingFragmentAnnotation.ViewModelContext
+  fun getViewModelContextFromAnnotation(): SweetFragmentAnnotation.ViewModelContext
   {
     return when (fragmentAnnotation)
     {
-      is SweetViewModelBindingFragmentAnnotation -> fragmentAnnotation.viewModelContext
-      else                                       -> SweetViewModelBindingFragmentAnnotation.ViewModelContext.Fragment
+      is SweetFragmentAnnotation -> fragmentAnnotation.viewModelContext
+      else                                                                                -> SweetFragmentAnnotation.ViewModelContext.Fragment
     }
   }
-
-  fun rememberModelUnavailableException(exception: ModelUnavailableException)
-  {
-    fragmentModelUnavailableExceptionKeeper.exception = exception
-  }
-
-  fun forgetException()
-  {
-    fragmentModelUnavailableExceptionKeeper.exception = null
-  }
-
-  fun showModelUnavailableException(activity: AppCompatActivity, sweetableFragment: Sweetable<*>, exception: ModelUnavailableException)
-  {
-    rememberModelUnavailableException(exception)
-    fragmentLoadingErrorAndRetryAggregate.showModelUnavailableException(activity, sweetableFragment, exception)
-  }
-
-  @Throws(ModelUnavailableException::class)
-  fun checkException()
-  {
-    fragmentModelUnavailableExceptionKeeper.checkException()
-  }
-
-  fun onRestoreInstanceState(bundle: Bundle)
-  {
-    modelContainer.onRestoreInstanceState(bundle)
-  }
-
-  fun onSaveInstanceState(bundle: Bundle)
-  {
-    modelContainer.onSaveInstanceState(bundle)
-  }
-
-  override fun getLoadingErrorAndRetryAggregate(): SweetLoadingAndErrorInterceptor.SweetLoadingErrorAndRetryAggregate =
-      fragmentLoadingErrorAndRetryAggregate
-
-  override fun getModelUnavailableExceptionKeeper(): SweetLoadingAndErrorInterceptor.ModelUnavailableExceptionKeeper =
-      fragmentModelUnavailableExceptionKeeper
 
 }

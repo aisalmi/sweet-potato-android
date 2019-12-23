@@ -2,11 +2,9 @@ package com.hagergroup.sweetpotato.appcompat.app
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -27,13 +25,13 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     Sweetable<AggregateClass>
 {
 
-  private val sweetizer by lazy { Sweetizer(this, this, this, null, lifecycleScope) }
+  private val sweetizer by lazy { Sweetizer(this, this, this, null) }
 
   override fun onCreate(savedInstanceState: Bundle?)
   {
     sweetizer.onCreate(Runnable {
       super@SweetAppCompatActivity.onCreate(savedInstanceState)
-    }, savedInstanceState)
+    })
   }
 
   override fun onStart()
@@ -92,9 +90,6 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     sweetizer.setAggregate(aggregate)
   }
 
-  override fun getHandler(): Handler =
-      sweetizer.getHandler()
-
   override fun onException(throwable: Throwable, fromGuiThread: Boolean)
   {
     sweetizer.onException(throwable, fromGuiThread)
@@ -105,57 +100,22 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     sweetizer.registerBroadcastListeners(broadcastListeners)
   }
 
-  override fun onRetrieveDisplayObjects()
-  {
-  }
-
-  override fun isRefreshingModelAndBinding(): Boolean =
-      sweetizer.isRefreshingModelAndBinding()
-
-  override fun isFirstLifeCycle(): Boolean =
-      sweetizer.isFirstLifeCycle()
-
-  override fun isInteracting(): Boolean =
-      sweetizer.isInteracting()
-
-  override fun isAlive(): Boolean =
-      sweetizer.isAlive()
-
-  override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
-  {
-    sweetizer.refreshModelAndBind(retrieveModel, onOver, immediately)
-  }
-
-  override fun shouldKeepOn(): Boolean =
-      sweetizer.shouldKeepOn()
-
   override fun onNewIntent(intent: Intent)
   {
     super.onNewIntent(intent)
     sweetizer.onNewIntent()
   }
 
-  override fun onSaveInstanceState(outState: Bundle)
-  {
-    super.onSaveInstanceState(outState)
-    sweetizer.onSaveInstanceState(outState)
-  }
-
-  fun refreshModelAndBind()
-  {
-    refreshModelAndBind(true, null, false)
-  }
-
   @LayoutRes
-  open fun getContentViewId(): Int =
-      -1
+  open fun getContentViewId(): Int? =
+      null
 
   @IdRes
-  open fun getFragmentPlaceholderId(): Int =
-      -1
+  open fun getFragmentPlaceholderId(): Int? =
+      null
 
   @IdRes
-  open fun getToolbarId(): Int =
-      -1
+  open fun getToolbarId(): Int? =
+      null
 
 }

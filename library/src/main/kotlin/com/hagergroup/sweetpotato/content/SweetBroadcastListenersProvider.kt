@@ -13,7 +13,7 @@ package com.hagergroup.sweetpotato.content
  * one for getting each individual [SweetBroadcastListener]. This split is mostly due to performance issues.
  * </p>
  *
- * @see com.hagergroup.sweetpotato.app.Sweetened.registerBroadcastListeners
+ * @see com.hagergroup.sweetpotato.app.Sweetable.registerBroadcastListeners
  * @see SweetBroadcastListener
  * @see SweetBroadcastListener
  *

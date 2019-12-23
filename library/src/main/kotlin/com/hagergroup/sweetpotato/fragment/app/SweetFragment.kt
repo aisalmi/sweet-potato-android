@@ -2,35 +2,71 @@ package com.hagergroup.sweetpotato.fragment.app
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.OnRebindCallback
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
+import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
 /**
  * A basis class for designing an Android compatibility library [Fragment] compatible with the framework, i.e.
  * sweet potato ready.
+ * <p>
+ * This implementation use a [SweetViewModel] in order to implement the databinding and the MVVM architecture
+ * </p>
  *
  * @param AggregateClass the aggregate class accessible though the [setAggregate] and [getAggregate] methods
+ * @param BindingClass the binding class in order to implement the databinding
  *
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
+abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingClass : ViewDataBinding, ViewModelClass : SweetViewModel>
   : Fragment(),
     Sweetable<AggregateClass>
 {
 
-  private var sweetizer: Sweetizer<AggregateClass, SweetFragment<AggregateClass>>? = null
+  private var sweetizer: Sweetizer<AggregateClass, SweetFragment<AggregateClass, BindingClass, ViewModelClass>>? = null
+
+  protected var binding: BindingClass? = null
+
+  protected var viewModel: SweetViewModel? = null
+
+  private val onRebindCallback = object : OnRebindCallback<BindingClass>()
+  {
+
+    override fun onPreBind(binding: BindingClass): Boolean
+    {
+      return false
+    }
+
+  }
+
+  protected abstract fun getBindingVariable(): Int
+
+  @LayoutRes
+  protected open fun getLayoutId(): Int? =
+      null
+
+  protected open fun getViewModelFactory(): ViewModelProvider.Factory? =
+      null
+
+  @Suppress("UNCHECKED_CAST")
+  protected open fun getCastedViewModel(): ViewModelClass? =
+      viewModel as? ViewModelClass
 
   @CallSuper
   override fun onAttach(context: Context)
@@ -38,7 +74,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
     super.onAttach(context)
 
     (activity as? AppCompatActivity)?.let {
-      sweetizer = Sweetizer(it, this, this, this, lifecycleScope)
+      sweetizer = Sweetizer(it, this, this, this)
     }
   }
 
@@ -47,171 +83,106 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
   {
     sweetizer?.onCreate(Runnable {
       super@SweetFragment.onCreate(savedInstanceState)
-    }, savedInstanceState)
+    })
+  }
+
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+  {
+    val layoutId = getLayoutId() ?: getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: android.R.layout.simple_list_item_1
+
+    binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+
+    binding?.lifecycleOwner = viewLifecycleOwner
+
+    if (getAggregate()?.getPreBindBehaviourFromAnnotation() == false)
+    {
+      binding?.addOnRebindCallback(onRebindCallback)
+    }
+
+    return binding?.root
   }
 
   @CallSuper
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
-    savedInstanceState?.let {
-      getAggregate()?.onRestoreInstanceState(it)
-    }
+    super.onViewCreated(view, savedInstanceState)
 
-    return inflateLayout(inflater, container)
+    createViewModel()
+    observeStates()
   }
 
-  protected open fun inflateLayout(inflater: LayoutInflater, container: ViewGroup?): View?
+  protected open fun createViewModel()
   {
-    return if (getLayoutId() != -1)
+    val viewModelFactory = getViewModelFactory()
+    val viewModelClass = getAggregate()?.getViewModelClassFromAnnotation() ?: DummySweetViewModel::class.java
+    val viewModelOwner: ViewModelStoreOwner = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetFragmentAnnotation.ViewModelContext.Fragment) this@SweetFragment else requireActivity()
+
+    viewModel = if (viewModelFactory != null)
     {
-      inflater.inflate(getLayoutId(), container, false)
+      ViewModelProvider(viewModelOwner, viewModelFactory).get(viewModelClass)
     }
     else
     {
-      inflater.inflate(getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: -1, container, false)
+      ViewModelProvider(viewModelOwner).get(viewModelClass)
     }
   }
 
-  @CallSuper
-  override fun onStart()
+  protected open fun observeStates()
   {
-    super.onStart()
-    sweetizer?.onStart()
+    viewModel?.state?.observe(this, Observer
+    {
+      when (it)
+      {
+        is SweetViewModel.State.LoadingState -> onLoadingState()
+        is SweetViewModel.State.LoadedState  -> onLoadedState()
+        is SweetViewModel.State.ErrorState   -> onErrorState()
+      }
+    })
   }
 
-  @CallSuper
   override fun onResume()
   {
     super.onResume()
     sweetizer?.onResume()
   }
 
-  @CallSuper
   override fun onPause()
   {
-    try
-    {
-      sweetizer?.onPause()
-    }
-    finally
-    {
-      super.onPause()
-    }
+    super.onPause()
+    sweetizer?.onPause()
   }
 
-  @CallSuper
   override fun onStop()
   {
-    try
-    {
-      sweetizer?.onStop()
-    }
-    finally
-    {
-      super.onStop()
-    }
+    super.onStop()
+    sweetizer?.onStop()
   }
 
-  override fun onDestroyView()
-  {
-    try
-    {
-      sweetizer?.onDestroyView()
-    }
-    finally
-    {
-      super.onDestroyView()
-    }
-  }
-
-  @CallSuper
   override fun onDestroy()
   {
-    try
-    {
-      sweetizer?.onDestroy()
+    super.onDestroy()
+    sweetizer?.onDestroy()
+  }
+
+  protected open fun onErrorState()
+  {
+
+  }
+
+  @CallSuper
+  protected open fun onLoadedState()
+  {
+    viewModel?.let {
+      binding?.apply {
+        removeOnRebindCallback(onRebindCallback)
+        setVariable(getBindingVariable(), it)
+      }
     }
-    finally
-    {
-      super.onDestroy()
-    }
   }
 
-  @CallSuper
-  @Throws(ModelUnavailableException::class)
-  override suspend fun onRetrieveModel()
+  protected open fun onLoadingState()
   {
-    getAggregate()?.checkException()
+
   }
-
-  override fun onBindModel()
-  {
-  }
-
-  @CallSuper
-  override fun onSaveInstanceState(outState: Bundle)
-  {
-    super.onSaveInstanceState(outState)
-    sweetizer?.onSaveInstanceState(outState)
-    getAggregate()?.onSaveInstanceState(outState)
-  }
-
-  override fun getAggregate(): AggregateClass?
-  {
-    return sweetizer?.getAggregate()
-  }
-
-  override fun setAggregate(aggregate: AggregateClass?)
-  {
-    sweetizer?.setAggregate(aggregate)
-  }
-
-  override fun getHandler(): Handler =
-      sweetizer?.getHandler() ?: Handler()
-
-  @CallSuper
-  override fun onException(throwable: Throwable, fromGuiThread: Boolean)
-  {
-    sweetizer?.onException(throwable, fromGuiThread)
-  }
-
-  @CallSuper
-  override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
-  {
-    sweetizer?.registerBroadcastListeners(broadcastListeners)
-  }
-
-  override fun isRefreshingModelAndBinding(): Boolean =
-      sweetizer?.isRefreshingModelAndBinding() ?: false
-
-  override fun isFirstLifeCycle(): Boolean =
-      sweetizer?.isFirstLifeCycle() ?: false
-
-  override fun isInteracting(): Boolean =
-      sweetizer?.isInteracting() ?: false
-
-  override fun isAlive(): Boolean =
-      sweetizer?.isAlive() ?: false
-
-  override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
-  {
-    sweetizer?.refreshModelAndBind(retrieveModel, onOver, immediately)
-  }
-
-  override fun shouldKeepOn(): Boolean =
-      sweetizer?.shouldKeepOn() ?: false
-
-  final override fun onRetrieveDisplayObjects()
-  {
-  }
-
-  fun refreshModelAndBind()
-  {
-    refreshModelAndBind(true, null, false)
-  }
-
-  @LayoutRes
-  open fun getLayoutId(): Int =
-      -1
 
 }

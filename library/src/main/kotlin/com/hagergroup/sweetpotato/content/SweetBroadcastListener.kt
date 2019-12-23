@@ -20,7 +20,7 @@ import android.content.IntentFilter
  * [androidx.appcompat.app.AppCompatActivity.onDestroy] or [androidx.fragment.app.Fragment.onDestroy] methods.
  * </p>
  *
- * @see com.hagergroup.sweetpotato.app.Sweetened.registerBroadcastListeners
+ * @see com.hagergroup.sweetpotato.app.Sweetable.registerBroadcastListeners
  * @see SweetBroadcastListenerProvider
  * @see SweetBroadcastListenersProvider
  *
@@ -29,19 +29,6 @@ import android.content.IntentFilter
  */
 interface SweetBroadcastListener
 {
-
-  companion object
-  {
-
-    const val ACTION_ACTIVITY_EXTRA = "actionActivityExtra"
-
-    const val ACTION_COMPONENT_EXTRA = "actionComponentExtra"
-
-    const val UI_LOAD_ACTION_LOADING_EXTRA = "uiLoadActionLoadingExtra"
-
-    const val UI_LOAD_ACTION = "uiLoadAction"
-
-  }
 
   /**
    * This method will be invoked by the framework to determine what [IntentFilter] should be associated to the current listener.
