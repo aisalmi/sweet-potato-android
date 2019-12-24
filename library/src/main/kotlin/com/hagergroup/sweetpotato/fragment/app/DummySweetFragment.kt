@@ -17,8 +17,7 @@ internal class DummySweetFragment
   : SweetFragment<DummySweetFragmentAggregate, ViewDataBinding, DummySweetViewModel>()
 {
 
-  override fun getBindingVariable(): Int
-  {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
+  override fun getBindingVariable(): Int =
+      -1
+
 }

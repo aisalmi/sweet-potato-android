@@ -59,44 +59,50 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   {
     fragmentAnnotation?.let {
       activity?.supportActionBar?.let { actionBar ->
-        getFragmentTitleIdFromAnnotation()?.let {
-          actionBar.setTitle(it)
+        val fragmentTitleStringRes = getFragmentTitleIdFromAnnotation()
+
+        if (fragmentTitleStringRes != -1)
+        {
+          actionBar.setTitle(fragmentTitleStringRes)
         }
 
-        getFragmentSubtitleIdFromAnnotation()?.let {
-          actionBar.setSubtitle(it)
+        val fragmentSubtitleStringRes = getFragmentSubtitleIdFromAnnotation()
+
+        if (fragmentSubtitleStringRes != -1)
+        {
+          actionBar.setSubtitle(fragmentSubtitleStringRes)
         }
       }
     }
   }
 
   @StringRes
-  fun getFragmentTitleIdFromAnnotation(): Int?
+  fun getFragmentTitleIdFromAnnotation(): Int
   {
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.fragmentTitleId
-      else                       -> null
+      else                       -> -1
     }
   }
 
   @StringRes
-  fun getFragmentSubtitleIdFromAnnotation(): Int?
+  fun getFragmentSubtitleIdFromAnnotation(): Int
   {
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.fragmentSubtitleId
-      else                       -> null
+      else                       -> -1
     }
   }
 
   @LayoutRes
-  fun getFragmentLayoutIdFromAnnotation(): Int?
+  fun getFragmentLayoutIdFromAnnotation(): Int
   {
     return when (fragmentAnnotation)
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.layoutId
-      else                       -> null
+      else                       -> -1
     }
   }
 

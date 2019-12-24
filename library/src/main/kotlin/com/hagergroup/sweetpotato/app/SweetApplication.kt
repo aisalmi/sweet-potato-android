@@ -2,6 +2,7 @@ package com.hagergroup.sweetpotato.app
 
 import android.app.Application
 import android.content.res.Resources
+import androidx.annotation.StringRes
 import com.hagergroup.sweetpotato.R
 import com.hagergroup.sweetpotato.exception.ExceptionHandlers
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
@@ -25,15 +26,13 @@ abstract class SweetApplication<ApplicationConstantsClass : SweetApplication.App
   /**
    * Contains various attributes in order to have the default dialog boxes related to exceptions i18ned.
    *
-   * @param dialogBoxErrorTitle                   the title that will be used when the framework displays an error dialog box
    * @param businessObjectAvailabilityProblemHint the body of the error dialog box when the business objects are not available on an [androidx.appcompat.app.AppCompatActivity]
    * @param connectivityProblemHint               the body of the error dialog box a connectivity issue occurs
    * @param otherProblemHint                      the "Retry" button label of the dialog box when a connectivity issue occurs
    */
-  class I18N(val dialogBoxErrorTitle: String,
-             val businessObjectAvailabilityProblemHint: String,
-             val connectivityProblemHint: String,
-             val otherProblemHint: String)
+  data class I18N(@StringRes val businessObjectAvailabilityProblemHint: Int,
+                  @StringRes val connectivityProblemHint: Int,
+                  @StringRes val otherProblemHint: Int)
 
   /**
    * Contains various attributes in order to have some context of the app environment.
@@ -328,7 +327,7 @@ abstract class SweetApplication<ApplicationConstantsClass : SweetApplication.App
 
     // We make sure that all uncaught exceptions will be intercepted and handled
     val builtinUuncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-    val uncaughtExceptionHandler = SweetUncaughtExceptionHandler(applicationContext, builtinUuncaughtExceptionHandler)
+    val uncaughtExceptionHandler = SweetUncaughtExceptionHandler(builtinUuncaughtExceptionHandler)
 
     Timber.d("The application with package name '$packageName' " + (if (builtinUuncaughtExceptionHandler == null) "does not have" else "has") + " a built-in default uncaught exception handler")
     Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler)

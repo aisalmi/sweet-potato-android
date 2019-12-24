@@ -8,11 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hagergroup.sweetpotato.R
+import com.hagergroup.sweetpotato.app.SweetActivityController
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.Serializable
 
 /**
  * The basis class for all [ViewModel] available in the framework.
@@ -24,34 +26,42 @@ abstract class SweetViewModel(application: Application)
   : AndroidViewModel(application)
 {
 
-  sealed class State
+  class StateManager
+    : Serializable
   {
 
-    object LoadingState : State()
+    sealed class State
+    {
 
-    object LoadedState : State()
+      object LoadingState : State()
 
-    class ErrorState(val throwable: Throwable) : State()
+      object LoadedState : State()
+
+      class ErrorState(val throwable: Throwable) : State()
+
+    }
+
+    val state = MutableLiveData<State>().apply {
+      postValue(State.LoadingState)
+    }
+
+    val errorMessage = MutableLiveData<Int>().apply {
+      postValue(SweetActivityController.exceptionHandler?.getGenericErrorMessage() ?: R.string.sweetpotato_defaultErrorMessage)
+    }
+
+    val errorAndLoadingViewVisibility = Transformations.map(state)
+    {
+      if (it is State.LoadedState) View.INVISIBLE else View.VISIBLE
+    }
+
+    val loadingViewVisibility = Transformations.map(state)
+    {
+      if (it is State.ErrorState) View.INVISIBLE else View.VISIBLE
+    }
 
   }
 
-  val state = MutableLiveData<State>().apply {
-    postValue(State.LoadingState)
-  }
-
-  val errorMessage = MutableLiveData<String>().apply {
-    postValue("")
-  }
-
-  val loadingViewVisibility = Transformations.map(state)
-  {
-    if (it is State.LoadingState) View.VISIBLE else View.INVISIBLE
-  }
-
-  val errorViewVisibility = Transformations.map(state)
-  {
-    if (it is State.ErrorState) View.VISIBLE else View.INVISIBLE
-  }
+  val stateManager = StateManager()
 
   abstract suspend fun computeViewModel(arguments: Bundle?)
 
@@ -62,19 +72,24 @@ abstract class SweetViewModel(application: Application)
       {
         Timber.w(throwable, "An error occurred while computing the ViewModel")
 
-        state.postValue(State.ErrorState(throwable))
+        //TODO : log the error + update the message error
+
+        val errorStringRes = SweetActivityController.handleException(true, throwable)
+
+        stateManager.apply {
+          state.postValue(StateManager.State.ErrorState(throwable))
+          errorMessage.postValue(errorStringRes)
+        }
       }
     }) {
       if (displayLoadingState == true)
       {
-        state.postValue(State.LoadingState)
+        stateManager.state.postValue(StateManager.State.LoadingState)
       }
-
-      delay(200)
 
       computeViewModel(arguments)
 
-      state.postValue(State.LoadedState)
+      stateManager.state.postValue(StateManager.State.LoadedState)
 
       runnable?.run()
     }

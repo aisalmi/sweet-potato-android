@@ -1,6 +1,5 @@
 package com.hagergroup.sweetpotato.exception
 
-import android.content.Context
 import com.hagergroup.sweetpotato.app.SweetActivityController
 
 /**
@@ -9,7 +8,7 @@ import com.hagergroup.sweetpotato.app.SweetActivityController
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-class SweetUncaughtExceptionHandler(private val context: Context, private val builtinUncaughtExceptionHandler: Thread.UncaughtExceptionHandler?)
+class SweetUncaughtExceptionHandler(private val builtinUncaughtExceptionHandler: Thread.UncaughtExceptionHandler?)
   : Thread.UncaughtExceptionHandler
 {
 
@@ -17,7 +16,7 @@ class SweetUncaughtExceptionHandler(private val context: Context, private val bu
   {
     try
     {
-      SweetActivityController.handleException(false, context, null, throwable)
+      SweetActivityController.handleException(false, throwable)
     }
     finally
     {

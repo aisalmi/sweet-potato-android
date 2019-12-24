@@ -1,8 +1,7 @@
 package com.hagergroup.sweetpotato.exception
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.annotation.StringRes
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 
 /**
@@ -27,51 +26,12 @@ interface SweetExceptionHandler
    * Warning, it is not ensured that this method will be invoked from the UI thread!
    * </p>
    *
-   * @param activity  the [AppCompatActivity] that issued the exception, and which is ensured not to be finishing
-   * @param fragment the [Fragment] that issued the exception
    * @param exception the exception that has been thrown
    *
-   * @return `true` if the handler has actually handled the exception: this indicates to the framework that it does not need to investigate
-   * for a further exception handler anymore
+   * @return the most appropriate string resource id
    */
-  fun onModelUnavailableException(activity: AppCompatActivity, fragment: Fragment?, exception: ModelUnavailableException): Boolean
-
-  /**
-   * Is invoked whenever an activity implementing [com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle] throws an unexpected exception outside from the
-   * [com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle.onRetrieveModel] method.
-   * <p>
-   * This method serves as a fallback on the framework, in order to handle gracefully exceptions and prevent the application from crashing.
-   * </p>
-   * <p>
-   * Warning, it is not ensured that this method will be invoked from the UI thread!
-   * </p>
-   *
-   * @param activity  the [AppCompatActivity] that issued the exception
-   * @param fragment the [Fragment] that issued the exception
-   * @param throwable the exception that has been triggered
-   *
-   * @return `true` if the handler has actually handled the exception: this indicates to the framework that it does not need to investigate
-   * for a further exception handler anymore
-   */
-  fun onActivityException(activity: AppCompatActivity, fragment: Fragment?, throwable: Throwable): Boolean
-
-  /**
-   * Is invoked whenever a handled exception is thrown with a non-context.
-   * <p>
-   * This method serves as a fallback on the framework, in order to handle gracefully exceptions and prevent the application from crashing.
-   * </p>
-   * <p>
-   * Warning, it is not ensured that this method will be invoked from the UI thread!
-   * </p>
-   *
-   * @param isRecoverable indicates whether the application is about to crash when the exception has been triggered
-   * @param context       the context that issued the exception
-   * @param throwable     the exception that has been triggered
-   *
-   * @return `true` if the handler has actually handled the exception: this indicates to the framework that it does not need to investigate
-   * for a further exception handler anymore
-   */
-  fun onContextException(isRecoverable: Boolean, context: Context?, throwable: Throwable): Boolean
+  @StringRes
+  fun onModelUnavailableException(exception: ModelUnavailableException): Int
 
   /**
    * Is invoked whenever a handled exception is thrown outside from an available [Context].
@@ -85,10 +45,24 @@ interface SweetExceptionHandler
    * @param isRecoverable indicates whether the application is about to crash when the exception has been triggered
    * @param throwable     the exception that has been triggered
    *
-   * @return `true` if the handler has actually handled the exception: this indicates to the framework that it does not need to investigate
-   * for a further exception handler anymore
+   * @return the most appropriate string resource id
    */
-  fun onException(isRecoverable: Boolean, throwable: Throwable): Boolean
+  @StringRes
+  fun onException(isRecoverable: Boolean, throwable: Throwable): Int
+
+  /**
+   * Is invoked whenever an issue occurs while trying to analyse a [Throwable] and extracting the most appropriate string resource.
+   * <p>
+   * This method serves as a fallback on the framework, in order to handle gracefully exceptions and prevent the application from crashing.
+   * </p>
+   * <p>
+   * Warning, it is not ensured that this method will be invoked from the UI thread!
+   * </p>
+   *
+   * @return the most appropriate string resource id
+   */
+  @StringRes
+  fun getGenericErrorMessage(): Int
 
   fun reportIssueIfNecessary(isRecoverable: Boolean, throwable: Throwable)
 

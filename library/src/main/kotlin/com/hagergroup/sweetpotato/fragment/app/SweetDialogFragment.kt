@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.OnRebindCallback
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -36,12 +37,12 @@ import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingClass : ViewDataBinding, ViewModelClass : SweetViewModel>
-  : Fragment(),
+abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, BindingClass : ViewDataBinding, ViewModelClass : SweetViewModel>
+  : DialogFragment(),
     Sweetable<AggregateClass>
 {
 
-  private var sweetizer: Sweetizer<AggregateClass, SweetFragment<AggregateClass, BindingClass, ViewModelClass>>? = null
+  private var sweetizer: Sweetizer<AggregateClass, SweetDialogFragment<AggregateClass, BindingClass, ViewModelClass>>? = null
 
   protected var binding: BindingClass? = null
 
@@ -84,7 +85,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
   override fun onCreate(savedInstanceState: Bundle?)
   {
     sweetizer?.onCreate(Runnable {
-      super@SweetFragment.onCreate(savedInstanceState)
+      super@SweetDialogFragment.onCreate(savedInstanceState)
     }, savedInstanceState)
   }
 
@@ -118,7 +119,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
   {
     val viewModelFactory = getViewModelFactory()
     val viewModelClass = getAggregate()?.getViewModelClassFromAnnotation() ?: DummySweetViewModel::class.java
-    val viewModelOwner: ViewModelStoreOwner = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetFragmentAnnotation.ViewModelContext.Fragment) this@SweetFragment else requireActivity()
+    val viewModelOwner: ViewModelStoreOwner = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetFragmentAnnotation.ViewModelContext.Fragment) this@SweetDialogFragment else requireActivity()
 
     viewModel = if (viewModelFactory != null)
     {
@@ -205,37 +206,5 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
   {
 
   }
-
-  /*Life cycle part. Not used in Fragments*/
-  override fun onRetrieveDisplayObjects()
-  {
-  }
-
-  override suspend fun onRetrieveModel()
-  {
-  }
-
-  override fun onBindModel()
-  {
-  }
-
-  override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
-  {
-  }
-
-  override fun shouldKeepOn(): Boolean =
-      true
-
-  override fun isFirstLifeCycle(): Boolean =
-      true
-
-  override fun isInteracting(): Boolean =
-      false
-
-  override fun isAlive(): Boolean =
-      true
-
-  override fun isRefreshingModelAndBinding(): Boolean =
-      false
 
 }

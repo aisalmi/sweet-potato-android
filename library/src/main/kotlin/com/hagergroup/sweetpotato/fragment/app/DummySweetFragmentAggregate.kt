@@ -10,5 +10,5 @@ import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
  * @since 2018.11.12
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal class DummySweetFragmentAggregate(fragment: SweetFragment<*>, fragmentAnnotation: SweetFragmentAnnotation?)
+internal class DummySweetFragmentAggregate(fragment: SweetFragment<*, *, *>, fragmentAnnotation: SweetFragmentAnnotation?)
   : SweetFragmentAggregate(fragment, fragmentAnnotation)

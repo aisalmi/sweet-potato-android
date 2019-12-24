@@ -1,6 +1,7 @@
 package com.hagergroup.sweetpotato.coroutines
 
 import android.content.Context
+import androidx.annotation.StringRes
 import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.coroutines.SweetCoroutines.SweetGuardedCoroutine
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -51,11 +52,12 @@ class SweetCoroutines
      * </p>
      *
      * @param throwable the exception that has been thrown during the [run] execution
-     * @return `null` if and only if the method has handled the exception and that the [com.hagergroup.sweetpotato.exception.SweetExceptionHandler] should not be
-     * invoked ; otherwise, the [Throwable]  that should be submitted to the [com.hagergroup.sweetpotato.exception.SweetExceptionHandler]
+     * @param stringRes the string resource id that has been found by the [com.hagergroup.sweetpotato.exception.SweetExceptionHandler]
      */
-    open suspend fun onThrowable(throwable: Throwable): Throwable? =
-        throwable
+    open suspend fun onThrowable(throwable: Throwable, @StringRes stringRes: Int)
+    {
+
+    }
 
   }
 
@@ -74,12 +76,7 @@ class SweetCoroutines
         {
           Timber.w(throwable, "An error occurred while executing the SweetCoroutine")
 
-          val modifiedThrowable = guardedCoroutine.onThrowable(throwable)
-
-          if (modifiedThrowable != null)
-          {
-            SweetActivityController.handleException(true, guardedCoroutine.context, null, modifiedThrowable)
-          }
+          guardedCoroutine.onThrowable(throwable, SweetActivityController.handleException(true, throwable))
         }
       }) {
         guardedCoroutine.run()

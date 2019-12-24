@@ -1,10 +1,11 @@
 package com.hagergroup.sweetpotato.app
 
-import android.content.Context
 import android.content.Intent
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import com.hagergroup.sweetpotato.R
 import com.hagergroup.sweetpotato.annotation.EscapeToRedirectorAnnotation
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
@@ -170,89 +171,6 @@ object SweetActivityController
   }
 
   /**
-   * Dispatches the exception to the [SweetExceptionHandler], and invokes the right method depending on its nature.
-   * <p>
-   * The framework is responsible for invoking that method every time an unhandled exception is thrown. If no
-   * [SweetExceptionHandler]is registered, the exception will be only logged, and the method will return `false`.
-   * </p>
-   * <p>
-   * Note that this method is `synchronized`, which prevents it from being invoking while it is already being executed, and which involves that
-   * only one [Throwable] may be handled at the same time.
-   * </p>
-   *
-   * @param isRecoverable indicates whether the application is about to crash when the exception has been triggered
-   * @param context       the context that originated the exception
-   * @param fragment      when not `null`, the exception has been thrown from the ìt
-   * @param throwable     the reported exception
-   *
-   * @return `true` if the exception has been handled, `else` otherwise
-   *
-   * @see registerExceptionHandler
-   */
-  @Synchronized
-  fun handleException(isRecoverable: Boolean, context: Context?, fragment: Fragment?, throwable: Throwable): Boolean
-  {
-    if (exceptionHandler == null)
-    {
-      Timber.w(throwable, "Detected an exception which will not be handled during the processing of the context with name '${if (context != null) context::class.qualifiedName else null}'")
-      return false
-    }
-
-    val activity = if (context is AppCompatActivity)
-    {
-      context
-    }
-    else
-    {
-      null
-    }
-
-    try
-    {
-      if (activity != null && throwable is ModelUnavailableException)
-      {
-        Timber.w(throwable, "Caught an exception during the retrieval of the business objects from the activity from class with name '${activity::class.qualifiedName}'")
-
-        // We do nothing if the activity is dying
-        return if (activity.isFinishing == true)
-        {
-          true
-        }
-        else
-        {
-          exceptionHandler?.onModelUnavailableException(activity, fragment, throwable) ?: false
-        }
-      }
-      else
-      {
-        Timber.w(throwable, "Caught an exception during the processing of the Context from class with name '${if (context != null) context::class.qualifiedName else null}'")
-
-        // For this special case, we ignore the case when the activity is dying
-        return if (activity != null)
-        {
-          exceptionHandler?.onActivityException(activity, fragment, throwable) ?: false
-        }
-        else if (context != null)
-        {
-          exceptionHandler?.onContextException(isRecoverable, context, throwable) ?: false
-        }
-        else
-        {
-          exceptionHandler?.onException(isRecoverable, throwable) ?: false
-        }
-      }
-    }
-    catch (otherThrowable: Throwable)
-    {
-      // Just to make sure that handled exceptions do not trigger un-handled exceptions on their turn ;(
-      Timber.e(otherThrowable, "An error occurred while attempting to handle an exception coming from the Context from class with name '${context?.javaClass?.name}'")
-
-      return false
-    }
-
-  }
-
-  /**
    * Indicates whether a redirection is required before letting the activity continue its life cycle. It launches the redirected [AppCompatActivity] if a
    * redirection is needed, and provide to its [Intent] the initial activity [Intent] trough the extra [CALLING_INTENT_EXTRA] key.
    * <p>
@@ -305,6 +223,63 @@ object SweetActivityController
     activity.finish()
 
     return true
+  }
+
+  /**
+   * Dispatches the exception to the [SweetExceptionHandler], and invokes the right method depending on its nature.
+   * <p>
+   * The framework is responsible for invoking that method every time an unhandled exception is thrown. If no
+   * [SweetExceptionHandler]is registered, the exception will be only logged, and the method will return `false`.
+   * </p>
+   * <p>
+   * Note that this method is `synchronized`, which prevents it from being invoking while it is already being executed, and which involves that
+   * only one [Throwable] may be handled at the same time.
+   * </p>
+   *
+   * @param isRecoverable indicates whether the application is about to crash when the exception has been triggered
+   * @param context       the context that originated the exception
+   * @param throwable     the reported exception
+   *
+   * @return the string resource id of the most appropriate error message.
+   *
+   * @see registerExceptionHandler
+   */
+  @StringRes
+  @Synchronized
+  fun handleException(isRecoverable: Boolean, throwable: Throwable): Int
+  {
+    val theExceptionHandler = exceptionHandler
+
+    return if (theExceptionHandler == null)
+    {
+      Timber.w(throwable, "Detected an exception which will not be handled")
+      R.string.sweetpotato_defaultErrorMessage
+    }
+    else
+    {
+      try
+      {
+        theExceptionHandler.reportIssueIfNecessary(isRecoverable, throwable)
+
+        if (throwable is ModelUnavailableException)
+        {
+          Timber.w(throwable, "Caught an exception during the retrieval of the business objects")
+          theExceptionHandler.onModelUnavailableException(throwable)
+        }
+        else
+        {
+          Timber.w(throwable, "Caught an exception")
+          theExceptionHandler.onException(isRecoverable, throwable)
+        }
+      }
+      catch (otherThrowable: Throwable)
+      {
+        // Just to make sure that handled exceptions do not trigger un-handled exceptions on their turn ;(
+        Timber.e(otherThrowable, "An error occurred while attempting to handle an exception")
+        theExceptionHandler.getGenericErrorMessage()
+      }
+    }
+
   }
 
 }

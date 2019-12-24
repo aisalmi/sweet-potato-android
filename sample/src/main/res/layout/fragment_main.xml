@@ -1,6 +1,15 @@
-<layout>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  >
+  <data>
+    <variable
+      name="model"
+      type="com.hagergroup.sample.viewmodel.MainFragmentViewModel"
+      />
+  </data>
+
   <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -79,6 +88,9 @@
         />
     </LinearLayout>
 
-    <include layout="@layout/loading_error_and_retry" />
+    <include
+      layout="@layout/loading_error_and_retry"
+      app:stateManager="@{model.stateManager}"
+      />
   </RelativeLayout>
 </layout>

@@ -1,56 +1,60 @@
 <layout
   xmlns:android="http://schemas.android.com/apk/res/android"
->
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  >
   <data>
     <variable
       name="model"
       type="com.hagergroup.sample.viewmodel.SecondFragmentViewModel"
-    />
+      />
   </data>
 
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  >
+    >
     <LinearLayout
-      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-    >
+      android:orientation="vertical"
+      >
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@{model.myString}"
-      />
+        />
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@{model.anotherString}"
-      />
+        />
 
       <Button
         android:id="@+id/refreshError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="refresh with error"
-      />
+        />
 
       <Button
         android:id="@+id/refreshInternetError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="refresh with internet error"
-      />
+        />
 
       <Button
         android:id="@+id/observableField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MutableLiveData field"
-      />
+        />
     </LinearLayout>
 
-    <include layout="@layout/loading_error_and_retry"/>
+    <include
+      layout="@layout/loading_error_and_retry"
+      app:stateManager="@{model.stateManager}"
+      />
   </RelativeLayout>
 </layout>
