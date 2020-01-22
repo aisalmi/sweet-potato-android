@@ -22,7 +22,7 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
+abstract class SweetAppCompatActivity<AggregateClass>
   : AppCompatActivity(),
     Sweetable<AggregateClass>
 {

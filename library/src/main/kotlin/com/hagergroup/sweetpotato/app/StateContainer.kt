@@ -26,7 +26,7 @@ import timber.log.Timber
  * @since 2018.11.06
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal class StateContainer<AggregateClass : Any, ComponentClass : Any>(private val activity: AppCompatActivity, private val component: ComponentClass)
+internal class StateContainer<AggregateClass, ComponentClass: Any>(private val activity: AppCompatActivity, private val component: ComponentClass)
 {
 
   private class RefreshModelAndBind(val retrieveModel: Boolean, val onOver: Runnable?)

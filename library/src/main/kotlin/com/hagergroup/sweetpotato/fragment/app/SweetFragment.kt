@@ -25,7 +25,7 @@ import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
+abstract class SweetFragment<AggregateClass>
   : Fragment(),
     Sweetable<AggregateClass>
 {
@@ -54,7 +54,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
   {
     savedInstanceState?.let {
-      getAggregate()?.onRestoreInstanceState(it)
+      (getAggregate() as? SweetFragmentAggregate)?.onRestoreInstanceState(it)
     }
 
     return inflateLayout(inflater, container)
@@ -68,7 +68,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
     }
     else
     {
-      inflater.inflate(getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: -1, container, false)
+      inflater.inflate((getAggregate() as? SweetFragmentAggregate)?.getFragmentLayoutIdFromAnnotation() ?: -1, container, false)
     }
   }
 
@@ -141,7 +141,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
   @Throws(ModelUnavailableException::class)
   override suspend fun onRetrieveModel()
   {
-    getAggregate()?.checkException()
+    (getAggregate() as? SweetFragmentAggregate)?.checkException()
   }
 
   override fun onBindModel()
@@ -153,7 +153,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate>
   {
     super.onSaveInstanceState(outState)
     sweetizer?.onSaveInstanceState(outState)
-    getAggregate()?.onSaveInstanceState(outState)
+    (getAggregate() as? SweetFragmentAggregate)?.onSaveInstanceState(outState)
   }
 
   override fun getAggregate(): AggregateClass?

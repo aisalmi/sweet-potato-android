@@ -15,7 +15,7 @@ import timber.log.Timber
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCompatActivity,
+class Sweetizer<AggregateClass, ComponentClass : Any>(val activity: AppCompatActivity,
                                                             val sweetable: Sweetable<AggregateClass>,
                                                             val component: ComponentClass,
                                                             val fragment: Fragment?,

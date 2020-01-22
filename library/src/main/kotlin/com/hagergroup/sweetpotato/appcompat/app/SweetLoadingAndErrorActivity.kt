@@ -152,7 +152,7 @@ abstract class SweetLoadingAndErrorActivity<ActivityAggregateClass : SweetActivi
     {
       try
       {
-        if (openedFragment.getAggregate()?.getFragmentSurviveOnConfigurationChangedFromAnnotation() == true)
+        if ((openedFragment.getAggregate() as? SweetFragmentAggregate)?.getFragmentSurviveOnConfigurationChangedFromAnnotation() == true)
         {
           Timber.d("The Fragment from class '${openedFragment.javaClass.name}' will not be recreated, because it is declared as able to survive a configuration change")
           return
