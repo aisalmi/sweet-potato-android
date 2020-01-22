@@ -30,16 +30,6 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   : SweetLoadingAndErrorInterceptor.LoadingErrorAndRetryAggregateProvider
 {
 
-  init
-  {
-
-    if (fragmentAnnotation !is SweetFragmentAnnotation && fragmentAnnotation !is SweetViewModelBindingFragmentAnnotation)
-    {
-      throw IllegalArgumentException("The fragment annotation field has to be a SweetFragmentAnnotation or a SweetViewModelBindingFragmentAnnotation class")
-    }
-
-  }
-
   interface OnBackPressedListener
   {
 
@@ -101,7 +91,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   }
 
   @StringRes
-  fun getFragmentTitleIdFromAnnotation(): Int
+  open fun getFragmentTitleIdFromAnnotation(): Int
   {
     return when (fragmentAnnotation)
     {
@@ -112,7 +102,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   }
 
   @StringRes
-  fun getFragmentSubtitleIdFromAnnotation(): Int
+  open fun getFragmentSubtitleIdFromAnnotation(): Int
   {
     return when (fragmentAnnotation)
     {
@@ -123,7 +113,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
   }
 
   @LayoutRes
-  fun getFragmentLayoutIdFromAnnotation(): Int
+  open fun getFragmentLayoutIdFromAnnotation(): Int
   {
     return when (fragmentAnnotation)
     {
@@ -133,7 +123,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     }
   }
 
-  fun getFragmentSurviveOnConfigurationChangedFromAnnotation(): Boolean
+  open fun getFragmentSurviveOnConfigurationChangedFromAnnotation(): Boolean
   {
     return when (fragmentAnnotation)
     {
@@ -143,7 +133,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     }
   }
 
-  fun getViewModelClassFromAnnotation(): Class<out SweetViewModel>
+  open fun getViewModelClassFromAnnotation(): Class<out SweetViewModel>
   {
     return when (fragmentAnnotation)
     {
@@ -152,7 +142,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     }
   }
 
-  fun getPreBindBehaviourFromAnnotation(): Boolean
+  open fun getPreBindBehaviourFromAnnotation(): Boolean
   {
     return when (fragmentAnnotation)
     {
@@ -161,7 +151,7 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     }
   }
 
-  fun getViewModelContextFromAnnotation(): SweetViewModelBindingFragmentAnnotation.ViewModelContext
+  open fun getViewModelContextFromAnnotation(): SweetViewModelBindingFragmentAnnotation.ViewModelContext
   {
     return when (fragmentAnnotation)
     {
