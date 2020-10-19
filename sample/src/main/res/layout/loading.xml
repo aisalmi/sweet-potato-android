@@ -18,6 +18,7 @@
     android:background="@color/background"
     android:clickable="true"
     android:focusable="true"
+    tools:visibility="invisible"
     app:animatedVisibility="@{stateManager.loadingViewVisibility}"
     >
     <TextView
