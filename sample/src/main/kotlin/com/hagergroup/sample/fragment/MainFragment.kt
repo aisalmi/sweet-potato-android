@@ -101,32 +101,32 @@ class MainFragment
     }
     else if (view == refreshLoading)
     {
-      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+      getCastedViewModel()?.refreshViewModel(arguments,true) {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      })
+      }
     }
     else if (view == refreshNoLoading)
     {
-      getCastedViewModel()?.refreshViewModel(arguments,false, Runnable {
+      getCastedViewModel()?.refreshViewModel(arguments,false) {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      })
+      }
     }
     else if (view == refreshError)
     {
       getCastedViewModel()?.apply {
         throwError = true
-        getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+        getCastedViewModel()?.refreshViewModel(arguments,true) {
           Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-        })
+        }
       }
     }
     else if (view == refreshInternetError)
     {
       getCastedViewModel()?.apply {
         throwInternetError = true
-        getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+        getCastedViewModel()?.refreshViewModel(arguments,true) {
           Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-        })
+        }
       }
     }
     else if (view == coroutines)

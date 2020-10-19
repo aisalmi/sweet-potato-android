@@ -13,6 +13,7 @@ import com.hagergroup.sweetpotato.app.SweetActivityController
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.Serializable
 
@@ -97,7 +98,10 @@ abstract class SweetViewModel(application: Application)
         stateManager.state.postValue(StateManager.State.LoadedState)
       }
 
-      runnable?.run()
+      withContext(Dispatchers.Main)
+      {
+        runnable?.run()
+      }
     }
   }
 
