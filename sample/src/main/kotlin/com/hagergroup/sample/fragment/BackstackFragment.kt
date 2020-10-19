@@ -17,7 +17,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.12.12
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetFragmentAnnotation.ViewModelContext.Activity)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, viewModelContext = SweetFragmentAnnotation.ViewModelContext.Activity)
 class BackstackFragment
   : SampleFragment<FragmentThirdBinding, ThirdFragmentViewModel>(),
     View.OnClickListener

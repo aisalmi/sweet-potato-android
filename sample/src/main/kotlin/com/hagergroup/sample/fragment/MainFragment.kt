@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
+import com.hagergroup.sample.ThirdActivity
 import com.hagergroup.sample.databinding.FragmentMainBinding
 import com.hagergroup.sample.viewmodel.MainFragmentViewModel
 import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
@@ -25,7 +26,7 @@ import java.net.URL
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, viewModelClass = MainFragmentViewModel::class, surviveOnConfigurationChanged = true)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, viewModelClass = MainFragmentViewModel::class)
 class MainFragment
   : SampleFragment<FragmentMainBinding, MainFragmentViewModel>(),
     View.OnClickListener, SweetBroadcastListenerProvider
@@ -85,7 +86,7 @@ class MainFragment
     }
     else if (view == openBinding2)
     {
-      val intent = Intent(context, SecondActivity::class.java).apply {
+      val intent = Intent(context, ThirdActivity::class.java).apply {
         putExtra(ThirdFragment.MY_EXTRA, "go !")
         putExtra(ThirdFragment.ANOTHER_EXTRA, "Another go !")
       }

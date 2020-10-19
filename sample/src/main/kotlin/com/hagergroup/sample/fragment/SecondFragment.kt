@@ -14,7 +14,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class, surviveOnConfigurationChanged = false)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class)
 class SecondFragment
   : SampleFragment<FragmentSecondBinding, SecondFragmentViewModel>(),
     View.OnClickListener

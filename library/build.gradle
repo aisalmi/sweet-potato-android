@@ -2,18 +2,18 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "kotlin-kapt"
-apply plugin: "com.novoda.bintray-release"
-apply plugin: "maven"
-apply plugin: "maven-publish"
+//apply plugin: "com.novoda.bintray-release"
+//apply plugin: "maven"
+//apply plugin: "maven-publish"
 
 android
 {
-  compileSdkVersion 29
+  compileSdkVersion 30
 
   defaultConfig
   {
     minSdkVersion 19
-    targetSdkVersion 29
+    targetSdkVersion 30
 
     versionCode 26
     versionName "2.0.0-SNAPSHOT"
@@ -59,51 +59,53 @@ dependencies
   implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
   // Coroutines
-  api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0"
-  api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
+  api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
+  api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
 
   // Androidx
-  api "androidx.core:core-ktx:1.1.0"
-  api "androidx.appcompat:appcompat:1.1.0"
+  api "androidx.core:core-ktx:1.3.2"
+  api "androidx.appcompat:appcompat:1.2.0"
   api "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
-  api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc03"
-  api "androidx.lifecycle:lifecycle-extensions:2.2.0-rc03"
-  api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03"
+  api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+  api "androidx.lifecycle:lifecycle-extensions:2.2.0"
+  api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
   // Third party
   api "com.jakewharton.timber:timber:4.7.1"
 }
 
-publish
-{
-  userOrg = "hagergroup"
-  repoName = "Maven"
-  groupId = "com.hagergroup"
-  artifactId = "sweet-potato"
-  publishVersion = android.defaultConfig.versionName
-  desc = "Sweet Potato is the Android framework from Hager Group mainly written in Kotlin and only compatible with Android Jetpack.It provides a light-weight wrapper around Android components that contains everyting you need!"
-  website = "https://github.com/hagergroup/sweet-potato-android"
-}
-
-uploadArchives
-{
-  repositories
-  {
-    mavenDeployer
-    {
-      snapshotRepository(url: findProperty("azureArtifactsUrl") ?: "")
-      {
-        authentication(userName: findProperty("azureArtifactsUsername") ?: "", password: findProperty("azureArtifactsGradleAccessToken") ?: "")
-      }
-
-      pom.project
-      {
-        name "Sweet Potato"
-        groupId "com.hagergroup"
-        artifactId "sweet-potato"
-        version android.defaultConfig.versionName
-        packaging "aar"
-      }
-    }
-  }
-}
+//publish
+//{
+//  userOrg = "hagergroup"
+//  repoName = "Maven"
+//  groupId = "com.hagergroup"
+//  artifactId = "sweet-potato"
+//  publishVersion = android.defaultConfig.versionName
+//  desc = "Sweet Potato is the Android framework from Hager Group mainly written in Kotlin and only compatible with Android Jetpack.It provides a light-weight wrapper around Android components that contains everyting you need!"
+//  website = "https://github.com/hagergroup/sweet-potato-android"
+//
+//  components
+//}
+//
+//uploadArchives
+//{
+//  repositories
+//  {
+//    mavenDeployer
+//    {
+//      snapshotRepository(url: findProperty("azureArtifactsUrl") ?: "")
+//      {
+//        authentication(userName: findProperty("azureArtifactsUsername") ?: "", password: findProperty("azureArtifactsGradleAccessToken") ?: "")
+//      }
+//
+//      pom.project
+//      {
+//        name "Sweet Potato"
+//        groupId "com.hagergroup"
+//        artifactId "sweet-potato"
+//        version android.defaultConfig.versionName
+//        packaging "aar"
+//      }
+//    }
+//  }
+//}

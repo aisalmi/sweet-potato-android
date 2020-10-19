@@ -21,7 +21,7 @@ import kotlin.reflect.KClass
 abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragmentAnnotation: Any?)
 {
 
-  interface OnBackPressedListener
+  fun interface OnBackPressedListener
   {
 
     fun onBackPressed(): Boolean
@@ -103,15 +103,6 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
     {
       is SweetFragmentAnnotation -> fragmentAnnotation.layoutId
       else                       -> -1
-    }
-  }
-
-  fun getFragmentSurviveOnConfigurationChangedFromAnnotation(): Boolean
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.surviveOnConfigurationChanged
-      else                       -> false
     }
   }
 

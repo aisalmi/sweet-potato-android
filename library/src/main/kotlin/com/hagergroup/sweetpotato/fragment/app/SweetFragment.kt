@@ -12,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.OnRebindCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
@@ -132,8 +131,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
 
   protected open fun observeStates()
   {
-    viewModel?.stateManager?.state?.observe(this, Observer
-    {
+    viewModel?.stateManager?.state?.observe(this, {
       when (it)
       {
         is SweetViewModel.StateManager.State.LoadingState -> onLoadingState()

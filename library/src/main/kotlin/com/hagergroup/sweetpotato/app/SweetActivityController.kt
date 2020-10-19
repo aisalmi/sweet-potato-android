@@ -39,7 +39,7 @@ object SweetActivityController
    *
    * @see registerRedirector
    */
-  interface Redirector
+  fun interface Redirector
   {
 
     /**
@@ -71,7 +71,7 @@ object SweetActivityController
    *
    * @see registerRedirector
    */
-  interface Interceptor
+  fun interface Interceptor
   {
 
     /**
@@ -237,7 +237,6 @@ object SweetActivityController
    * </p>
    *
    * @param isRecoverable indicates whether the application is about to crash when the exception has been triggered
-   * @param context       the context that originated the exception
    * @param throwable     the reported exception
    *
    * @return the string resource id of the most appropriate error message.

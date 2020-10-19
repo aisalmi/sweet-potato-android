@@ -17,7 +17,7 @@ import java.util.*
  * @author Ludovic Roland
  * @since 2018.12.12
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, surviveOnConfigurationChanged = false, viewModelContext = SweetFragmentAnnotation.ViewModelContext.Activity)
+@SweetFragmentAnnotation(layoutId = R.layout.fragment_third, fragmentTitleId = R.string.app_name, viewModelClass = ThirdFragmentViewModel::class, viewModelContext = SweetFragmentAnnotation.ViewModelContext.Activity)
 class ThirdFragment
   : SampleFragment<FragmentThirdBinding, ThirdFragmentViewModel>(),
     View.OnClickListener
@@ -31,7 +31,6 @@ class ThirdFragment
     const val ANOTHER_EXTRA = "anotherExtra"
 
   }
-
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
@@ -57,16 +56,16 @@ class ThirdFragment
     if (view == refreshError)
     {
       getCastedViewModel()?.throwError = true
-      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+      getCastedViewModel()?.refreshViewModel(arguments, true) {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      })
+      }
     }
     else if (view == refreshInternetError)
     {
       getCastedViewModel()?.throwInternetError = true
-      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
+      getCastedViewModel()?.refreshViewModel(arguments, true) {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      })
+      }
     }
     else if (view == observableField)
     {

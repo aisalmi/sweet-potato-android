@@ -1,9 +1,6 @@
 package com.hagergroup.sample
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import com.hagergroup.sample.app.SampleConnectivityListener
 import com.hagergroup.sample.app.SampleInterceptor
 import com.hagergroup.sweetpotato.app.SweetActivityController
@@ -49,21 +46,15 @@ class SampleApplication
 
   override fun getActivityRedirector(): SweetActivityController.Redirector
   {
-    return object : SweetActivityController.Redirector
-    {
-
-      override fun getRedirection(activity: AppCompatActivity): Intent?
+    return SweetActivityController.Redirector { activity ->
+      if (SweetSplashscreenActivity.isInitialized(SampleSplashscreenActivity::class) == null && activity is SampleSplashscreenActivity == false)
       {
-        return if (SweetSplashscreenActivity.isInitialized(SampleSplashscreenActivity::class) == null && activity is SampleSplashscreenActivity == false)
-        {
-          Intent(activity, SampleSplashscreenActivity::class.java)
-        }
-        else
-        {
-          null
-        }
+        Intent(activity, SampleSplashscreenActivity::class.java)
       }
-
+      else
+      {
+        null
+      }
     }
   }
 
@@ -71,14 +62,9 @@ class SampleApplication
   {
     val applicationInterceptor = SampleInterceptor()
 
-    return object : SweetActivityController.Interceptor
-    {
-      override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
-      {
-        applicationInterceptor.onLifeCycleEvent(activity, fragment, event)
-        connectivityListener?.onLifeCycleEvent(activity, fragment, event)
-      }
-
+    return SweetActivityController.Interceptor { activity, fragment, event ->
+      applicationInterceptor.onLifeCycleEvent(activity, fragment, event)
+      connectivityListener?.onLifeCycleEvent(activity, fragment, event)
     }
 
   }

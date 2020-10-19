@@ -181,7 +181,9 @@ abstract class SweetConnectivityListener(val context: Context)
 
         }
 
-        getConnectivityManager().registerNetworkCallback(builder.build(), networkCallback)
+        networkCallback?.let {
+          getConnectivityManager().registerNetworkCallback(builder.build(), it)
+        }
 
         Timber.d("Registered the Lollipop network callback")
       }
@@ -198,9 +200,8 @@ abstract class SweetConnectivityListener(val context: Context)
 
       if (activitiesCount <= 0)
       {
-        if (networkCallback != null)
-        {
-          getConnectivityManager().unregisterNetworkCallback(networkCallback)
+        networkCallback?.let {
+          getConnectivityManager().unregisterNetworkCallback(it)
 
           Timber.d("Unregisters the Lollipop network callback")
 
@@ -209,7 +210,6 @@ abstract class SweetConnectivityListener(val context: Context)
       }
     }
   }
-
 
   private fun onNetworkChangedLollipopAndAbove(hasConnectivity: Boolean)
   {
@@ -267,7 +267,7 @@ abstract class SweetConnectivityListener(val context: Context)
 
   private fun isConnected(): Boolean
   {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
     {
       // We immediately extract the connectivity status
       val isConnected = getActiveNetworkInfo()?.isConnected
@@ -286,7 +286,6 @@ abstract class SweetConnectivityListener(val context: Context)
         networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
         else                                                                     -> false
       }
-
     }
   }
 

@@ -63,6 +63,8 @@ abstract class SweetViewModel(application: Application)
 
   val stateManager = StateManager()
 
+  private var dataAlreadyLoaded = false
+
   abstract suspend fun computeViewModel(arguments: Bundle?)
 
   open fun computeViewModelInternal(arguments: Bundle?, displayLoadingState: Boolean = true, runnable: Runnable? = null)
@@ -82,14 +84,18 @@ abstract class SweetViewModel(application: Application)
         }
       }
     }) {
-      if (displayLoadingState == true)
+      if (dataAlreadyLoaded == false)
       {
-        stateManager.state.postValue(StateManager.State.LoadingState)
+        if (displayLoadingState == true)
+        {
+          stateManager.state.postValue(StateManager.State.LoadingState)
+        }
+
+        computeViewModel(arguments)
+
+        dataAlreadyLoaded = true
+        stateManager.state.postValue(StateManager.State.LoadedState)
       }
-
-      computeViewModel(arguments)
-
-      stateManager.state.postValue(StateManager.State.LoadedState)
 
       runnable?.run()
     }
@@ -97,6 +103,7 @@ abstract class SweetViewModel(application: Application)
 
   open fun refreshViewModel(arguments: Bundle?, displayLoadingState: Boolean = true, runnable: Runnable? = null)
   {
+    dataAlreadyLoaded = false
     computeViewModelInternal(arguments, displayLoadingState, runnable)
   }
 

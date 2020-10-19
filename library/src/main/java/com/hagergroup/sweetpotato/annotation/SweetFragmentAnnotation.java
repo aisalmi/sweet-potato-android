@@ -67,11 +67,6 @@ public @interface SweetFragmentAnnotation
   int layoutId();
 
   /**
-   * @return true if the fragment should survive when the configuration changes
-   */
-  boolean surviveOnConfigurationChanged() default false;
-
-  /**
    * @return true if databinding should be done a first time before setting the model
    */
   boolean preBind() default false;
