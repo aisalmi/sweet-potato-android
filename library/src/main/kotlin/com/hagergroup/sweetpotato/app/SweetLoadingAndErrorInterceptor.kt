@@ -175,6 +175,13 @@ abstract class SweetLoadingAndErrorInterceptor
       setLoadingVisible()
     }
 
+    fun hideLoading()
+    {
+      containerView?.context?.let {
+        hideLoading(it)
+      }
+    }
+
     fun hideLoading(context: Context)
     {
       containerView?.let {
@@ -352,6 +359,11 @@ abstract class SweetLoadingAndErrorInterceptor
     fun showLoading()
     {
       loadingErrorAndRetryAttributes?.showLoading()
+    }
+
+    fun hideLoading()
+    {
+      loadingErrorAndRetryAttributes?.hideLoading()
     }
 
     fun showModelUnavailableException(activity: AppCompatActivity, sweetable: Sweetable<*>, exception: ModelUnavailableException)

@@ -11,5 +11,9 @@
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
+    <bytecodeTargetLevel>
+      <module name="sweet-potato-android.library" target="1.8" />
+      <module name="sweet-potato-android.sample" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
