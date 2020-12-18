@@ -6,15 +6,13 @@ import android.widget.Toast
 import com.hagergroup.sample.R
 import com.hagergroup.sample.databinding.FragmentSecondBinding
 import com.hagergroup.sample.viewmodel.SecondFragmentViewModel
-import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
-import kotlinx.android.synthetic.main.fragment_second.*
 import java.util.*
 
 /**
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class)
+//@SweetFragmentAnnotation(layoutId = R.layout.fragment_second, fragmentTitleId = R.string.app_name, viewModelClass = SecondFragmentViewModel::class)
 class SecondFragment
   : SampleFragment<FragmentSecondBinding, SecondFragmentViewModel>(),
     View.OnClickListener
@@ -29,36 +27,51 @@ class SecondFragment
 
   }
 
+  override fun layoutId(): Int =
+      R.layout.fragment_second
+
+  override fun fragmentTitleId(): Int =
+      R.string.app_name
+
+  override fun getViewModelClass(): Class<SecondFragmentViewModel> =
+      SecondFragmentViewModel::class.java
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)
 
-    refreshError.setOnClickListener(this)
-    refreshInternetError.setOnClickListener(this)
-    observableField.setOnClickListener(this)
+    viewDatabinding?.refreshError?.setOnClickListener(this)
+    viewDatabinding?.refreshInternetError?.setOnClickListener(this)
+    viewDatabinding?.observableField?.setOnClickListener(this)
   }
 
   override fun onClick(view: View?)
   {
-    if (view == refreshError)
+    if (view == viewDatabinding?.refreshError)
     {
-      getCastedViewModel()?.throwError = true
-
-      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
-        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      })
+      viewModel?.apply {
+        throwError = true
+        refreshViewModel(true) {
+          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+        }
+      }
     }
-    else if (view == refreshInternetError)
+    else if (view == viewDatabinding?.refreshInternetError)
     {
-      getCastedViewModel()?.throwInternetError = true
-      getCastedViewModel()?.refreshViewModel(arguments,true, Runnable {
-        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
-      })
+      viewModel?.apply {
+        throwInternetError = true
+        refreshViewModel(true) {
+          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+        }
+      }
     }
-    else if (view == observableField)
+    else if (view == viewDatabinding?.observableField)
     {
-      getCastedViewModel()?.anotherString?.postValue(UUID.randomUUID().toString())
+      viewModel?.anotherString?.postValue(UUID.randomUUID().toString())
     }
   }
+
+  override fun getRetryView(): View? =
+      viewDatabinding?.loadingErrorAndRetry?.retry
 
 }

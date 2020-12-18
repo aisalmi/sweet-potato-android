@@ -6,21 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.OnRebindCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
-import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
 /**
@@ -38,14 +36,14 @@ import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
  */
 abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, BindingClass : ViewDataBinding, ViewModelClass : SweetViewModel>
   : DialogFragment(),
-    Sweetable<AggregateClass>
+    Sweetable<AggregateClass>, SweetFragmentConfigurable
 {
 
   private var sweetizer: Sweetizer<AggregateClass, SweetDialogFragment<AggregateClass, BindingClass, ViewModelClass>>? = null
 
-  protected var binding: BindingClass? = null
+  protected var viewDatabinding: BindingClass? = null
 
-  protected var viewModel: SweetViewModel? = null
+  protected var viewModel: ViewModelClass? = null
 
   private val onRebindCallback = object : OnRebindCallback<BindingClass>()
   {
@@ -57,18 +55,9 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
 
   }
 
-  protected abstract fun getBindingVariable(): Int
+  protected abstract fun getViewModelClass(): Class<ViewModelClass>
 
-  @LayoutRes
-  protected open fun getLayoutId(): Int? =
-      null
-
-  protected open fun getViewModelFactory(): ViewModelProvider.Factory? =
-      null
-
-  @Suppress("UNCHECKED_CAST")
-  protected open fun getCastedViewModel(): ViewModelClass? =
-      viewModel as? ViewModelClass
+  protected abstract fun getBindingVariable(): Int?
 
   @CallSuper
   override fun onAttach(context: Context)
@@ -83,25 +72,23 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
   @CallSuper
   override fun onCreate(savedInstanceState: Bundle?)
   {
-    sweetizer?.onCreate(Runnable {
+    sweetizer?.onCreate({
       super@SweetDialogFragment.onCreate(savedInstanceState)
     }, savedInstanceState)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
   {
-    val layoutId = getLayoutId() ?: getAggregate()?.getFragmentLayoutIdFromAnnotation() ?: android.R.layout.simple_list_item_1
+    viewDatabinding = DataBindingUtil.inflate(inflater, layoutId() ?: android.R.layout.activity_list_item, container, false)
 
-    binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+    viewDatabinding?.lifecycleOwner = viewLifecycleOwner
 
-    binding?.lifecycleOwner = viewLifecycleOwner
-
-    if (getAggregate()?.getPreBindBehaviourFromAnnotation() == false)
+    if (preBind() == false)
     {
-      binding?.addOnRebindCallback(onRebindCallback)
+      viewDatabinding?.addOnRebindCallback(onRebindCallback)
     }
 
-    return binding?.root
+    return viewDatabinding?.root
   }
 
   @CallSuper
@@ -116,23 +103,15 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
 
   protected open fun createViewModel()
   {
-    val viewModelFactory = getViewModelFactory()
-    val viewModelClass = getAggregate()?.getViewModelClassFromAnnotation() ?: DummySweetViewModel::class.java
-    val viewModelOwner: ViewModelStoreOwner = if (getAggregate()?.getViewModelContextFromAnnotation() == SweetFragmentAnnotation.ViewModelContext.Fragment) this@SweetDialogFragment else requireActivity()
+    val viewModelClass = getViewModelClass()
+    val viewModelOwner: ViewModelStoreOwner = if (viewModelContext() == SweetFragmentConfigurable.ViewModelContext.Fragment) this@SweetDialogFragment else requireActivity()
 
-    viewModel = if (viewModelFactory != null)
-    {
-      ViewModelProvider(viewModelOwner, viewModelFactory).get(viewModelClass)
-    }
-    else
-    {
-      ViewModelProvider(viewModelOwner).get(viewModelClass)
-    }
+    viewModel = ViewModelProvider(viewModelOwner, SavedStateViewModelFactory(requireActivity().application, this, arguments)).get(viewModelClass)
   }
 
   protected open fun observeStates()
   {
-    viewModel?.stateManager?.state?.observe(this, {
+    viewModel?.stateManager?.state?.observe(viewLifecycleOwner, {
       when (it)
       {
         is SweetViewModel.StateManager.State.LoadingState -> onLoadingState()
@@ -144,7 +123,7 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
 
   protected open fun computeViewModel()
   {
-    viewModel?.computeViewModelInternal(arguments)
+    viewModel?.computeViewModelInternal()
   }
 
   override fun onResume()
@@ -193,9 +172,12 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
   protected open fun onLoadedState()
   {
     viewModel?.let {
-      binding?.apply {
+      viewDatabinding?.apply {
         removeOnRebindCallback(onRebindCallback)
-        setVariable(getBindingVariable(), it)
+
+        getBindingVariable()?.let { bindingVariable ->
+          setVariable(bindingVariable, it)
+        }
       }
     }
   }

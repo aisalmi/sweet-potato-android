@@ -1,6 +1,5 @@
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
-apply plugin: "kotlin-android-extensions"
 apply plugin: "kotlin-kapt"
 
 android
@@ -23,9 +22,10 @@ android
     }
   }
 
-  dataBinding
+  buildFeatures
   {
-    enabled = true
+    viewBinding true
+    dataBinding true
   }
 
   buildTypes
@@ -53,10 +53,10 @@ android
 dependencies
 {
   //Kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   //Androidx
-  implementation "androidx.constraintlayout:constraintlayout:2.0.2"
+  implementation "androidx.constraintlayout:constraintlayout:2.0.4"
   implementation "com.google.android.material:material:1.2.1"
 
   implementation(project(":library"))

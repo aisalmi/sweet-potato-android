@@ -1,5 +1,6 @@
 package com.hagergroup.sweetpotato.appcompat.app
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -7,8 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
-import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
+import com.hagergroup.sweetpotato.app.SweetApplication
 import com.hagergroup.sweetpotato.fragment.app.DummySweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
 import timber.log.Timber
@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activityAnnotation: SweetActivityAnnotation?, val actionBarAnnotation: SweetActionBarAnnotation?)
+abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activityConfigurable: SweetActivityConfigurable?, val actionBarConfigurable: SweetActionBarConfigurable?)
   : FragmentManager.OnBackStackChangedListener
 {
 
@@ -77,7 +77,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
    */
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*, *, *>>)
   {
-    addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, null, activity.intent.extras, FragmentTransactionType.Replace)
+    addOrReplaceFragment(fragmentClass, activityConfigurable?.fragmentPlaceholderId() ?: -1, activityConfigurable?.addFragmentToBackStack() ?: false, activityConfigurable?.fragmentBackStackName(), null, activity.intent.extras, FragmentTransactionType.Replace)
   }
 
   /**
@@ -104,7 +104,7 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
    */
   fun replaceFragment(fragmentClass: KClass<out SweetFragment<*, *, *>>, savedState: Fragment.SavedState?, arguments: Bundle?)
   {
-    addOrReplaceFragment(fragmentClass, activityAnnotation?.fragmentPlaceholderId ?: -1, activityAnnotation?.addFragmentToBackStack ?: false, activityAnnotation?.fragmentBackStackName, savedState, arguments, FragmentTransactionType.Replace)
+    addOrReplaceFragment(fragmentClass, activityConfigurable?.fragmentPlaceholderId() ?: -1, activityConfigurable?.addFragmentToBackStack() ?: false, activityConfigurable?.fragmentBackStackName(), savedState, arguments, FragmentTransactionType.Replace)
   }
 
   /**
@@ -161,30 +161,22 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
 
   fun onCreate()
   {
-    if (activity is SweetAppCompatActivity<*> && activity.getContentViewId() != null)
+
+    if (activityConfigurable?.canRotate() == false && SweetApplication.getApplicationConstants<SweetApplication.ApplicationConstants>().canRotate == false)
     {
-      activity.getContentViewId()?.let {
-        activity.setContentView(it)
-      }
-    }
-    else
-    {
-      activityAnnotation?.let {
-        activity.setContentView(activityAnnotation.contentViewId)
+      // This Activity is not authorized to rotate
+      val requestedOrientation = activity.requestedOrientation
+
+      if (requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT)
+      {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
       }
     }
 
-    openedFragment = if (activity is SweetAppCompatActivity<*> && activity.getFragmentPlaceholderId() != null)
-    {
-      activity.getFragmentPlaceholderId()?.let {
-        activity.supportFragmentManager.findFragmentById(it) as? SweetFragment<*, *, *>
-      }
-    }
-    else
-    {
-      activityAnnotation?.let {
-        activity.supportFragmentManager.findFragmentById(activityAnnotation.fragmentPlaceholderId) as? SweetFragment<*, *, *>
-      }
+    openedFragment = null
+
+    activityConfigurable?.fragmentPlaceholderId()?.let {
+      openedFragment = activity.supportFragmentManager.findFragmentById(it) as? SweetFragment<*, *, *>
     }
 
     if (openedFragment == null)
@@ -192,33 +184,21 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
       openParameterFragment()
     }
 
-    if (activity is SweetAppCompatActivity<*> && activity.getToolbarId() != null)
-    {
-      activity.getToolbarId()?.let {
-        val toolbar = activity.findViewById<Toolbar>(it)
+    actionBarConfigurable?.toolbarId()?.let {
+      activity.findViewById<Toolbar>(it)?.let { toolbar ->
         activity.setSupportActionBar(toolbar)
       }
     }
-    else
-    {
-      actionBarAnnotation?.let {
-        if (it.toolbarId != -1)
-        {
-          val toolbar = activity.findViewById<Toolbar>(it.toolbarId)
-          activity.setSupportActionBar(toolbar)
-        }
-      }
-    }
 
-    actionBarAnnotation?.apply {
-      if (this.actionBarBehavior == SweetActionBarAnnotation.ActionBarBehavior.Drawer)
+    actionBarConfigurable?.let {
+      if (it.actionBarBehavior() == SweetActionBarConfigurable.ActionBarBehavior.Drawer)
       {
         activity.supportActionBar?.apply {
           setDisplayHomeAsUpEnabled(true)
           setDisplayShowHomeEnabled(false)
         }
       }
-      else if (this.actionBarBehavior == SweetActionBarAnnotation.ActionBarBehavior.Up)
+      else if (it.actionBarBehavior() == SweetActionBarConfigurable.ActionBarBehavior.Up)
       {
         activity.supportActionBar?.apply {
           setDisplayHomeAsUpEnabled(true)
@@ -237,10 +217,10 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
 
   private fun openParameterFragment()
   {
-    activityAnnotation?.let {
-      if (activityAnnotation.fragmentClass != DummySweetFragment::class.java && activityAnnotation.fragmentPlaceholderId != -1)
+    activityConfigurable?.let {
+      if (it.fragmentClass() != DummySweetFragment::class.java && it.fragmentPlaceholderId() != null)
       {
-        replaceFragment(activityAnnotation.fragmentClass)
+        replaceFragment(it.fragmentClass())
       }
     }
   }

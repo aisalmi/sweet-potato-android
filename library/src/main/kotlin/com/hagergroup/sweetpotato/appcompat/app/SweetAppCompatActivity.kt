@@ -2,10 +2,10 @@ package com.hagergroup.sweetpotato.appcompat.app
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
@@ -14,6 +14,7 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
  * The basis class for all activities available in the framework.
  *
  * @param AggregateClass the aggregate class accessible through the [setAggregate] and [getAggregate] methods
+ * @param ViewBindingClass the [ViewBinding] class associate with the activity
  *
  * @see Sweetable
  * @see SweetActivityAggregate
@@ -21,32 +22,50 @@ import com.hagergroup.sweetpotato.content.SweetBroadcastListener
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
+abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate, ViewBindingClass : ViewBinding>
   : AppCompatActivity(),
-    Sweetable<AggregateClass>
+    Sweetable<AggregateClass>, SweetActionBarConfigurable, SweetActivityConfigurable
 {
+
+  protected var viewBinding: ViewBindingClass? = null
 
   private val sweetizer by lazy { Sweetizer(this, this, this, null, lifecycleScope) }
 
+  /**
+   * TODO
+   */
+  abstract fun inflateViewBinding(): ViewBindingClass
+
+  @CallSuper
   override fun onCreate(savedInstanceState: Bundle?)
   {
-    sweetizer.onCreate(Runnable {
+    sweetizer.onCreate({
       super@SweetAppCompatActivity.onCreate(savedInstanceState)
     }, savedInstanceState)
   }
 
+  @CallSuper
+  override fun onRetrieveDisplayObjects()
+  {
+    viewBinding = inflateViewBinding()
+    setContentView(viewBinding?.root)
+  }
+
+  @CallSuper
   override fun onStart()
   {
     super.onStart()
     sweetizer.onStart()
   }
 
+  @CallSuper
   override fun onResume()
   {
     super.onResume()
     sweetizer.onResume()
   }
 
+  @CallSuper
   override fun onPause()
   {
     try
@@ -59,6 +78,7 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     }
   }
 
+  @CallSuper
   override fun onStop()
   {
     try
@@ -71,6 +91,7 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     }
   }
 
+  @CallSuper
   override fun onDestroy()
   {
     try
@@ -96,14 +117,11 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
     sweetizer.registerBroadcastListeners(broadcastListeners)
   }
 
+  @CallSuper
   override fun onNewIntent(intent: Intent)
   {
     super.onNewIntent(intent)
     sweetizer.onNewIntent()
-  }
-
-  override fun onRetrieveDisplayObjects()
-  {
   }
 
   override fun isRefreshingModelAndBinding(): Boolean =
@@ -146,17 +164,5 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate>
   {
 
   }
-
-  @LayoutRes
-  open fun getContentViewId(): Int? =
-      null
-
-  @IdRes
-  open fun getFragmentPlaceholderId(): Int? =
-      null
-
-  @IdRes
-  open fun getToolbarId(): Int? =
-      null
 
 }

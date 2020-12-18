@@ -1,8 +1,8 @@
 package com.hagergroup.sample.viewmodel
 
 import android.app.Application
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.hagergroup.sample.fragment.SecondFragment
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
@@ -13,8 +13,8 @@ import java.net.UnknownHostException
  * @author Ludovic Roland
  * @since 2018.11.09
  */
-class SecondFragmentViewModel(application: Application)
-  : SweetViewModel(application)
+class SecondFragmentViewModel(application: Application, savedStateHandle: SavedStateHandle)
+  : SweetViewModel(application, savedStateHandle)
 {
 
   var myString: String? = null
@@ -25,7 +25,7 @@ class SecondFragmentViewModel(application: Application)
 
   var throwInternetError = false
 
-  override suspend fun computeViewModel(arguments: Bundle?)
+  override suspend fun computeViewModel()
   {
     delay(1_000)
 
@@ -43,7 +43,7 @@ class SecondFragmentViewModel(application: Application)
       throw ModelUnavailableException("Cannot retrieve the model", UnknownHostException())
     }
 
-    myString = arguments?.getString(SecondFragment.MY_EXTRA)
-    anotherString.postValue(arguments?.getString(SecondFragment.ANOTHER_EXTRA))
+    myString = savedStateHandle.get<String?>(SecondFragment.MY_EXTRA)
+    anotherString.postValue(savedStateHandle.get(SecondFragment.ANOTHER_EXTRA))
   }
 }

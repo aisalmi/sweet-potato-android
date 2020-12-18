@@ -1,14 +1,9 @@
 package com.hagergroup.sweetpotato.fragment.app
 
 import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
-import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
-import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 import timber.log.Timber
 import kotlin.reflect.KClass
 
@@ -18,7 +13,7 @@ import kotlin.reflect.KClass
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragmentAnnotation: Any?)
+abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragmentConfigurable: SweetFragmentConfigurable?)
 {
 
   fun interface OnBackPressedListener
@@ -57,79 +52,16 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
 
   fun onCreate(activity: AppCompatActivity?)
   {
-    fragmentAnnotation?.let {
+    fragmentConfigurable?.let {
       activity?.supportActionBar?.let { actionBar ->
-        val fragmentTitleStringRes = getFragmentTitleIdFromAnnotation()
-
-        if (fragmentTitleStringRes != -1)
-        {
-          actionBar.setTitle(fragmentTitleStringRes)
+        it.fragmentTitleId()?.let { toolbarTitleId ->
+          actionBar.setTitle(toolbarTitleId)
         }
 
-        val fragmentSubtitleStringRes = getFragmentSubtitleIdFromAnnotation()
-
-        if (fragmentSubtitleStringRes != -1)
-        {
-          actionBar.setSubtitle(fragmentSubtitleStringRes)
+        it.fragmentSubtitleId()?.let { toolbarSubtitleId ->
+          actionBar.setSubtitle(toolbarSubtitleId)
         }
       }
-    }
-  }
-
-  @StringRes
-  fun getFragmentTitleIdFromAnnotation(): Int
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.fragmentTitleId
-      else                       -> -1
-    }
-  }
-
-  @StringRes
-  fun getFragmentSubtitleIdFromAnnotation(): Int
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.fragmentSubtitleId
-      else                       -> -1
-    }
-  }
-
-  @LayoutRes
-  fun getFragmentLayoutIdFromAnnotation(): Int
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.layoutId
-      else                       -> -1
-    }
-  }
-
-  fun getViewModelClassFromAnnotation(): Class<out SweetViewModel>
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.viewModelClass.java
-      else                       -> DummySweetViewModel::class.java
-    }
-  }
-
-  fun getPreBindBehaviourFromAnnotation(): Boolean
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.preBind
-      else                       -> true
-    }
-  }
-
-  fun getViewModelContextFromAnnotation(): SweetFragmentAnnotation.ViewModelContext
-  {
-    return when (fragmentAnnotation)
-    {
-      is SweetFragmentAnnotation -> fragmentAnnotation.viewModelContext
-      else                       -> SweetFragmentAnnotation.ViewModelContext.Fragment
     }
   }
 

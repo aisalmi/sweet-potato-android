@@ -1,10 +1,10 @@
 package com.hagergroup.sweetpotato.lifecycle
 
 import android.app.Application
-import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +23,7 @@ import java.io.Serializable
  * @author Ludovic Roland
  * @since 2018.12.05
  */
-abstract class SweetViewModel(application: Application)
+abstract class SweetViewModel(application: Application, val savedStateHandle: SavedStateHandle)
   : AndroidViewModel(application)
 {
 
@@ -66,9 +66,9 @@ abstract class SweetViewModel(application: Application)
 
   private var dataAlreadyLoaded = false
 
-  abstract suspend fun computeViewModel(arguments: Bundle?)
+  abstract suspend fun computeViewModel()
 
-  open fun computeViewModelInternal(arguments: Bundle?, displayLoadingState: Boolean = true, runnable: Runnable? = null)
+  open fun computeViewModelInternal(displayLoadingState: Boolean = true, runnable: Runnable? = null)
   {
     viewModelScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
       viewModelScope.launch(Dispatchers.Main)
@@ -92,7 +92,7 @@ abstract class SweetViewModel(application: Application)
           stateManager.state.postValue(StateManager.State.LoadingState)
         }
 
-        computeViewModel(arguments)
+        computeViewModel()
 
         dataAlreadyLoaded = true
         stateManager.state.postValue(StateManager.State.LoadedState)
@@ -105,10 +105,10 @@ abstract class SweetViewModel(application: Application)
     }
   }
 
-  open fun refreshViewModel(arguments: Bundle?, displayLoadingState: Boolean = true, runnable: Runnable? = null)
+  open fun refreshViewModel(displayLoadingState: Boolean = true, runnable: Runnable? = null)
   {
     dataAlreadyLoaded = false
-    computeViewModelInternal(arguments, displayLoadingState, runnable)
+    computeViewModelInternal(displayLoadingState, runnable)
   }
 
 }

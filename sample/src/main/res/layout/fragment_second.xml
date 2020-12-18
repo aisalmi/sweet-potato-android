@@ -53,6 +53,7 @@
     </LinearLayout>
 
     <include
+      android:id="@+id/loadingErrorAndRetry"
       layout="@layout/loading_error_and_retry"
       app:stateManager="@{model.stateManager}"
       />

@@ -5,7 +5,7 @@
   android:layout_height="match_parent"
   android:fitsSystemWindows="true"
 >
-  <FrameLayout
+  <androidx.fragment.app.FragmentContainerView
     android:id="@+id/fragmentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +17,7 @@
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
   >
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
       android:id="@+id/menuFragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

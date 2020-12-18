@@ -2,6 +2,7 @@ package com.hagergroup.sample
 
 import androidx.appcompat.app.AppCompatActivity
 import com.hagergroup.sample.app.SampleActivityAggregate
+import com.hagergroup.sample.databinding.ActivitySplashscreenBinding
 import com.hagergroup.sweetpotato.appcompat.app.SweetSplashscreenActivity
 import kotlin.reflect.KClass
 
@@ -10,13 +11,11 @@ import kotlin.reflect.KClass
  * @since 2018.11.08
  */
 class SampleSplashscreenActivity
-  : SweetSplashscreenActivity<SampleActivityAggregate>()
+  : SweetSplashscreenActivity<SampleActivityAggregate, ActivitySplashscreenBinding>()
 {
 
-  override fun onRetrieveDisplayObjects()
-  {
-    setContentView(R.layout.activity_splashscreen)
-  }
+  override fun inflateViewBinding(): ActivitySplashscreenBinding =
+      ActivitySplashscreenBinding.inflate(layoutInflater)
 
   override fun getNextActivity(): KClass<out AppCompatActivity> =
       MainActivity::class

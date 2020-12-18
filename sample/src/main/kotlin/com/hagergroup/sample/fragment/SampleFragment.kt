@@ -6,8 +6,8 @@ import androidx.databinding.ViewDataBinding
 import com.hagergroup.sample.app.SampleFragmentAggregate
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
+import com.hagergroup.sweetpotato.fragment.app.SweetFragmentConfigurable
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
-import kotlinx.android.synthetic.main.loading_error_and_retry.*
 
 /**
  * @author Ludovic Roland
@@ -15,15 +15,17 @@ import kotlinx.android.synthetic.main.loading_error_and_retry.*
  */
 abstract class SampleFragment<BindingClass : ViewDataBinding, ViewModelClass : SweetViewModel>
   : SweetFragment<SampleFragmentAggregate, BindingClass, ViewModelClass>(),
-    SweetFragmentAggregate.OnBackPressedListener
+    SweetFragmentAggregate.OnBackPressedListener, SweetFragmentConfigurable
 {
+
+  abstract fun getRetryView(): View?
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)
 
-    retry?.setOnClickListener {
-      getCastedViewModel()?.refreshViewModel(arguments, true, null)
+    getRetryView()?.setOnClickListener {
+      viewModel?.refreshViewModel(true, null)
     }
   }
 

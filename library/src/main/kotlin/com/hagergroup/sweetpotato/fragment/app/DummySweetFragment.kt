@@ -2,7 +2,6 @@ package com.hagergroup.sweetpotato.fragment.app
 
 import androidx.annotation.RestrictTo
 import androidx.databinding.ViewDataBinding
-import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
 
 /**
@@ -12,12 +11,14 @@ import com.hagergroup.sweetpotato.lifecycle.DummySweetViewModel
  * @since 2018.11.07
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-@SweetFragmentAnnotation(layoutId = android.R.layout.list_content)
 internal class DummySweetFragment
   : SweetFragment<DummySweetFragmentAggregate, ViewDataBinding, DummySweetViewModel>()
 {
 
-  override fun getBindingVariable(): Int =
-      -1
+  override fun getBindingVariable(): Int? =
+      null
+
+  override fun getViewModelClass(): Class<DummySweetViewModel> =
+      DummySweetViewModel::class.java
 
 }

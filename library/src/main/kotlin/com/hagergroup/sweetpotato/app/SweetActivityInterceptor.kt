@@ -3,14 +3,14 @@ package com.hagergroup.sweetpotato.app
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
-import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
-import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
+import com.hagergroup.sweetpotato.appcompat.app.SweetActionBarConfigurable
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
+import com.hagergroup.sweetpotato.appcompat.app.SweetActivityConfigurable
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
+import com.hagergroup.sweetpotato.fragment.app.SweetFragmentConfigurable
 
 /**
- * An interceptor which is responsible for handling the [SweetActionBarAnnotation], [SweetActivityAnnotation] and [SweetFragmentAnnotation] annotations declarations on [AppCompatActivity] and [Fragment].
+ * An interceptor which is responsible for handling the [SweetActionBarConfigurable], [SweetActivityConfigurable] and [SweetFragmentConfigurable] interfaces declarations on [AppCompatActivity] and [Fragment].
  *
  * @author Ludovic Roland
  * @since 2018.11.07
@@ -19,9 +19,9 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
   : SweetActivityController.Interceptor
 {
 
-  protected abstract fun instantiateActivityAggregate(activity: AppCompatActivity, activityAnnotation: SweetActivityAnnotation?, actionBarAnnotation: SweetActionBarAnnotation?): ActivityAggregateClass
+  protected abstract fun instantiateActivityAggregate(activity: AppCompatActivity, activityConfigurable: SweetActivityConfigurable?, actionBarConfigurable: SweetActionBarConfigurable?): ActivityAggregateClass
 
-  protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: Any?): FragmentAggregateClass
+  protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentConfigurable: SweetFragmentConfigurable?): FragmentAggregateClass
 
   override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
   {
@@ -30,10 +30,8 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
       if (fragment is Sweetable<*>)
       {
         // It's a Fragment
-        (fragment as Sweetable<FragmentAggregateClass>).apply {
-          val sweetFragmentAnnotation = this::class.java.getAnnotation(SweetFragmentAnnotation::class.java)
-
-          this.setAggregate(instantiateFragmentAggregate(fragment, sweetFragmentAnnotation))
+        (fragment as? Sweetable<FragmentAggregateClass>)?.apply {
+          this.setAggregate(instantiateFragmentAggregate(fragment, (fragment as? SweetFragmentConfigurable)))
           this.getAggregate()?.onCreate(activity)
         }
       }
@@ -41,10 +39,7 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
       {
         // It's an Activity
         (activity as Sweetable<ActivityAggregateClass>).apply {
-          val sweetActivityAnnotation = this::class.java.getAnnotation(SweetActivityAnnotation::class.java)
-          val sweetActionBarAnnotation = this::class.java.getAnnotation(SweetActionBarAnnotation::class.java)
-
-          this.setAggregate(instantiateActivityAggregate(activity, sweetActivityAnnotation, sweetActionBarAnnotation))
+          this.setAggregate(instantiateActivityAggregate(activity, (activity as? SweetActivityConfigurable), (activity as? SweetActionBarConfigurable)))
           this.getAggregate()?.onCreate()
         }
       }

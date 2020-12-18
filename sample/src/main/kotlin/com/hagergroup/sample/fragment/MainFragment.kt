@@ -13,11 +13,9 @@ import com.hagergroup.sample.SecondActivity
 import com.hagergroup.sample.ThirdActivity
 import com.hagergroup.sample.databinding.FragmentMainBinding
 import com.hagergroup.sample.viewmodel.MainFragmentViewModel
-import com.hagergroup.sweetpotato.annotation.SweetFragmentAnnotation
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
 import com.hagergroup.sweetpotato.coroutines.SweetCoroutines
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.net.URL
@@ -26,7 +24,7 @@ import java.net.URL
  * @author Ludovic Roland
  * @since 2018.11.08
  */
-@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, viewModelClass = MainFragmentViewModel::class)
+//@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, viewModelClass = MainFragmentViewModel::class)
 class MainFragment
   : SampleFragment<FragmentMainBinding, MainFragmentViewModel>(),
     View.OnClickListener, SweetBroadcastListenerProvider
@@ -58,24 +56,33 @@ class MainFragment
     }
   }
 
+  override fun layoutId(): Int =
+      R.layout.fragment_main
+
+  override fun fragmentTitleId(): Int =
+      R.string.app_name
+
+  override fun getViewModelClass(): Class<MainFragmentViewModel> =
+      MainFragmentViewModel::class.java
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)
 
-    openBinding.setOnClickListener(this)
-    openBinding2.setOnClickListener(this)
-    click.setOnClickListener(this)
-    refreshLoading.setOnClickListener(this)
-    refreshNoLoading.setOnClickListener(this)
-    refreshError.setOnClickListener(this)
-    refreshInternetError.setOnClickListener(this)
-    coroutines.setOnClickListener(this)
-    coroutinesError.setOnClickListener(this)
+    viewDatabinding?.openBinding?.setOnClickListener(this)
+    viewDatabinding?.openBinding2?.setOnClickListener(this)
+    viewDatabinding?.click?.setOnClickListener(this)
+    viewDatabinding?.refreshLoading?.setOnClickListener(this)
+    viewDatabinding?.refreshNoLoading?.setOnClickListener(this)
+    viewDatabinding?.refreshError?.setOnClickListener(this)
+    viewDatabinding?.refreshInternetError?.setOnClickListener(this)
+    viewDatabinding?.coroutines?.setOnClickListener(this)
+    viewDatabinding?.coroutinesError?.setOnClickListener(this)
   }
 
   override fun onClick(view: View?)
   {
-    if (view == openBinding)
+    if (view == viewDatabinding?.openBinding)
     {
       val intent = Intent(context, SecondActivity::class.java).apply {
         putExtra(SecondFragment.MY_EXTRA, "hey !")
@@ -84,7 +91,7 @@ class MainFragment
 
       startActivity(intent)
     }
-    else if (view == openBinding2)
+    else if (view == viewDatabinding?.openBinding2)
     {
       val intent = Intent(context, ThirdActivity::class.java).apply {
         putExtra(ThirdFragment.MY_EXTRA, "go !")
@@ -93,47 +100,47 @@ class MainFragment
 
       startActivity(intent)
     }
-    else if (view == click)
+    else if (view == viewDatabinding?.click)
     {
       context?.let {
         LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(MainFragment.MY_ACTION))
       }
     }
-    else if (view == refreshLoading)
+    else if (view == viewDatabinding?.refreshLoading)
     {
-      getCastedViewModel()?.refreshViewModel(arguments,true) {
+      viewModel?.refreshViewModel(true) {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }
     }
-    else if (view == refreshNoLoading)
+    else if (view == viewDatabinding?.refreshNoLoading)
     {
-      getCastedViewModel()?.refreshViewModel(arguments,false) {
+      viewModel?.refreshViewModel(false) {
         Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
       }
     }
-    else if (view == refreshError)
+    else if (view == viewDatabinding?.refreshError)
     {
-      getCastedViewModel()?.apply {
+      viewModel?.apply {
         throwError = true
-        getCastedViewModel()?.refreshViewModel(arguments,true) {
+        refreshViewModel(true) {
           Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
         }
       }
     }
-    else if (view == refreshInternetError)
+    else if (view == viewDatabinding?.refreshInternetError)
     {
-      getCastedViewModel()?.apply {
+      viewModel?.apply {
         throwInternetError = true
-        getCastedViewModel()?.refreshViewModel(arguments,true) {
+        refreshViewModel(true) {
           Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
         }
       }
     }
-    else if (view == coroutines)
+    else if (view == viewDatabinding?.coroutines)
     {
       startSweetCoroutines()
     }
-    else if (view == coroutinesError)
+    else if (view == viewDatabinding?.coroutinesError)
     {
       startSweetCoroutinesError()
     }
@@ -166,5 +173,8 @@ class MainFragment
 
     })
   }
+
+  override fun getRetryView(): View? =
+      viewDatabinding?.loadingErrorAndRetry?.retry
 
 }

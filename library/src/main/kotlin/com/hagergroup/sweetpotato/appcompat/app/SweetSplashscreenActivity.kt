@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.viewbinding.ViewBinding
 import com.hagergroup.sweetpotato.app.SweetActivityController
 import com.hagergroup.sweetpotato.content.SweetBroadcastListener
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
@@ -20,8 +21,8 @@ import kotlin.reflect.KClass
  * @author Ludovic Roland
  * @since 2018.11.07
  */
-abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate>
-  : SweetAppCompatActivity<AggregateClass>(),
+abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate, ViewBindingClass : ViewBinding>
+  : SweetAppCompatActivity<AggregateClass, ViewBindingClass>(),
     SweetBroadcastListener
 {
 
@@ -144,10 +145,10 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
         // We do not take into account the event on the activity instance which is over
         if (SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked == false)
         {
-          onRetrieveModelCustomOver(Runnable {
+          onRetrieveModelCustomOver {
             SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked = true
             finishActivity()
-          })
+          }
         }
       }
     }

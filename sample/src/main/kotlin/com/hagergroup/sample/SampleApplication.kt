@@ -10,7 +10,6 @@ import com.hagergroup.sweetpotato.appcompat.app.SweetSplashscreenActivity
 import com.hagergroup.sweetpotato.exception.ExceptionHandlers
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.exception.SweetIssueAnalyzer
-import com.hagergroup.sweetpotato.log.SweetLogTree
 import timber.log.Timber
 
 /**
@@ -26,10 +25,6 @@ class SampleApplication
     if (BuildConfig.DEBUG == true)
     {
       Timber.plant(Timber.DebugTree())
-    }
-    else
-    {
-      Timber.plant(SweetLogTree())
     }
   }
 

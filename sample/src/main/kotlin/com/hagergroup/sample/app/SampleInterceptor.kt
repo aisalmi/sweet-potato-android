@@ -2,9 +2,10 @@ package com.hagergroup.sample.app
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.hagergroup.sweetpotato.annotation.SweetActionBarAnnotation
-import com.hagergroup.sweetpotato.annotation.SweetActivityAnnotation
 import com.hagergroup.sweetpotato.app.SweetActivityInterceptor
+import com.hagergroup.sweetpotato.appcompat.app.SweetActionBarConfigurable
+import com.hagergroup.sweetpotato.appcompat.app.SweetActivityConfigurable
+import com.hagergroup.sweetpotato.fragment.app.SweetFragmentConfigurable
 
 /**
  * @author Ludovic Roland
@@ -14,10 +15,10 @@ class SampleInterceptor
   : SweetActivityInterceptor<SampleActivityAggregate, SampleFragmentAggregate>()
 {
 
-  override fun instantiateActivityAggregate(activity: AppCompatActivity, activityAnnotation: SweetActivityAnnotation?, actionBarAnnotation: SweetActionBarAnnotation?): SampleActivityAggregate =
-      SampleActivityAggregate(activity, activityAnnotation, actionBarAnnotation)
+  override fun instantiateActivityAggregate(activity: AppCompatActivity, activityConfigurable: SweetActivityConfigurable?, actionBarConfigurable: SweetActionBarConfigurable?): SampleActivityAggregate =
+      SampleActivityAggregate(activity, activityConfigurable, actionBarConfigurable)
 
-  override fun instantiateFragmentAggregate(fragment: Fragment, fragmentAnnotation: Any?): SampleFragmentAggregate =
-      SampleFragmentAggregate(fragment, fragmentAnnotation)
+  override fun instantiateFragmentAggregate(fragment: Fragment, fragmentConfigurable: SweetFragmentConfigurable?): SampleFragmentAggregate =
+      SampleFragmentAggregate(fragment, fragmentConfigurable)
 
 }
