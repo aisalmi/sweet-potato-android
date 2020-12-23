@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
 
 /**
  * The basis class for all activities available in the framework.
@@ -32,7 +32,7 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate, V
   private val sweetizer by lazy { Sweetizer(this, this, this, null, lifecycleScope) }
 
   /**
-   * TODO
+   * TODO : function doc
    */
   abstract fun inflateViewBinding(): ViewBindingClass
 
@@ -112,9 +112,9 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate, V
     sweetizer.setAggregate(aggregate)
   }
 
-  override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
+  override fun registerSweetSharedFlowListener(sweetSharedFlowListener: SweetSharedFlowListener)
   {
-    sweetizer.registerBroadcastListeners(broadcastListeners)
+    sweetizer.registerSweetSharedFlowListener(sweetSharedFlowListener)
   }
 
   @CallSuper

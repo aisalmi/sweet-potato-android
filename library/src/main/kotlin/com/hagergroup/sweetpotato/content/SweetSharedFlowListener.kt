@@ -20,14 +20,14 @@ import android.content.IntentFilter
  * [androidx.appcompat.app.AppCompatActivity.onDestroy] or [androidx.fragment.app.Fragment.onDestroy] methods.
  * </p>
  *
- * @see com.hagergroup.sweetpotato.app.Sweetable.registerBroadcastListeners
- * @see SweetBroadcastListenerProvider
- * @see SweetBroadcastListenersProvider
+ * @see com.hagergroup.sweetpotato.app.Sweetable.registerSweetSharedFlowListeners
+ * @see SweetSharedFlowListenerProvider
+ * @see SweetSharedFlowListenersProvider
  *
  * @author Ludovic Roland
  * @since 2018.11.06
  */
-interface SweetBroadcastListener
+interface SweetSharedFlowListener
 {
 
   /**
@@ -36,7 +36,7 @@ interface SweetBroadcastListener
    * The returned value of the method will be used to invoke the [Context.registerReceiver] method.
    * </p>
    *
-   * @see onReceive
+   * @see onCollect
    */
   fun getIntentFilter(): IntentFilter
 
@@ -47,6 +47,6 @@ interface SweetBroadcastListener
    *
    * @see getIntentFilter
    */
-  fun onReceive(context: Context?, intent: Intent?)
+  fun onCollect(intent: Intent)
 
 }

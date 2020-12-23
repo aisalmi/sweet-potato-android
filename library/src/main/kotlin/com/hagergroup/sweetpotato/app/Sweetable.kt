@@ -8,9 +8,9 @@ import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
  * Any entity implementing this interface is considered as Sweet Potato ready (or Sweet Potato compliant) and benefit from all the framework features.
  * </p>
  * <p>
- * If the implementing entity also implements the [com.hagergroup.sweetpotato.content.SweetBroadcastListener], or the [com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider] or the
- * [com.hagergroup.sweetpotato.content.SweetBroadcastListenersProvider] interface, the framework will register one or several [android.content.BroadcastReceiver],
- * as explained in the [com.hagergroup.sweetpotato.content.SweetBroadcastListener].
+ * If the implementing entity also implements the [com.hagergroup.sweetpotato.content.SweetSharedFlowListener], or the [com.hagergroup.sweetpotato.content.SweetSharedFlowListenerProvider] or the
+ * [com.hagergroup.sweetpotato.content.SweetSharedFlowListenersProvider] interface, the framework will register one or several [android.content.BroadcastReceiver],
+ * as explained in the [com.hagergroup.sweetpotato.content.SweetSharedFlowListener].
  * </p>
  * <p>
  * When it is required to have an existing [androidx.appcompat.app.AppCompatActivity] or [androidx.fragment.app.Fragment] implement this interface, you may use the

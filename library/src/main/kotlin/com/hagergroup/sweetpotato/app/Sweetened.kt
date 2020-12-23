@@ -1,6 +1,6 @@
 package com.hagergroup.sweetpotato.app
 
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
 
 /**
  * Defines some common methods for all [AppCompatActivity] and [Fragment] entities defined in the framework.
@@ -41,16 +41,15 @@ interface Sweetened<AggregateClass>
    * Those receivers will finally be unregistered by the[AppCompatActivity.onDestroy]/[Fragment.onDestroy] method.
    * </p>
    * <p>
-   * When invoking that method, all previously registered listeners via the [com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider] or
-   * [com.hagergroup.sweetpotato.content.SweetBroadcastListenersProvider] are kept, and the new provided ones are added.
+   * When invoking that method, all previously registered listeners via the [com.hagergroup.sweetpotato.content.SweetSharedFlowListenerProvider] or
+   * [com.hagergroup.sweetpotato.content.SweetSharedFlowListenersProvider] are kept, and the new provided ones are added.
    * </p>
    *
-   * @param broadcastListeners the wrapped broadcast receivers to registers
+   * @param sweetSharedFlowListener the wrapped broadcast receivers to registers
    *
-   * @see SweetBroadcastListener
-   * @see com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
-   * @see com.hagergroup.sweetpotato.content.SweetBroadcastListenersProvider
+   * @see SweetSharedFlowListener
+   * @see com.hagergroup.sweetpotato.content.SweetSharedFlowListenerProvider
    */
-  fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
+  fun registerSweetSharedFlowListener(sweetSharedFlowListener: SweetSharedFlowListener)
 
 }

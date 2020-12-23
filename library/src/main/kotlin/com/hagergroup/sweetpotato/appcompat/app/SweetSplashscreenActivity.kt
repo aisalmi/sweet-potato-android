@@ -1,13 +1,14 @@
 package com.hagergroup.sweetpotato.appcompat.app
 
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.hagergroup.sweetpotato.app.SweetActivityController
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import com.hagergroup.sweetpotato.content.LocalSharedFlowManager
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListenerProvider
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
 import timber.log.Timber
 import java.util.*
@@ -23,7 +24,7 @@ import kotlin.reflect.KClass
  */
 abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate, ViewBindingClass : ViewBinding>
   : SweetAppCompatActivity<AggregateClass, ViewBindingClass>(),
-    SweetBroadcastListener
+    SweetSharedFlowListenerProvider
 {
 
   companion object
@@ -61,6 +62,39 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
   private var hasStopped: Boolean = false
 
   private var onStartRunnable: Runnable? = null
+
+  override fun getSweetSharedFlowListener(): SweetSharedFlowListener
+  {
+    return object : SweetSharedFlowListener
+    {
+      override fun getIntentFilter(): IntentFilter
+      {
+        return IntentFilter(SweetSplashscreenActivity.MODEL_LOADED_ACTION).apply {
+          addCategory(packageName)
+        }
+      }
+
+      override fun onCollect(intent: Intent)
+      {
+        if (SweetSplashscreenActivity.MODEL_LOADED_ACTION == intent.action)
+        {
+          markAsInitialized()
+
+          if (isFinishing == false)
+          {
+            // We do not take into account the event on the activity instance which is over
+            if (SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked == false)
+            {
+              onRetrieveModelCustomOver {
+                SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked = true
+                finishActivity()
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   override fun onStart()
   {
@@ -101,12 +135,12 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
       }
 
       SweetSplashscreenActivity.onRetrieveModelCustomOver = true
-      LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(SweetSplashscreenActivity.MODEL_LOADED_ACTION).addCategory(packageName))
+      LocalSharedFlowManager.emit(lifecycleScope, Intent(SweetSplashscreenActivity.MODEL_LOADED_ACTION).addCategory(packageName))
     }
     else if (SweetSplashscreenActivity.onRetrieveModelCustomOver == true)
     {
       // A previous activity instance has already completed the business objects retrieval, but the current instance was not active at this time
-      LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(SweetSplashscreenActivity.MODEL_LOADED_ACTION).addCategory(packageName))
+      LocalSharedFlowManager.emit(lifecycleScope, Intent(SweetSplashscreenActivity.MODEL_LOADED_ACTION).addCategory(packageName))
     }
   }
 
@@ -124,33 +158,6 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
     finally
     {
       super.onStop()
-    }
-  }
-
-  override fun getIntentFilter(): IntentFilter
-  {
-    return IntentFilter(SweetSplashscreenActivity.MODEL_LOADED_ACTION).apply {
-      addCategory(packageName)
-    }
-  }
-
-  override fun onReceive(context: Context?, intent: Intent?)
-  {
-    if (SweetSplashscreenActivity.MODEL_LOADED_ACTION == intent?.action)
-    {
-      markAsInitialized()
-
-      if (isFinishing == false)
-      {
-        // We do not take into account the event on the activity instance which is over
-        if (SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked == false)
-        {
-          onRetrieveModelCustomOver {
-            SweetSplashscreenActivity.onRetrieveModelCustomOverInvoked = true
-            finishActivity()
-          }
-        }
-      }
     }
   }
 

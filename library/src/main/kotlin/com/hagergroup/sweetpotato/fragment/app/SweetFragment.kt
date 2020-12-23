@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
 
 /**
@@ -159,9 +159,9 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
     sweetizer?.setAggregate(aggregate)
   }
 
-  override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
+  override fun registerSweetSharedFlowListener(sweetSharedFlowListener: SweetSharedFlowListener)
   {
-    sweetizer?.registerBroadcastListeners(broadcastListeners)
+    sweetizer?.registerSweetSharedFlowListener(sweetSharedFlowListener)
   }
 
   protected open fun onErrorState()

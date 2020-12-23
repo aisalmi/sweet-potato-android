@@ -1,20 +1,19 @@
 package com.hagergroup.sample.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
 import com.hagergroup.sample.ThirdActivity
 import com.hagergroup.sample.databinding.FragmentMainBinding
 import com.hagergroup.sample.viewmodel.MainFragmentViewModel
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import com.hagergroup.sweetpotato.content.SweetBroadcastListenerProvider
+import com.hagergroup.sweetpotato.content.LocalSharedFlowManager
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListenerProvider
 import com.hagergroup.sweetpotato.coroutines.SweetCoroutines
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -27,7 +26,7 @@ import java.net.URL
 //@SweetFragmentAnnotation(layoutId = R.layout.fragment_main, fragmentTitleId = R.string.app_name, viewModelClass = MainFragmentViewModel::class)
 class MainFragment
   : SampleFragment<FragmentMainBinding, MainFragmentViewModel>(),
-    View.OnClickListener, SweetBroadcastListenerProvider
+    View.OnClickListener, SweetSharedFlowListenerProvider
 {
 
   companion object
@@ -37,18 +36,16 @@ class MainFragment
 
   }
 
-  override fun getBroadcastListener(): SweetBroadcastListener
+  override fun getSweetSharedFlowListener(): SweetSharedFlowListener
   {
-    return object : SweetBroadcastListener
+    return object : SweetSharedFlowListener
     {
-      override fun getIntentFilter(): IntentFilter
-      {
-        return IntentFilter(MainFragment.MY_ACTION)
-      }
+      override fun getIntentFilter(): IntentFilter =
+          IntentFilter(MainFragment.MY_ACTION)
 
-      override fun onReceive(context: Context?, intent: Intent?)
+      override fun onCollect(intent: Intent)
       {
-        if (intent?.action == MainFragment.MY_ACTION)
+        if (intent.action == MainFragment.MY_ACTION)
         {
           Toast.makeText(context, "Click !", Toast.LENGTH_SHORT).show()
         }
@@ -102,9 +99,7 @@ class MainFragment
     }
     else if (view == viewDatabinding?.click)
     {
-      context?.let {
-        LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(MainFragment.MY_ACTION))
-      }
+      LocalSharedFlowManager.emit(lifecycleScope, Intent(MainFragment.MY_ACTION))
     }
     else if (view == viewDatabinding?.refreshLoading)
     {

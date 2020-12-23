@@ -14,10 +14,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.hagergroup.sweetpotato.app.SweetConnectivityListener.Companion.CONNECTIVITY_CHANGED_ACTION
 import com.hagergroup.sweetpotato.app.SweetConnectivityListener.Companion.HAS_CONNECTIVITY_EXTRA
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
+import com.hagergroup.sweetpotato.content.LocalSharedFlowManager
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
+import kotlinx.coroutines.MainScope
 import timber.log.Timber
 import java.util.*
 
@@ -132,22 +133,22 @@ abstract class SweetConnectivityListener(val context: Context)
     // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
     if (fragment == null && activity?.parent == null)
     {
-      val broadcastListener = object : SweetBroadcastListener
+      val broadcastListener = object : SweetSharedFlowListener
       {
 
         override fun getIntentFilter(): IntentFilter =
             IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
 
-        override fun onReceive(context: Context?, intent: Intent?)
+        override fun onCollect(intent: Intent)
         {
           val previousConnectivity = hasConnectivity
-          hasConnectivity = intent?.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) == false
+          hasConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) == false
           handleConnectivityChange(previousConnectivity)
         }
 
       }
 
-      (activity as? Sweetable<*>)?.registerBroadcastListeners(arrayOf(broadcastListener))
+      (activity as? Sweetable<*>)?.registerSweetSharedFlowListener(broadcastListener)
     }
   }
 
@@ -227,7 +228,7 @@ abstract class SweetConnectivityListener(val context: Context)
       Timber.i("Received an Internet connectivity change event: the connection is now '$hasConnectivity'")
 
       // We notify the application regarding this connectivity change event
-      LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION).putExtra(SweetConnectivityListener.HAS_CONNECTIVITY_EXTRA, hasConnectivity))
+      LocalSharedFlowManager.emit(MainScope(), Intent(SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION).putExtra(SweetConnectivityListener.HAS_CONNECTIVITY_EXTRA, hasConnectivity))
 
       notifyServices(hasConnectivity)
     }

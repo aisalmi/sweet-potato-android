@@ -4,13 +4,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import com.hagergroup.sweetpotato.content.SweetBroadcastListener
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.LifecycleCoroutineScope
+import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
+ * TODO: class documentation
+ *
  * @author Ludovic Roland
  * @since 2018.11.06
  */
@@ -18,7 +21,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
                                                             val sweetable: Sweetable<AggregateClass>,
                                                             val component: ComponentClass,
                                                             val fragment: Fragment?,
-                                                            val coroutineScope: CoroutineScope)
+                                                            val coroutineScope: LifecycleCoroutineScope)
   : Sweetable<AggregateClass>
 {
 
@@ -52,9 +55,9 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     stateContainer.aggregate = aggregate
   }
 
-  override fun registerBroadcastListeners(broadcastListeners: Array<SweetBroadcastListener>)
+  override fun registerSweetSharedFlowListener(sweetSharedFlowListener: SweetSharedFlowListener)
   {
-    stateContainer.registerBroadcastListeners(broadcastListeners)
+    stateContainer.registerSweetSharedFlowListener(coroutineScope, sweetSharedFlowListener)
   }
 
   override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
@@ -78,10 +81,10 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
     stateContainer.onRefreshingModelAndBindingStart()
 
-    coroutineScope.launch(context = Dispatchers.IO) {
+    coroutineScope.launch(Dispatchers.IO) {
       if (onRetrieveModelInternal(retrieveModel) == true)
       {
-        launch(context = Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
           if (stateContainer.isAliveAsWellAsHostingActivity() == true)
           {
             onBindModelInternal(onOver)
@@ -131,7 +134,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
     stateContainer.firstLifeCycle = if (SweetStateContainer.isFirstCycle(savedInstanceState) == true) false else true
 
-    stateContainer.registerBroadcastListeners()
+    stateContainer.registerSweetSharedFlowListeners(coroutineScope)
 
     if (isFragment() == false)
     {
