@@ -121,33 +121,63 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
     })
   }
 
+  @CallSuper
   protected open fun computeViewModel()
   {
     viewModel?.computeViewModelInternal()
   }
 
+  @CallSuper
+  override fun onStart()
+  {
+    super.onStart()
+    sweetizer?.onStart()
+  }
+
+  @CallSuper
   override fun onResume()
   {
     super.onResume()
     sweetizer?.onResume()
   }
 
+  @CallSuper
   override fun onPause()
   {
-    super.onPause()
-    sweetizer?.onPause()
+    try
+    {
+      sweetizer?.onPause()
+    }
+    finally
+    {
+      super.onPause()
+    }
   }
 
+  @CallSuper
   override fun onStop()
   {
-    super.onStop()
-    sweetizer?.onStop()
+    try
+    {
+      sweetizer?.onStop()
+    }
+    finally
+    {
+      super.onStop()
+    }
   }
 
+  @CallSuper
   override fun onDestroy()
   {
-    super.onDestroy()
-    sweetizer?.onDestroy()
+    try
+    {
+      sweetizer?.onDestroy()
+    }
+    finally
+    {
+      super.onDestroy()
+    }
   }
 
   override fun getAggregate(): AggregateClass? =
@@ -186,5 +216,37 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
   {
 
   }
+
+  /*Life cycle part. Not used in Fragments*/
+  final override fun onRetrieveDisplayObjects()
+  {
+  }
+
+  final override suspend fun onRetrieveModel()
+  {
+  }
+
+  final override fun onBindModel()
+  {
+  }
+
+  final override fun refreshModelAndBind(retrieveModel: Boolean, onOver: Runnable?, immediately: Boolean)
+  {
+  }
+
+  override fun shouldKeepOn(): Boolean =
+      sweetizer?.shouldKeepOn() ?: true
+
+  override fun isFirstLifeCycle(): Boolean =
+      sweetizer?.isFirstLifeCycle() ?: true
+
+  override fun isInteracting(): Boolean =
+      sweetizer?.isInteracting() ?: true
+
+  override fun isAlive(): Boolean =
+      sweetizer?.isAlive() ?: true
+
+  override fun isRefreshingModelAndBinding(): Boolean =
+      sweetizer?.isRefreshingModelAndBinding() ?: false
 
 }
