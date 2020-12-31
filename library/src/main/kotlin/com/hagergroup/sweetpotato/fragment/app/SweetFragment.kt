@@ -108,6 +108,16 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
     getViewModelClass()?.let {
       viewModel = ViewModelProvider(viewModelOwner, SavedStateViewModelFactory(requireActivity().application, this, arguments)).get(it)
     }
+
+    viewModel?.let {
+      viewDatabinding?.apply {
+        removeOnRebindCallback(onRebindCallback)
+
+        getBindingVariable()?.let { bindingVariable ->
+          setVariable(bindingVariable, it)
+        }
+      }
+    }
   }
 
   protected open fun observeStates()
@@ -202,15 +212,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
   @CallSuper
   protected open fun onLoadedState()
   {
-    viewModel?.let {
-      viewDatabinding?.apply {
-        removeOnRebindCallback(onRebindCallback)
 
-        getBindingVariable()?.let { bindingVariable ->
-          setVariable(bindingVariable, it)
-        }
-      }
-    }
   }
 
   protected open fun onLoadingState()

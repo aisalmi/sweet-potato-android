@@ -43,20 +43,18 @@ abstract class SweetViewModel(application: Application, val savedStateHandle: Sa
     }
 
     val state = MutableLiveData<State>().apply {
-      postValue(State.LoadingState)
+      value = State.LoadingState
     }
 
     val errorMessage = MutableLiveData<Int>().apply {
-      postValue(SweetActivityController.exceptionHandler?.getGenericErrorMessage() ?: R.string.sweetpotato_defaultErrorMessage)
+      value = SweetActivityController.exceptionHandler?.getGenericErrorMessage() ?: R.string.sweetpotato_defaultErrorMessage
     }
 
-    val errorAndLoadingViewVisibility = Transformations.map(state)
-    {
+    val errorAndLoadingViewVisibility = Transformations.map(state) {
       if (it is State.LoadedState) View.INVISIBLE else View.VISIBLE
     }
 
-    val loadingViewVisibility = Transformations.map(state)
-    {
+    val loadingViewVisibility = Transformations.map(state) {
       if (it is State.ErrorState) View.INVISIBLE else View.VISIBLE
     }
 
