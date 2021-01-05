@@ -2,12 +2,12 @@ package com.hagergroup.sweetpotato.app
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import com.hagergroup.sweetpotato.appcompat.app.SweetActionBarConfigurable
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityAggregate
 import com.hagergroup.sweetpotato.appcompat.app.SweetActivityConfigurable
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentAggregate
 import com.hagergroup.sweetpotato.fragment.app.SweetFragmentConfigurable
+import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 
 /**
  * An interceptor which is responsible for handling the [SweetActionBarConfigurable], [SweetActivityConfigurable] and [SweetFragmentConfigurable] interfaces declarations on [AppCompatActivity] and [Fragment].
@@ -23,9 +23,9 @@ abstract class SweetActivityInterceptor<ActivityAggregateClass : SweetActivityAg
 
   protected abstract fun instantiateFragmentAggregate(fragment: Fragment, fragmentConfigurable: SweetFragmentConfigurable?): FragmentAggregateClass
 
-  override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: SweetLifeCycle.Event)
   {
-    if (event == Lifecycle.Event.ON_CREATE)
+    if (event == SweetLifeCycle.Event.ON_CREATE)
     {
       if (fragment is Sweetable<*>)
       {

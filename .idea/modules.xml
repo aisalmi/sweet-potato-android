@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sweet-potato-android.iml" filepath="$PROJECT_DIR$/.idea/modules/sweet-potato-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/sweet-potato-android.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/sweet-potato-android.library.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sample/sweet-potato-android.sample.iml" filepath="$PROJECT_DIR$/.idea/modules/sample/sweet-potato-android.sample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/workspace.sweet-potato-android.iml" filepath="$PROJECT_DIR$/.idea/modules/workspace.sweet-potato-android.iml" />
     </modules>
   </component>
 </project>

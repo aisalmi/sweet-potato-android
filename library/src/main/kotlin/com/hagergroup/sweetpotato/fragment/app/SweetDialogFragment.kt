@@ -95,6 +95,7 @@ abstract class SweetDialogFragment<AggregateClass : SweetFragmentAggregate, Bind
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)
+    sweetizer?.onViewCreated()
 
     createViewModel()
     observeStates()

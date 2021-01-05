@@ -18,6 +18,7 @@ import com.hagergroup.sweetpotato.app.SweetConnectivityListener.Companion.CONNEC
 import com.hagergroup.sweetpotato.app.SweetConnectivityListener.Companion.HAS_CONNECTIVITY_EXTRA
 import com.hagergroup.sweetpotato.content.LocalSharedFlowManager
 import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
+import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import kotlinx.coroutines.MainScope
 import timber.log.Timber
 import java.util.*
@@ -82,9 +83,9 @@ abstract class SweetConnectivityListener(val context: Context)
    * This method should be invoked during the [com.hagergroup.sweetpotato.app.SweetActivityController.Interceptor.onLifeCycleEvent] method, and
    * it will handle everything.
    */
-  override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
+  override fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: SweetLifeCycle.Event)
   {
-    if (event == Lifecycle.Event.ON_CREATE)
+    if (event == SweetLifeCycle.Event.ON_CREATE)
     {
       // We listen to the network connection potential issues: we do not want child activities to also register for the connectivity change events
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
@@ -96,7 +97,7 @@ abstract class SweetConnectivityListener(val context: Context)
         registerBroadcastListener(activity, fragment)
       }
     }
-    else if (event == Lifecycle.Event.ON_DESTROY)
+    else if (event == SweetLifeCycle.Event.ON_DESTROY)
     {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
       {

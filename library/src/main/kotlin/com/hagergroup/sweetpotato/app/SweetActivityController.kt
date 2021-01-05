@@ -9,6 +9,7 @@ import com.hagergroup.sweetpotato.R
 import com.hagergroup.sweetpotato.annotation.EscapeToRedirectorAnnotation
 import com.hagergroup.sweetpotato.exception.SweetExceptionHandler
 import com.hagergroup.sweetpotato.lifecycle.ModelUnavailableException
+import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import timber.log.Timber
 
 /**
@@ -86,9 +87,9 @@ object SweetActivityController
      *
      * @param activity  the [AppCompatActivity] on which a life cycle event occurs
      * @param fragment  the [Fragment] on which the life cycle event occurs
-     * @param event     the [Lifecycle.Event] that has just happened
+     * @param event     the [SweetLifeCycle.Event] that has just happened
      */
-    fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
+    fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: SweetLifeCycle.Event)
 
   }
 
@@ -165,7 +166,7 @@ object SweetActivityController
    * @param event     the [Lifecycle.Event] that has just happened for that activity
    */
   @Synchronized
-  fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: Lifecycle.Event)
+  fun onLifeCycleEvent(activity: AppCompatActivity, fragment: Fragment?, event: SweetLifeCycle.Event)
   {
     interceptor?.onLifeCycleEvent(activity, fragment, event)
   }

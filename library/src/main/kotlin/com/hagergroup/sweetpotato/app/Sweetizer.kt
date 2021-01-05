@@ -3,9 +3,9 @@ package com.hagergroup.sweetpotato.app
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
+import com.hagergroup.sweetpotato.lifecycle.SweetLifeCycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -129,7 +129,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
     }
     else
     {
-      SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_CREATE)
+      SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_CREATE)
     }
 
     stateContainer.firstLifeCycle = if (SweetStateContainer.isFirstCycle(savedInstanceState) == true) false else true
@@ -171,11 +171,18 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       return
     }
 
-    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_RESUME)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_RESUME)
 
     stateContainer.onResume()
 
     refreshModelAndBindInternal()
+  }
+
+  fun onViewCreated()
+  {
+    Timber.d("Sweetizer::onViewCreated")
+
+    SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_VIEW_CREATED)
   }
 
   fun onSaveInstanceState(outState: Bundle)
@@ -189,7 +196,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
   {
     Timber.d("Sweetizer::onStart")
 
-    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_START)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_START)
   }
 
   fun onPause()
@@ -202,7 +209,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       return
     }
 
-    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_PAUSE)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_PAUSE)
     stateContainer.onPause()
   }
 
@@ -210,7 +217,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
   {
     Timber.d("Sweetizer::onStop")
 
-    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_STOP)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_STOP)
   }
 
   fun onDestroy()
@@ -225,7 +232,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       return
     }
 
-    SweetActivityController.onLifeCycleEvent(activity, fragment, Lifecycle.Event.ON_DESTROY)
+    SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_DESTROY)
   }
 
   private suspend fun onRetrieveModelInternal(retrieveModel: Boolean): Boolean

@@ -1,5 +1,9 @@
 package com.hagergroup.sweetpotato.lifecycle
 
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.hagergroup.sweetpotato.app.Sweetizer
+
 /**
  * Identifies a typical life cycle work-flow for an [AppCompatActivity] or a [Fragment] of the framework. When referring to the
  * [AppCompatActivity] "life cycle", we do not consider the entity instance re-creation due to <a href="http://developer.android.com/reference/android/app/Activity.html#ConfigurationChanges">configuration changes</a>,
@@ -31,6 +35,45 @@ package com.hagergroup.sweetpotato.lifecycle
  */
 interface SweetLifeCycle
 {
+
+  enum class Event
+  {
+
+    /**
+     * Constant for onCreate event of the [Sweetizer].
+     */
+    ON_CREATE,
+
+    /**
+     * Constant for onStart event of the [Sweetizer].
+     */
+    ON_START,
+
+    /**
+     * Constant for onResume event of the [Sweetizer].
+     */
+    ON_RESUME,
+
+    /**
+     * Constant for onViewCreated event of the [Sweetizer].
+     */
+    ON_VIEW_CREATED,
+
+    /**
+     * Constant for onPause event of the [Sweetizer].
+     */
+    ON_PAUSE,
+
+    /**
+     * Constant for onStop event of the [Sweetizer].
+     */
+    ON_STOP,
+
+    /**
+     * Constant for onDestroy event of the [Sweetizer].
+     */
+    ON_DESTROY
+  }
 
   /**
    * This is the place where the derived class should [AppCompatActivity.setContentView] set its layout}, extract all [android.view.View]

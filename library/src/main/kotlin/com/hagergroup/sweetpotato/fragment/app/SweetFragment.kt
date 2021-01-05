@@ -95,6 +95,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)
+    sweetizer?.onViewCreated()
 
     createViewModel()
     observeStates()
