@@ -4,7 +4,6 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -161,7 +160,6 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
 
   fun onCreate()
   {
-
     if (activityConfigurable?.canRotate() == false && SweetApplication.getApplicationConstants<SweetApplication.ApplicationConstants>().canRotate == false)
     {
       // This Activity is not authorized to rotate
@@ -184,10 +182,8 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
       openParameterFragment()
     }
 
-    actionBarConfigurable?.toolbarId()?.let {
-      activity.findViewById<Toolbar>(it)?.let { toolbar ->
+    actionBarConfigurable?.toolbar()?.let {toolbar ->
         activity.setSupportActionBar(toolbar)
-      }
     }
 
     actionBarConfigurable?.let {

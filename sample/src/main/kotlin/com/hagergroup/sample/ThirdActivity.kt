@@ -1,8 +1,11 @@
 package com.hagergroup.sample
 
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
-import com.hagergroup.sample.databinding.ActivitySecondBinding
+import com.hagergroup.sample.databinding.ActivityThirdBinding
 import com.hagergroup.sample.fragment.ThirdFragment
 import com.hagergroup.sweetpotato.appcompat.app.SweetActionBarConfigurable
 import com.hagergroup.sweetpotato.fragment.app.SweetFragment
@@ -16,12 +19,14 @@ import kotlin.reflect.KClass
 //@SweetActivityAnnotation(contentViewId = R.layout.activity_second, fragmentPlaceholderId = R.id.fragmentContainer, fragmentClass = ThirdFragment::class, canRotate = true)
 //@SweetActionBarAnnotation(actionBarBehavior = SweetActionBarAnnotation.ActionBarBehavior.Up)
 class ThirdActivity
-  : SampleActivity<ActivitySecondBinding>(),
+  : SampleActivity<ActivityThirdBinding>(),
     FragmentManager.OnBackStackChangedListener
 {
 
-  override fun inflateViewBinding(): ActivitySecondBinding =
-      ActivitySecondBinding.inflate(layoutInflater)
+  private var drawerToggle: ActionBarDrawerToggle? = null
+
+  override fun inflateViewBinding(): ActivityThirdBinding =
+      ActivityThirdBinding.inflate(layoutInflater)
 
   override fun fragmentPlaceholderId(): Int =
       R.id.fragmentContainer
@@ -33,7 +38,10 @@ class ThirdActivity
       true
 
   override fun actionBarBehavior(): SweetActionBarConfigurable.ActionBarBehavior =
-      SweetActionBarConfigurable.ActionBarBehavior.Up
+      SweetActionBarConfigurable.ActionBarBehavior.Drawer
+
+  override fun toolbar(): Toolbar? =
+      viewBinding?.toolbar
 
   override fun onCreate(savedInstanceState: Bundle?)
   {
@@ -42,9 +50,36 @@ class ThirdActivity
     supportFragmentManager.addOnBackStackChangedListener(this)
   }
 
+  override fun onRetrieveDisplayObjects()
+  {
+    super.onRetrieveDisplayObjects()
+
+    drawerToggle = ActionBarDrawerToggle(this, viewBinding?.drawerLayout, null, R.string.app_name, R.string.app_name)
+
+    drawerToggle?.let {
+      viewBinding?.drawerLayout?.addDrawerListener(it)
+    }
+  }
+
+  override fun onPostCreate(savedInstanceState: Bundle?)
+  {
+    super.onPostCreate(savedInstanceState)
+    drawerToggle?.syncState()
+  }
+
   override fun onBackStackChanged()
   {
     Timber.d("current opened fragment: ${getAggregate()?.openedFragment}")
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean
+  {
+    if (drawerToggle?.onOptionsItemSelected(item) == true)
+    {
+      return true
+    }
+
+    return super.onOptionsItemSelected(item)
   }
 
 }

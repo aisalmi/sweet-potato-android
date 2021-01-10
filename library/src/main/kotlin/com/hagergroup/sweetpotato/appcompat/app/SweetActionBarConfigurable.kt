@@ -1,6 +1,5 @@
 package com.hagergroup.sweetpotato.appcompat.app
 
-import androidx.annotation.IdRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 
@@ -46,10 +45,9 @@ interface SweetActionBarConfigurable
       null
 
   /**
-   * @return the [Toolbar] layout identifier to be used as 'ActionBar'
+   * @return the [Toolbar] widget to be used as 'ActionBar'
    */
-  @IdRes
-  fun toolbarId(): Int? =
+  fun toolbar(): Toolbar? =
       null
 
 }

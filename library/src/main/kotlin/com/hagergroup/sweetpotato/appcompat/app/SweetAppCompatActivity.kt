@@ -27,7 +27,8 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate, V
     Sweetable<AggregateClass>, SweetActionBarConfigurable, SweetActivityConfigurable
 {
 
-  protected var viewBinding: ViewBindingClass? = null
+  var viewBinding: ViewBindingClass? = null
+    private set
 
   private val sweetizer by lazy { Sweetizer(this, this, this, null, lifecycleScope) }
 
@@ -41,14 +42,14 @@ abstract class SweetAppCompatActivity<AggregateClass : SweetActivityAggregate, V
   {
     sweetizer.onCreate({
       super@SweetAppCompatActivity.onCreate(savedInstanceState)
+      viewBinding = inflateViewBinding()
+      setContentView(viewBinding?.root)
     }, savedInstanceState)
   }
 
   @CallSuper
   override fun onRetrieveDisplayObjects()
   {
-    viewBinding = inflateViewBinding()
-    setContentView(viewBinding?.root)
   }
 
   @CallSuper

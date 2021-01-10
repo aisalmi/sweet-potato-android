@@ -39,6 +39,7 @@ class ThirdFragment
   override fun getViewModelClass(): Class<ThirdFragmentViewModel> =
       ThirdFragmentViewModel::class.java
 
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)

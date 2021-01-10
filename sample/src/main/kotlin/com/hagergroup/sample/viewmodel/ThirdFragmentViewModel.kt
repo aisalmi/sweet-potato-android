@@ -30,7 +30,7 @@ class ThirdFragmentViewModel(application: Application, savedStateHandle: SavedSt
   val anotherString = MutableLiveData<String>()
 
   val resString = MutableLiveData<@StringRes Int>().apply {
-    postValue(R.string.app_name)
+    value = R.string.app_name
   }
 
   override suspend fun computeViewModel()
