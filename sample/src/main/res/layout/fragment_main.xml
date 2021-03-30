@@ -86,6 +86,13 @@
         android:layout_height="wrap_content"
         android:text="SweetCouroutines error"
         />
+
+      <Button
+        android:id="@+id/alertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="open dialog"
+        />
     </LinearLayout>
 
     <include

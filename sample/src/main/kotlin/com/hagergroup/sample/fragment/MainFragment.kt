@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hagergroup.sample.R
 import com.hagergroup.sample.SecondActivity
 import com.hagergroup.sample.ThirdActivity
@@ -75,6 +76,7 @@ class MainFragment
     viewDatabinding?.refreshInternetError?.setOnClickListener(this)
     viewDatabinding?.coroutines?.setOnClickListener(this)
     viewDatabinding?.coroutinesError?.setOnClickListener(this)
+    viewDatabinding?.alertDialog?.setOnClickListener(this)
   }
 
   override fun onClick(view: View?)
@@ -138,6 +140,22 @@ class MainFragment
     else if (view == viewDatabinding?.coroutinesError)
     {
       startSweetCoroutinesError()
+    }
+    else if (view == viewDatabinding?.alertDialog)
+    {
+      displayAlertDialog()
+    }
+  }
+
+  private fun displayAlertDialog()
+  {
+    context?.let {
+      MaterialAlertDialogBuilder(it).apply {
+        setTitle("Hi!")
+        setMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        setPositiveButton(android.R.string.ok, null)
+        setNegativeButton(android.R.string.cancel, null)
+      }.show()
     }
   }
 
