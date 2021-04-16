@@ -96,6 +96,9 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
     }
   }
 
+  @Throws(ModelUnavailableException::class)
+  protected abstract fun onRetrieveModelCustom()
+
   override fun onStart()
   {
     super.onStart()
@@ -161,15 +164,13 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
     }
   }
 
-  protected abstract fun getNextActivity(): KClass<out AppCompatActivity>
-
-  @Throws(ModelUnavailableException::class)
-  protected abstract fun onRetrieveModelCustom()
-
   protected open fun onRetrieveModelCustomOver(finishRunnable: Runnable)
   {
     finishRunnable.run()
   }
+
+  protected open fun getNextActivity(): KClass<out AppCompatActivity>? =
+      null
 
   protected open fun startCallingIntent()
   {
@@ -191,8 +192,19 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
 
   }
 
-  protected open fun computeNextIntent(): Intent =
-      Intent(applicationContext, getNextActivity().java)
+  protected open fun computeNextIntent(): Intent?
+  {
+    val nextActivity = getNextActivity()
+
+    return if(nextActivity != null)
+    {
+      Intent(applicationContext, nextActivity.java)
+    }
+    else
+    {
+      null
+    }
+  }
 
   private fun markAsInitialized()
   {
@@ -214,7 +226,9 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
         else
         {
           // We only resume the previous activity if the splash screen has not been dismissed
-          startActivity(computeNextIntent())
+          computeNextIntent()?.let {
+            startActivity(it)
+          }
         }
 
         Timber.d("Finishing the splash screen")
