@@ -196,7 +196,7 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
   {
     val nextActivity = getNextActivity()
 
-    return if(nextActivity != null)
+    return if (nextActivity != null)
     {
       Intent(applicationContext, nextActivity.java)
     }
@@ -222,18 +222,29 @@ abstract class SweetSplashscreenActivity<AggregateClass : SweetActivityAggregate
         {
           // We only resume the previous activity if the splash screen has not been dismissed
           startCallingIntent()
+
+          Timber.d("Finishing the splash screen")
+
+          finish()
         }
         else
         {
           // We only resume the previous activity if the splash screen has not been dismissed
-          computeNextIntent()?.let {
-            startActivity(it)
+          val nextIntent = computeNextIntent()
+
+          if (nextIntent != null)
+          {
+            startActivity(nextIntent)
+
+            Timber.d("Finishing the splash screen")
+
+            finish()
+          }
+          else
+          {
+            Timber.d("The splash screen cannot be finished since there is no activity to launch next")
           }
         }
-
-        Timber.d("Finishing the splash screen")
-
-        finish()
       }
       if (hasStopped == false)
       {
