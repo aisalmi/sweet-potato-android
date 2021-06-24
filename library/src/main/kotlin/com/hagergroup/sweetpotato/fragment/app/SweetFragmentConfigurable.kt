@@ -39,10 +39,22 @@ interface SweetFragmentConfigurable
       null
 
   /**
+   * @return the string to be used on [ActionBar.setTitle].
+   */
+  fun fragmentTitle(): String? =
+      null
+
+  /**
    * @return the string identifier to be setted on [ActionBar.setSubtitle].
    */
   @StringRes
   fun fragmentSubtitleId(): Int? =
+      null
+
+  /**
+   * @return the string to be setted on [ActionBar.setSubtitle].
+   */
+  fun fragmentSubtitle(): String? =
       null
 
   /**

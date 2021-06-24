@@ -58,8 +58,16 @@ abstract class SweetFragmentAggregate(val fragment: Fragment, private val fragme
           actionBar.setTitle(toolbarTitleId)
         }
 
+        it.fragmentTitle()?.let { toolbarTitle ->
+          actionBar.title = toolbarTitle
+        }
+
         it.fragmentSubtitleId()?.let { toolbarSubtitleId ->
           actionBar.setSubtitle(toolbarSubtitleId)
+        }
+
+        it.fragmentTitle()?.let { toolbarSubtitle ->
+          actionBar.subtitle = toolbarSubtitle
         }
       }
     }
