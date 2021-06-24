@@ -44,11 +44,15 @@ class MainActivity
       SweetActionBarConfigurable.ActionBarBehavior.Drawer
 
   override fun getSharedFlowListenersCount(): Int =
-      2
+      3
 
   override fun getSharedFlowListener(index: Int): SweetSharedFlowListener
   {
-    return if (index == 0)
+    return if(index == 0)
+    {
+      super.getSweetSharedFlowListener()
+    }
+    else if (index == 1)
     {
       object : SweetSharedFlowListener
       {

@@ -116,7 +116,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
 
   fun onCreate(superMethod: Runnable, savedInstanceState: Bundle?)
   {
-    Timber.d("Sweetizer::onCreate")
+    Timber.d("Sweetizer::onCreate ${activity.javaClass.simpleName} - ${fragment?.javaClass?.simpleName}")
 
     superMethod.run()
 
