@@ -16,10 +16,16 @@ android
     versionCode 1
     versionName "1.0"
 
+    multiDexEnabled true
+
     sourceSets
     {
       main.java.srcDirs += "src/main/kotlin"
+      test.java.srcDirs += "src/test/kotlin"
+      androidTest.java.srcDirs += "src/androidTest/kotlin"
     }
+
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildFeatures
@@ -48,6 +54,22 @@ android
     jvmTarget = "1.8"
   }
 
+  packagingOptions {
+    // Multiple dependency bring these files in. Exclude them to enable
+    // our test APK to build (has no effect on our AARs)
+    excludes += "**/attach_hotspot_windows.dll"
+    excludes += "META-INF/licenses/**"
+    excludes += "META-INF/ASL2.0"
+    excludes += "META-INF/AL2.0"
+    excludes += "META-INF/LGPL2.1"
+    excludes += "META-INF/NOTICE"
+    excludes += "META-INF/NOTICE.txt"
+    excludes += "META-INF/notice.txt"
+    excludes += "META-INF/LICENSE"
+    excludes += "META-INF/LICENSE.txt"
+    excludes += "META-INF/license.txt"
+    excludes += "META-INF/DEPENDENCIES.txt"
+  }
 }
 
 dependencies
@@ -56,7 +78,15 @@ dependencies
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   //Androidx
-  implementation "androidx.constraintlayout:constraintlayout:2.0.4"
+  implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+
+  implementation 'com.android.support:multidex:1.0.3'
 
   implementation(project(":library"))
+
+  // Android Tests
+  androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+  androidTestImplementation 'androidx.test:runner:1.4.0'
+  androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1'
+  androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
 }

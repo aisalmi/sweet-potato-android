@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.OnRebindCallback
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +18,9 @@ import com.hagergroup.sweetpotato.app.Sweetable
 import com.hagergroup.sweetpotato.app.Sweetizer
 import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
 import com.hagergroup.sweetpotato.lifecycle.SweetViewModel
+import com.hagergroup.sweetpotato.lifecycle.SweetViewModelFactory
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * A basis class for designing an Android compatibility library [Fragment] compatible with the framework, i.e.
@@ -58,6 +60,8 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
       null
 
   protected abstract fun getBindingVariable(): Int?
+
+  protected open fun getDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
   @CallSuper
   override fun onAttach(context: Context)
@@ -107,7 +111,7 @@ abstract class SweetFragment<AggregateClass : SweetFragmentAggregate, BindingCla
     val viewModelOwner: ViewModelStoreOwner = if (viewModelContext() == SweetFragmentConfigurable.ViewModelContext.Fragment) this@SweetFragment else requireActivity()
 
     getViewModelClass()?.let {
-      viewModel = ViewModelProvider(viewModelOwner, SavedStateViewModelFactory(requireActivity().application, this, arguments)).get(it)
+      viewModel = ViewModelProvider(viewModelOwner, SweetViewModelFactory(getDispatcher(), requireActivity().application, this, arguments)).get(it)
     }
 
     viewModel?.let {

@@ -210,26 +210,29 @@ internal class SweetStateContainer<AggregateClass : Any, ComponentClass : Any>(p
 
   fun registerSweetSharedFlowListeners(coroutineScope: LifecycleCoroutineScope)
   {
-    if (component is SweetSharedFlowListenersProvider)
+    when (component)
     {
-      Timber.d("Found out that the entity supports $component intent shared flow listeners")
-
-      for (index in 0 until component.getSharedFlowListenersCount())
+      is SweetSharedFlowListenersProvider  ->
       {
-        registerSweetSharedFlowListener(coroutineScope, component.getSharedFlowListener(index))
+        Timber.d("Found out that the entity supports $component intent shared flow listeners")
+
+        for (index in 0 until component.getSharedFlowListenersCount())
+        {
+          registerSweetSharedFlowListener(coroutineScope, component.getSharedFlowListener(index))
+        }
       }
-    }
-    else if (component is SweetSharedFlowListenerProvider)
-    {
-      Timber.d("Found out that the entity supports $component intent shared flow listener")
+      is SweetSharedFlowListenerProvider ->
+      {
+        Timber.d("Found out that the entity supports $component intent shared flow listener")
 
-      registerSweetSharedFlowListener(coroutineScope, component.getSweetSharedFlowListener())
-    }
-    else if(component is SweetSharedFlowListener)
-    {
-      Timber.d("Found out that the entity supports $component a single intent shared flow listener")
+        registerSweetSharedFlowListener(coroutineScope, component.getSweetSharedFlowListener())
+      }
+      is SweetSharedFlowListener ->
+      {
+        Timber.d("Found out that the entity supports $component a single intent shared flow listener")
 
-      registerSweetSharedFlowListener(coroutineScope, component)
+        registerSweetSharedFlowListener(coroutineScope, component)
+      }
     }
   }
 

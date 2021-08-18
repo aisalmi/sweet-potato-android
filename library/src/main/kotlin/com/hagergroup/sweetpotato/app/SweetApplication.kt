@@ -40,21 +40,13 @@ abstract class SweetApplication<ApplicationConstantsClass : SweetApplication.App
   open class ApplicationConstants(resources: Resources)
   {
 
-    val isSmartphone: Boolean
+    val isSmartphone: Boolean = resources.getBoolean(R.bool.isSmartphone)
 
-    val isPhablet: Boolean
+    val isPhablet: Boolean = resources.getBoolean(R.bool.isPhablet)
 
-    val isTablet: Boolean
+    val isTablet: Boolean = resources.getBoolean(R.bool.isTablet)
 
-    val canRotate: Boolean
-
-    init
-    {
-      this.isSmartphone = resources.getBoolean(R.bool.isSmartphone)
-      this.isPhablet = resources.getBoolean(R.bool.isPhablet)
-      this.isTablet = resources.getBoolean(R.bool.isTablet)
-      this.canRotate = resources.getBoolean(R.bool.canRotate)
-    }
+    val canRotate: Boolean = resources.getBoolean(R.bool.canRotate)
 
   }
 

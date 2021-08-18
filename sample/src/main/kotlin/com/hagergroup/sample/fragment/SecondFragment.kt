@@ -47,27 +47,30 @@ class SecondFragment
 
   override fun onClick(view: View?)
   {
-    if (view == viewDatabinding?.refreshError)
+    when (view)
     {
-      viewModel?.apply {
-        throwError = true
-        refreshViewModel(true) {
-          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+      viewDatabinding?.refreshError         ->
+      {
+        viewModel?.apply {
+          throwError = true
+          refreshViewModel(true) {
+            Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+          }
         }
       }
-    }
-    else if (view == viewDatabinding?.refreshInternetError)
-    {
-      viewModel?.apply {
-        throwInternetError = true
-        refreshViewModel(true) {
-          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+      viewDatabinding?.refreshInternetError ->
+      {
+        viewModel?.apply {
+          throwInternetError = true
+          refreshViewModel(true) {
+            Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+          }
         }
       }
-    }
-    else if (view == viewDatabinding?.observableField)
-    {
-      viewModel?.anotherString?.postValue(UUID.randomUUID().toString())
+      viewDatabinding?.observableField      ->
+      {
+        viewModel?.anotherString?.postValue(UUID.randomUUID().toString())
+      }
     }
   }
 

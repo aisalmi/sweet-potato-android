@@ -16,6 +16,8 @@ import com.hagergroup.sweetpotato.content.LocalSharedFlowManager
 import com.hagergroup.sweetpotato.content.SweetSharedFlowListener
 import com.hagergroup.sweetpotato.content.SweetSharedFlowListenerProvider
 import com.hagergroup.sweetpotato.coroutines.SweetCoroutines
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.net.URL
@@ -63,6 +65,9 @@ class MainFragment
   override fun getViewModelClass(): Class<MainFragmentViewModel> =
       MainFragmentViewModel::class.java
 
+  override fun getDispatcher(): CoroutineDispatcher =
+      Dispatchers.Default
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?)
   {
     super.onViewCreated(view, savedInstanceState)
@@ -81,69 +86,72 @@ class MainFragment
 
   override fun onClick(view: View?)
   {
-    if (view == viewDatabinding?.openBinding)
+    when (view)
     {
-      val intent = Intent(context, SecondActivity::class.java).apply {
-        putExtra(SecondFragment.MY_EXTRA, "hey !")
-        putExtra(SecondFragment.ANOTHER_EXTRA, "Another Hey !")
-      }
+      viewDatabinding?.openBinding          ->
+      {
+        val intent = Intent(context, SecondActivity::class.java).apply {
+          putExtra(SecondFragment.MY_EXTRA, "hey !")
+          putExtra(SecondFragment.ANOTHER_EXTRA, "Another Hey !")
+        }
 
-      startActivity(intent)
-    }
-    else if (view == viewDatabinding?.openBinding2)
-    {
-      val intent = Intent(context, ThirdActivity::class.java).apply {
-        putExtra(ThirdFragment.MY_EXTRA, "go !")
-        putExtra(ThirdFragment.ANOTHER_EXTRA, "Another go !")
+        startActivity(intent)
       }
+      viewDatabinding?.openBinding2         ->
+      {
+        val intent = Intent(context, ThirdActivity::class.java).apply {
+          putExtra(ThirdFragment.MY_EXTRA, "go !")
+          putExtra(ThirdFragment.ANOTHER_EXTRA, "Another go !")
+        }
 
-      startActivity(intent)
-    }
-    else if (view == viewDatabinding?.click)
-    {
-      LocalSharedFlowManager.emit(lifecycleScope, Intent(MainFragment.MY_ACTION))
-    }
-    else if (view == viewDatabinding?.refreshLoading)
-    {
-      viewModel?.refreshViewModel(true) {
-        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+        startActivity(intent)
       }
-    }
-    else if (view == viewDatabinding?.refreshNoLoading)
-    {
-      viewModel?.refreshViewModel(false) {
-        Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+      viewDatabinding?.click                ->
+      {
+        LocalSharedFlowManager.emit(lifecycleScope, Intent(MainFragment.MY_ACTION))
       }
-    }
-    else if (view == viewDatabinding?.refreshError)
-    {
-      viewModel?.apply {
-        throwError = true
-        refreshViewModel(true) {
+      viewDatabinding?.refreshLoading       ->
+      {
+        viewModel?.refreshViewModel(true) {
           Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
         }
       }
-    }
-    else if (view == viewDatabinding?.refreshInternetError)
-    {
-      viewModel?.apply {
-        throwInternetError = true
-        refreshViewModel(true) {
+      viewDatabinding?.refreshNoLoading     ->
+      {
+        viewModel?.refreshViewModel(false) {
           Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
         }
       }
-    }
-    else if (view == viewDatabinding?.coroutines)
-    {
-      startSweetCoroutines()
-    }
-    else if (view == viewDatabinding?.coroutinesError)
-    {
-      startSweetCoroutinesError()
-    }
-    else if (view == viewDatabinding?.alertDialog)
-    {
-      displayAlertDialog()
+      viewDatabinding?.refreshError         ->
+      {
+        viewModel?.apply {
+          throwError = true
+          refreshViewModel(true) {
+            Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+          }
+        }
+      }
+      viewDatabinding?.refreshInternetError ->
+      {
+        viewModel?.apply {
+          throwInternetError = true
+          refreshViewModel(true) {
+            Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+          }
+        }
+      }
+      viewDatabinding?.coroutines           ->
+      {
+        startSweetCoroutines()
+      }
+      viewDatabinding?.coroutinesError      ->
+      {
+        startSweetCoroutinesError()
+      }
+      viewDatabinding?.alertDialog          ->
+      {
+        displayAlertDialog()
+      }
     }
   }
 

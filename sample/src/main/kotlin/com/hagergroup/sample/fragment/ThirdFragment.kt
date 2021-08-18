@@ -61,31 +61,34 @@ class ThirdFragment
 
   override fun onClick(view: View?)
   {
-    if (view == viewDatabinding?.refreshError)
+    when (view)
     {
-      viewModel?.apply {
-        throwError = true
-        refreshViewModel(true) {
-          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+      viewDatabinding?.refreshError         ->
+      {
+        viewModel?.apply {
+          throwError = true
+          refreshViewModel(true) {
+            Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+          }
         }
       }
-    }
-    else if (view == viewDatabinding?.refreshInternetError)
-    {
-      viewModel?.apply {
-        throwInternetError = true
-        refreshViewModel(true) {
-          Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+      viewDatabinding?.refreshInternetError ->
+      {
+        viewModel?.apply {
+          throwInternetError = true
+          refreshViewModel(true) {
+            Toast.makeText(context, "Finish !", Toast.LENGTH_SHORT).show()
+          }
         }
       }
-    }
-    else if (view == viewDatabinding?.observableField)
-    {
-      (viewModel as ThirdFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
-    }
-    else if (view == viewDatabinding?.backstack)
-    {
-      (activity as? SampleActivity<*>)?.getAggregate()?.addOrReplaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment", null, null, SweetActivityAggregate.FragmentTransactionType.Add)
+      viewDatabinding?.observableField      ->
+      {
+        (viewModel as ThirdFragmentViewModel).anotherString.postValue(UUID.randomUUID().toString())
+      }
+      viewDatabinding?.backstack            ->
+      {
+        (activity as? SampleActivity<*>)?.getAggregate()?.addOrReplaceFragment(BackstackFragment::class, R.id.fragmentContainer, true, "BackstackFragment", null, null, SweetActivityAggregate.FragmentTransactionType.Add)
+      }
     }
   }
 

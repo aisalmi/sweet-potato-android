@@ -132,7 +132,7 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       SweetActivityController.onLifeCycleEvent(activity, fragment, SweetLifeCycle.Event.ON_CREATE)
     }
 
-    stateContainer.firstLifeCycle = if (SweetStateContainer.isFirstCycle(savedInstanceState) == true) false else true
+    stateContainer.firstLifeCycle = SweetStateContainer.isFirstCycle(savedInstanceState) != true
 
     stateContainer.registerSweetSharedFlowListeners(coroutineScope)
 
@@ -265,18 +265,18 @@ class Sweetizer<AggregateClass : Any, ComponentClass : Any>(val activity: AppCom
       stateContainer.onRefreshingModelAndBindingStop(this@Sweetizer)
 
       // We check whether the issue does not come from a non-alive entity
-      if (stateContainer.isAliveAsWellAsHostingActivity() == false)
+      return if (stateContainer.isAliveAsWellAsHostingActivity() == false)
       {
         // In that case, we just ignore the exception: it is very likely that the entity or the hosting Activity have turned as non-alive
         // during the "onRetrieveBusinessObjects()" method!
-        return false
+        false
       }
       else
       {
         // Otherwise, we report the exception
         onInternalModelAvailableException(throwable)
 
-        return false
+        false
       }
     }
   }

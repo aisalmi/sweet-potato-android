@@ -187,25 +187,28 @@ abstract class SweetActivityAggregate(val activity: AppCompatActivity, val activ
     }
 
     actionBarConfigurable?.let {
-      if (it.actionBarBehavior() == SweetActionBarConfigurable.ActionBarBehavior.Drawer)
+      when
       {
-        activity.supportActionBar?.apply {
-          setDisplayHomeAsUpEnabled(true)
-          setDisplayShowHomeEnabled(false)
+        it.actionBarBehavior() == SweetActionBarConfigurable.ActionBarBehavior.Drawer ->
+        {
+          activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(false)
+          }
         }
-      }
-      else if (it.actionBarBehavior() == SweetActionBarConfigurable.ActionBarBehavior.Up)
-      {
-        activity.supportActionBar?.apply {
-          setDisplayHomeAsUpEnabled(true)
-          setDisplayShowHomeEnabled(true)
+        it.actionBarBehavior() == SweetActionBarConfigurable.ActionBarBehavior.Up     ->
+        {
+          activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+          }
         }
-      }
-      else
-      {
-        activity.supportActionBar?.apply {
-          setDisplayHomeAsUpEnabled(false)
-          setDisplayShowHomeEnabled(false)
+        else                                                                          ->
+        {
+          activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowHomeEnabled(false)
+          }
         }
       }
     }

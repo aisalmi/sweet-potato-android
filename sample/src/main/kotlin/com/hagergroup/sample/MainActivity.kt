@@ -48,48 +48,51 @@ class MainActivity
 
   override fun getSharedFlowListener(index: Int): SweetSharedFlowListener
   {
-    return if(index == 0)
+    return when (index)
     {
-      super.getSweetSharedFlowListener()
-    }
-    else if (index == 1)
-    {
-      object : SweetSharedFlowListener
+      0    ->
       {
-
-        override fun getIntentFilter(): IntentFilter
+        super.getSweetSharedFlowListener()
+      }
+      1    ->
+      {
+        object : SweetSharedFlowListener
         {
-          return IntentFilter().apply {
-            addAction(SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION)
-          }
-        }
 
-        override fun onCollect(intent: Intent)
-        {
-          if (intent.action == SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION)
+          override fun getIntentFilter(): IntentFilter
           {
-            Toast.makeText(this@MainActivity, "has connectivity : '${intent.getBooleanExtra(SweetConnectivityListener.HAS_CONNECTIVITY_EXTRA, false)}'", Toast.LENGTH_LONG).show()
+            return IntentFilter().apply {
+              addAction(SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION)
+            }
+          }
+
+          override fun onCollect(intent: Intent)
+          {
+            if (intent.action == SweetConnectivityListener.CONNECTIVITY_CHANGED_ACTION)
+            {
+              Toast.makeText(this@MainActivity, "has connectivity : '${intent.getBooleanExtra(SweetConnectivityListener.HAS_CONNECTIVITY_EXTRA, false)}'", Toast.LENGTH_LONG).show()
+            }
           }
         }
       }
-    }
-    else
-    {
-      object : SweetSharedFlowListener
+      else ->
       {
-        override fun getIntentFilter(): IntentFilter
+        object : SweetSharedFlowListener
         {
-          return IntentFilter().apply {
-            addAction(MainFragment.MY_ACTION)
-            addCategory(MainActivity::class.java.simpleName)
-          }
-        }
-
-        override fun onCollect(intent: Intent)
-        {
-          if (intent.action == MainFragment.MY_ACTION)
+          override fun getIntentFilter(): IntentFilter
           {
-            Toast.makeText(this@MainActivity, "Click on Activity !", Toast.LENGTH_SHORT).show()
+            return IntentFilter().apply {
+              addAction(MainFragment.MY_ACTION)
+              addCategory(MainActivity::class.java.simpleName)
+            }
+          }
+
+          override fun onCollect(intent: Intent)
+          {
+            if (intent.action == MainFragment.MY_ACTION)
+            {
+              Toast.makeText(this@MainActivity, "Click on Activity !", Toast.LENGTH_SHORT).show()
+            }
           }
         }
       }
